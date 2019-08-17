@@ -7,19 +7,24 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Game1
 {
+    public static class Constants
+    {
+        public const float GroundTop = 400;
+    }
+
     public class Tanky
     {
         private const int Size = 32;
         private Texture2D walkAnim;
         private Texture2D jump;
-        private float baseSpeed = 300F;
+        private float baseSpeed = 200F;
         private readonly ISubject<float> speed = new BehaviorSubject<float>(0F);
 
         public Tanky()
         {
             Width = Size;
             Height = Size;
-            Top = 200;
+            Top = Constants.GroundTop;
 
             var distanceAfterLastStop = speed.Scan(0F, (a, b) =>
             {
@@ -31,7 +36,14 @@ namespace Game1
                 return 0;
             });
 
-            var frameId = distanceAfterLastStop.Select(x => (int) (Math.Abs(x) % 8));
+            var frameId = distanceAfterLastStop
+                .Do(Console.WriteLine)
+                .Select(x =>
+                {
+                    var segment = Math.Abs(x) / 10;
+                    return (int) (segment % 8);
+                });
+
             frameId.Subscribe(i => WalkIndex = i);
         }
 
