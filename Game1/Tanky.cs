@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,6 +9,7 @@ namespace Game1
     {
         private const int Size = 32;
         private Texture2D walkAnim;
+        private float baseSpeed = 400F;
 
         public Tanky()
         {
@@ -34,7 +36,7 @@ namespace Game1
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            var destinationRectangle = new Rectangle((int) Left, (int) Top, Width, Height);
+            var destinationRectangle = new Rectangle((int)Left, (int)Top, Width, Height);
             var sourceRectangle = TextureMixin.GetTile(WalkIndex, 0, Size, Size);
 
             spriteBatch.Draw(walkAnim, destinationRectangle, sourceRectangle, Color.White);
@@ -52,6 +54,18 @@ namespace Game1
             {
                 WalkIndex++;
             }
+        }
+
+        public void GoBack(TimeSpan walkingTime)
+        {
+            var walkFraction = (float)walkingTime.TotalSeconds;
+            Left -= baseSpeed * walkFraction;
+        }
+
+        public void Advance(TimeSpan walkingTime)
+        {
+            var walkFraction = (float)walkingTime.TotalSeconds;
+            Left += baseSpeed * walkFraction;
         }
     }
 }

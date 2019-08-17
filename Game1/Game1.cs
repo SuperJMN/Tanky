@@ -12,9 +12,6 @@ namespace Game1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private Texture2D goombaTexture;
-        private float goombaSpeed;
-        private Vector2 goombaPosition;
-        private AnimatedSprite animatedSprite;
         private readonly Tanky tanky;
         private float baseSpeed = 200F;
 
@@ -33,9 +30,6 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
-            goombaPosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-            goombaSpeed = 100F;
-
             base.Initialize();
         }
 
@@ -47,11 +41,8 @@ namespace Game1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            goombaTexture = Content.Load<Texture2D>("Tanky");
-            animatedSprite = new AnimatedSprite(goombaTexture, 1, 8);
-
+            
             tanky.Load(Content);
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -75,15 +66,16 @@ namespace Game1
 
            
             var kstate = Keyboard.GetState();
- 
+            
+            if(kstate.IsKeyDown(Keys.Right))
+            {
+                tanky.Advance(gameTime.ElapsedGameTime);
+            }
 
             if (kstate.IsKeyDown(Keys.Left))
             {
-                tanky.Left -= baseSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                tanky.GoBack(gameTime.ElapsedGameTime);
             }
-
-            if(kstate.IsKeyDown(Keys.Right))
-                tanky.Left += baseSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             base.Update(gameTime);
         }
