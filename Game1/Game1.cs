@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -41,7 +42,7 @@ namespace Game1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
             tanky.Load(Content);
         }
 
@@ -64,17 +65,34 @@ namespace Game1
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-           
             var kstate = Keyboard.GetState();
-            
-            if(kstate.IsKeyDown(Keys.Right))
+
+            if (kstate.IsKeyDown(Keys.Right))
             {
                 tanky.Advance(gameTime.ElapsedGameTime);
             }
-
-            if (kstate.IsKeyDown(Keys.Left))
+            else if (kstate.IsKeyDown(Keys.Left))
             {
                 tanky.GoBack(gameTime.ElapsedGameTime);
+            }
+            else if (kstate.IsKeyDown(Keys.Up))
+            {
+                tanky.Jump();
+                tanky.VerticalSpeed = -400;
+            }
+            else
+            {
+                tanky.Stop();
+            }
+
+            tanky.Top += tanky.VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            tanky.VerticalSpeed+=50;
+            
+            if (tanky.Top > 200)
+            {
+                tanky.VerticalSpeed = 0;
+                tanky.Top = 200;
+                tanky.Land();
             }
 
             base.Update(gameTime);
@@ -86,12 +104,13 @@ namespace Game1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            var scale = Matrix.CreateScale(2);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(transformMatrix: scale);
             tanky.Draw(spriteBatch);
             spriteBatch.End();
-            
+
             base.Draw(gameTime);
         }
     }
