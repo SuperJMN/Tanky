@@ -1,24 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading;
+using System.Windows.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Game1
+namespace TankyReloaded.Actors
 {
-    public static class Constants
+    public class Tanky : StageObject
     {
-        public const float GroundTop = 400;
-    }
+        public enum States
+        {
+            None,
+            Stopped,
+            Walking,
+            Jumping
+        }
 
-    public class Tanky
-    {
         private const int Size = 32;
-        private Texture2D walkAnim;
-        private Texture2D jump;
-        private float baseSpeed = 200F;
+        private readonly ISubject<Unit> shootAttempt = new Subject<Unit>();
         private readonly ISubject<float> speed = new BehaviorSubject<float>(0F);
+        private readonly float baseSpeed = 200F;
+        private Texture2D jump;
+        private Texture2D walkAnim;
 
         public Tanky()
         {
@@ -45,7 +55,18 @@ namespace Game1
                 });
 
             frameId.Subscribe(i => WalkIndex = i);
+
+            //var ts = TimeSpan.FromSeconds(1);
+
+            shootAttempt
+                .ObserveOn(Dispatcher.CurrentDispatcher)
+                .Subscribe(_ => Stage.AddRelative(new Shot(), this, RelativePosition.Right));
         }
+
+        public int WalkIndex { get; private set; }
+
+        public States Animation { get; set; }
+        public float VerticalSpeed { get; set; }
 
         private static int Sign(float f)
         {
@@ -57,33 +78,28 @@ namespace Game1
             return f > 0 ? 1 : -1;
         }
 
-        public int Height { get; }
-
-        public int Width { get; }
-
-        public float Top { get; set; }
-
-        public int WalkIndex { get; private set; }
-        public float Left { get; private set; }
-
-        public void Load(ContentManager contentManager)
+        public override void LoadContent(ContentManager contentManager)
         {
             walkAnim = contentManager.Load<Texture2D>("Tanky");
-            jump = contentManager.Load<Texture2D>("Jump");
+            jump = contentManager.Load<Texture2D>("jump");
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Update(GameTime gameTime)
+        {
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
         {
             if (Animation == States.Walking || Animation == States.Stopped)
             {
-                var destinationRectangle = new Rectangle((int) Left, (int) Top, Width, Height);
+                var destinationRectangle = new Rectangle((int) Left, (int) Top, (int) Width, (int) Height);
                 var sourceRectangle = TextureMixin.GetTile(WalkIndex, 0, Size, Size);
                 spriteBatch.Draw(walkAnim, destinationRectangle, sourceRectangle, Color.White);
             }
             else if (Animation == States.Jumping)
             {
-                var destinationRectangle = new Rectangle((int) Left, (int) Top, Width, Height);
-                var sourceRectangle = new Rectangle(0,0, Size, Size);
+                var destinationRectangle = new Rectangle((int) Left, (int) Top, (int) Width, (int) Height);
+                var sourceRectangle = new Rectangle(0, 0, Size, Size);
                 spriteBatch.Draw(jump, destinationRectangle, sourceRectangle, Color.White);
             }
         }
@@ -95,7 +111,7 @@ namespace Game1
                 Animation = States.Walking;
             }
 
-            var walkFraction = (float)walkingTime.TotalSeconds;
+            var walkFraction = (float) walkingTime.TotalSeconds;
             Left -= baseSpeed * walkFraction;
             speed.OnNext(-(baseSpeed * walkFraction));
         }
@@ -107,8 +123,8 @@ namespace Game1
                 Animation = States.Walking;
             }
 
-            var walkFraction = (float)walkingTime.TotalSeconds;
-            
+            var walkFraction = (float) walkingTime.TotalSeconds;
+
             Left += baseSpeed * walkFraction;
             speed.OnNext(baseSpeed * walkFraction);
         }
@@ -128,20 +144,14 @@ namespace Game1
             Animation = States.Jumping;
         }
 
-        public States Animation { get; set; }
-        public float VerticalSpeed { get; set; }
-
-        public enum States
-        {
-            None,
-            Stopped,
-            Walking,
-            Jumping,
-        }
-
         public void Land()
         {
-            this.Animation = States.Stopped;
+            Animation = States.Stopped;
+        }
+
+        public void Shoot()
+        {
+            shootAttempt.OnNext(Unit.Default);
         }
     }
 }

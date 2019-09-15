@@ -1,28 +1,26 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TankyReloaded.Actors;
 
-namespace Game1
+namespace TankyReloaded
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class GameApp : Game
     {
-        GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private Texture2D goombaTexture;
-        private readonly Tanky tanky;
-        private float baseSpeed = 200F;
+        private readonly Tanky tanky = new Tanky();
         private Texture2D background;
+        private IStage stage;
 
-        public Game1()
+        public GameApp()
         {
-            graphics = new GraphicsDeviceManager(this);
+            var graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            tanky = new Tanky();
-
             graphics.PreferredBackBufferWidth = 720;
             graphics.PreferredBackBufferWidth = 640;
             //graphics.ToggleFullScreen();
@@ -49,7 +47,13 @@ namespace Game1
             spriteBatch = new SpriteBatch(GraphicsDevice);
             background = Content.Load<Texture2D>("Background");
 
-            tanky.Load(Content);
+            stage = new Stage(Content);
+            OnStageCreated(stage);
+        }
+
+        private void OnStageCreated(IStage stage)
+        {
+            stage.Add(tanky);
         }
 
         /// <summary>
@@ -82,6 +86,11 @@ namespace Game1
                 tanky.GoBack(gameTime.ElapsedGameTime);
             }
 
+            if (kstate.IsKeyDown(Keys.Space))
+            {
+                tanky.Shoot();
+            }
+
             if (kstate.IsKeyDown(Keys.Up))
             {
                 if (tanky.Animation != Tanky.States.Jumping)
@@ -101,6 +110,8 @@ namespace Game1
                 tanky.Land();
             }
 
+            stage.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -112,7 +123,7 @@ namespace Game1
         {
             spriteBatch.Begin();
             spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, Color.White);
-            tanky.Draw(spriteBatch);
+            stage.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

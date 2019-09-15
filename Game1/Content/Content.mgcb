@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:Goomba_Artwork_(The_Thousand-Year_Door).png;goomba.png
 
+#begin jump.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:jump.png
+
 #begin merge_from_ofoct.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -49,7 +61,7 @@
 /processorParam:TextureFormat=Color
 /build:merge_from_ofoct.png;Tanky
 
-#begin salto.png
+#begin Shot.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -59,7 +71,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:salto.png;Jump
+/build:Shot.png
 
 #begin Tanky1.png
 /importer:TextureImporter
