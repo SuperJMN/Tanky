@@ -37,6 +37,12 @@
 /processorParam:TextureFormat=Color
 /build:Goomba_Artwork_(The_Thousand-Year_Door).png;goomba.png
 
+#begin jump.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:jump.mp3;jumpSound.mp3
+
 #begin jump.png
 /importer:TextureImporter
 /processor:TextureProcessor

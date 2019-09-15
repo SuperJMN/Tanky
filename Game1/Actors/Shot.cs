@@ -7,12 +7,12 @@ namespace TankyReloaded.Actors
     internal class Shot : StageObject
     {
         private static Texture2D texture;
-        private readonly double speed = 500;
+        private readonly double speed = 300;
 
         public Shot()
         {
-            Width = 32;
-            Height = 32;
+            Width = 10;
+            Height = 10;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

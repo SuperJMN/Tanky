@@ -100,16 +100,6 @@ namespace TankyReloaded
                 }
             }
             
-            tanky.Top += tanky.VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            tanky.VerticalSpeed+=30;
-            
-            if (tanky.Top > Constants.GroundTop)
-            {
-                tanky.VerticalSpeed = 0;
-                tanky.Top = Constants.GroundTop;
-                tanky.Land();
-            }
-
             stage.Update(gameTime);
 
             base.Update(gameTime);

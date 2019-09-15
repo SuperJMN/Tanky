@@ -20,14 +20,14 @@ namespace TankyReloaded
         {
             if (relativePosition == RelativePosition.Right)
             {
-                subject.Left = origin.Left + subject.Width;
-                subject.Top = origin.Top;
+                subject.Left = origin.Left + origin.Width;
+                subject.Top = origin.Top + (origin.Height - subject.Height)/2;
             }
 
             if (relativePosition == RelativePosition.Left)
             {
-                subject.Left = origin.Left - subject.Width;
-                subject.Top = origin.Top;
+                subject.Left = origin.Left - origin.Width;
+                subject.Top = origin.Top + (origin.Height - subject.Height)/2;
             }
 
             Add(subject);

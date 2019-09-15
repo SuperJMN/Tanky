@@ -8,6 +8,7 @@ using System.Reactive.Subjects;
 using System.Threading;
 using System.Windows.Threading;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -29,6 +30,7 @@ namespace TankyReloaded.Actors
         private readonly float baseSpeed = 200F;
         private Texture2D jump;
         private Texture2D walkAnim;
+        private SoundEffect jumpSound;
 
         public Tanky()
         {
@@ -51,7 +53,7 @@ namespace TankyReloaded.Actors
                 .Select(x =>
                 {
                     var segment = Math.Abs(x) / 10;
-                    return (int) (segment % 8);
+                    return (int)(segment % 8);
                 });
 
             frameId.Subscribe(i => WalkIndex = i);
@@ -82,23 +84,33 @@ namespace TankyReloaded.Actors
         {
             walkAnim = contentManager.Load<Texture2D>("Tanky");
             jump = contentManager.Load<Texture2D>("jump");
+            jumpSound = contentManager.Load<SoundEffect>("jumpSound");
         }
 
         public override void Update(GameTime gameTime)
         {
+            Top += VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            VerticalSpeed += 30;
+
+            if (Top > Constants.GroundTop)
+            {
+                VerticalSpeed = 0;
+                Top = Constants.GroundTop;
+                Land();
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (Animation == States.Walking || Animation == States.Stopped)
             {
-                var destinationRectangle = new Rectangle((int) Left, (int) Top, (int) Width, (int) Height);
+                var destinationRectangle = new Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
                 var sourceRectangle = TextureMixin.GetTile(WalkIndex, 0, Size, Size);
                 spriteBatch.Draw(walkAnim, destinationRectangle, sourceRectangle, Color.White);
             }
             else if (Animation == States.Jumping)
             {
-                var destinationRectangle = new Rectangle((int) Left, (int) Top, (int) Width, (int) Height);
+                var destinationRectangle = new Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
                 var sourceRectangle = new Rectangle(0, 0, Size, Size);
                 spriteBatch.Draw(jump, destinationRectangle, sourceRectangle, Color.White);
             }
@@ -111,7 +123,7 @@ namespace TankyReloaded.Actors
                 Animation = States.Walking;
             }
 
-            var walkFraction = (float) walkingTime.TotalSeconds;
+            var walkFraction = (float)walkingTime.TotalSeconds;
             Left -= baseSpeed * walkFraction;
             speed.OnNext(-(baseSpeed * walkFraction));
         }
@@ -123,7 +135,7 @@ namespace TankyReloaded.Actors
                 Animation = States.Walking;
             }
 
-            var walkFraction = (float) walkingTime.TotalSeconds;
+            var walkFraction = (float)walkingTime.TotalSeconds;
 
             Left += baseSpeed * walkFraction;
             speed.OnNext(baseSpeed * walkFraction);
@@ -142,6 +154,7 @@ namespace TankyReloaded.Actors
         public void Jump()
         {
             Animation = States.Jumping;
+            jumpSound.Play();
         }
 
         public void Land()
