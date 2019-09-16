@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,7 +25,7 @@ namespace TankyReloaded.Actors
 
         public override void LoadContent(ContentManager content)
         {
-            texture = content.Load<Texture2D>("Ship");
+            texture = content.Load<Texture2D>("Ship2");
             Width = (double)texture.Width / texture.Height * Height;
         }
 
@@ -39,10 +38,13 @@ namespace TankyReloaded.Actors
                 Stage.Remove(this);
             }
         }
-    }
 
-    public static class Utils
-    {
-        public static Random Random = new Random((int) DateTime.Now.Ticks);
+        public override void CollideWith(IStageObject other)
+        {
+            if (other is Shot)
+            {
+                Stage.Remove(this);
+            }
+        }
     }
 }

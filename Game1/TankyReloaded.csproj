@@ -48,6 +48,7 @@
     <Compile Include="Actors\ObservableMixin.cs" />
     <Compile Include="Actors\Ship.cs" />
     <Compile Include="Actors\TankyAnimation.cs" />
+    <Compile Include="Actors\Utils.cs" />
     <Compile Include="Actors\WalkState.cs" />
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Constants.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="Stage.cs" />
     <Compile Include="StageObject.cs" />
     <Compile Include="Actors\Tanky.cs" />
+    <Compile Include="StageObjectMixin.cs" />
     <Compile Include="TextureMixin.cs" />
   </ItemGroup>
   <ItemGroup>

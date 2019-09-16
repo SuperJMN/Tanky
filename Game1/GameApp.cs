@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using TankyReloaded.Actors;
 
 namespace TankyReloaded
@@ -24,7 +25,7 @@ namespace TankyReloaded
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 720;
             graphics.PreferredBackBufferHeight = 480;
-            //graphics.ToggleFullScreen();
+            graphics.ToggleFullScreen();
         }
 
         /// <summary>
@@ -47,6 +48,10 @@ namespace TankyReloaded
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             background = Content.Load<Texture2D>("Background");
+            var song = Content.Load<Song>("bgm/ladynavigation");
+            MediaPlayer.Play(song);
+            MediaPlayer.Volume = 0.25F;
+            MediaPlayer.IsRepeating = true;
 
             stage = new Stage(Content, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             OnStageCreated(stage);

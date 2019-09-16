@@ -46,9 +46,24 @@ namespace TankyReloaded
 
         public void Update(GameTime gameTime)
         {
-            foreach (var stageObject in Objects.ToList())
+            var stageObjects = Objects.ToList();
+
+            foreach (var stageObject in stageObjects)
             {
                 stageObject.Update(gameTime);
+            }
+
+            foreach (var stageObject in stageObjects)
+            {
+                var others = stageObjects.Except(new[] {stageObject});
+                foreach (var other in others)
+                {
+                    if (stageObject.Collides(other))
+                    {
+                        stageObject.CollideWith(other);
+                        other.CollideWith(stageObject);
+                    }
+                }
             }
         }
 

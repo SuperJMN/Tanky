@@ -30,5 +30,13 @@ namespace TankyReloaded.Actors
         {
             Left += gameTime.ElapsedGameTime.TotalSeconds * speed;
         }
+
+        public override void CollideWith(IStageObject other)
+        {
+            if (other is Ship)
+            {
+                Stage.Remove(this);
+            }
+        }
     }
 }

@@ -108,7 +108,7 @@ namespace TankyReloaded.Actors
             walkSound = contentManager.Load<SoundEffect>("sounds/servo");
             servoSoundInstance = walkSound.CreateInstance();
             servoSoundInstance.IsLooped = true;
-            servoSoundInstance.Volume = 0.5F;
+            servoSoundInstance.Volume = 0.4F;
             sandSound = contentManager.Load<SoundEffect>("sounds/sand");
         }
 

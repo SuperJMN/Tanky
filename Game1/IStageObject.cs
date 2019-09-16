@@ -15,5 +15,6 @@ namespace TankyReloaded
         IStage Stage { get; set; }
         void LoadContent(ContentManager content);
         void Update(GameTime gameTime);
+        void CollideWith(IStageObject other);
     }
 }
