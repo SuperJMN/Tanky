@@ -25,6 +25,12 @@
 /processorParam:TextureFormat=Color
 /build:beach-background-4.jpg;Background
 
+#begin E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/servo.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/servo.wav;sounds/servo.wav
+
 #begin Goomba_Artwork_(The_Thousand-Year_Door).png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -36,12 +42,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Goomba_Artwork_(The_Thousand-Year_Door).png;goomba.png
-
-#begin jump.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:jump.mp3;jumpSound.mp3
 
 #begin jump.png
 /importer:TextureImporter
@@ -78,6 +78,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Shot.png
+
+#begin sounds/jump.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/jump.wav
+
+#begin sounds/sand.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sand.wav
+
+#begin sounds/shoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/shoot.wav
+
+#begin sounds/walk.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/walk.mp3
 
 #begin Tanky1.png
 /importer:TextureImporter

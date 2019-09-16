@@ -99,6 +99,11 @@ namespace TankyReloaded
                     tanky.VerticalSpeed = -600;
                 }
             }
+
+            //if (kstate.IsKeyUp(Keys.Left) && kstate.IsKeyUp(Keys.Right))
+            //{
+            //    tanky.Stop();
+            //}
             
             stage.Update(gameTime);
 
