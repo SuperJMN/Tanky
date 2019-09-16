@@ -54,6 +54,11 @@ namespace TankyReloaded
         private void OnStageCreated(IStage stage)
         {
             stage.Add(tanky);
+            stage.Add(new Ship()
+            {
+                Left = 720,
+                Top = 120,
+            });
         }
 
         /// <summary>
