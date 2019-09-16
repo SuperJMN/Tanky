@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Actors\JumpState.cs" />
     <Compile Include="Actors\ObservableMixin.cs" />
+    <Compile Include="Actors\TankyAnimation.cs" />
     <Compile Include="Actors\WalkState.cs" />
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Constants.cs" />

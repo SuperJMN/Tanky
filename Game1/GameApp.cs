@@ -93,14 +93,14 @@ namespace TankyReloaded
 
             if (kstate.IsKeyDown(Keys.Up))
             {
-                if (tanky.Animation != Tanky.States.Jumping)
+                if (tanky.Animation != TankyAnimation.Jump)
                 {
                     tanky.JumpRequest();
                     tanky.VerticalSpeed = -600;
                 }
             }
 
-            if (kstate.IsKeyUp(Keys.Left) && kstate.IsKeyUp(Keys.Right) && tanky.Animation != Tanky.States.Jumping)
+            if (kstate.IsKeyUp(Keys.Left) && kstate.IsKeyUp(Keys.Right) && tanky.Animation != TankyAnimation.Jump)
             {
                 tanky.StopRequest();
             }

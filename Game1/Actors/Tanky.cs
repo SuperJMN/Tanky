@@ -13,14 +13,6 @@ namespace TankyReloaded.Actors
 {
     public class Tanky : StageObject
     {
-        public enum States
-        {
-            None,
-            Stopped,
-            Walking,
-            Jumping
-        }
-
         private const int Size = 32;
         private readonly ISubject<Unit> shootAttempt = new Subject<Unit>();
         private readonly ISubject<float> speed = new BehaviorSubject<float>(0F);
@@ -81,10 +73,12 @@ namespace TankyReloaded.Actors
                 if (isMoving)
                 {
                     servoSoundInstance?.Play();
+                    WalkState = WalkState.Walking;
                 }
                 else
                 {
                     servoSoundInstance?.Stop(true);
+                    WalkState = WalkState.Stopped;
                 }
                 Console.WriteLine($"IsMoving={isMoving}");
             });
@@ -92,7 +86,7 @@ namespace TankyReloaded.Actors
 
         public int WalkIndex { get; private set; }
 
-        public States Animation { get; set; }
+        public TankyAnimation Animation { get; set; }
         public float VerticalSpeed { get; set; }
 
         private static int Sign(float f)
@@ -133,13 +127,26 @@ namespace TankyReloaded.Actors
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (Animation == States.Walking || Animation == States.Stopped)
+            if (JumpState == JumpState.Jumping)
+            {
+                Animation = TankyAnimation.Jump;
+            }
+            else if (WalkState == WalkState.Walking)
+            {
+                Animation = TankyAnimation.Walking;
+            }
+            else
+            {
+                Animation = TankyAnimation.Stopped;
+            }
+
+            if (Animation == TankyAnimation.Walking || Animation == TankyAnimation.Stopped)
             {
                 var destinationRectangle = new Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
                 var sourceRectangle = TextureMixin.GetTile(WalkIndex, 0, Size, Size);
                 spriteBatch.Draw(walkAnim, destinationRectangle, sourceRectangle, Color.White);
             }
-            else if (Animation == States.Jumping)
+            else if (Animation == TankyAnimation.Jump)
             {
                 var destinationRectangle = new Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
                 var sourceRectangle = new Rectangle(0, 0, Size, Size);
@@ -149,11 +156,6 @@ namespace TankyReloaded.Actors
 
         public void GoBack(TimeSpan walkingTime)
         {
-            if (Animation != States.Jumping)
-            {
-                Animation = States.Walking;
-            }
-
             var walkFraction = (float)walkingTime.TotalSeconds;
             Left -= baseSpeed * walkFraction;
             speed.OnNext(-(baseSpeed * walkFraction));
@@ -161,41 +163,41 @@ namespace TankyReloaded.Actors
 
         public void Advance(TimeSpan walkingTime)
         {
-            if (Animation != States.Jumping)
-            {
-                Animation = States.Walking;
-            }
-
             var walkFraction = (float)walkingTime.TotalSeconds;
-
             Left += baseSpeed * walkFraction;
             speed.OnNext(baseSpeed * walkFraction);
         }
 
         public void StopRequest()
         {
-            if (Animation != States.Jumping)
+            if (WalkState == WalkState.Stopped)
             {
-                Animation = States.Stopped;
+                return;
             }
-
-            Animation = States.Stopped;
+            
+            Animation = TankyAnimation.Stopped;
+            WalkState = WalkState.Stopped;
 
             speed.OnNext(0);
         }
 
         public void JumpRequest()
         {
-            if (Animation != States.Jumping)
+            if (JumpState != JumpState.Jumping)
             {
-                Animation = States.Jumping;
+                JumpState = JumpState.Jumping;
                 jumpSound.Play();
+                servoSoundInstance.Stop(true);
             }
         }
 
         private void Land()
         {
-            Animation = States.Stopped;
+            JumpState = JumpState.Landed;
+            if (WalkState == WalkState.Walking)
+            {
+                servoSoundInstance.Play();
+            }
         }
 
         public void ShootRequest()
@@ -203,7 +205,7 @@ namespace TankyReloaded.Actors
             shootAttempt.OnNext(Unit.Default);
         }
 
-        public JumpState JumpState { get; set; }
-        public WalkState WalkState { get; set; }
+        private JumpState JumpState { get; set; }
+        private WalkState WalkState { get; set; }
     }
 }
