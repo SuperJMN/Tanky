@@ -16,13 +16,14 @@ namespace TankyReloaded
         private readonly Tanky tanky = new Tanky();
         private Texture2D background;
         private IStage stage;
+        private readonly GraphicsDeviceManager graphics;
 
         public GameApp()
         {
-            var graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 720;
-            graphics.PreferredBackBufferWidth = 640;
+            graphics.PreferredBackBufferHeight = 480;
             //graphics.ToggleFullScreen();
         }
 
@@ -47,8 +48,9 @@ namespace TankyReloaded
             spriteBatch = new SpriteBatch(GraphicsDevice);
             background = Content.Load<Texture2D>("Background");
 
-            stage = new Stage(Content);
+            stage = new Stage(Content, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             OnStageCreated(stage);
+            Constants.GroundTop = (float) (graphics.GraphicsDevice.Viewport.Height * (1-(double)1/5));
         }
 
         private void OnStageCreated(IStage stage)

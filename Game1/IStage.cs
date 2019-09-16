@@ -12,5 +12,6 @@ namespace TankyReloaded
         void Add(IStageObject stageObject);
         void AddRelative(IStageObject subject, IStageObject origin, RelativePosition relativePosition);
         void Update(GameTime gameTime);
+        void Remove(IStageObject stageObject);
     }
 }

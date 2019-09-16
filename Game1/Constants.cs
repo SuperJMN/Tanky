@@ -2,6 +2,6 @@
 {
     public static class Constants
     {
-        public const float GroundTop = 400;
+        public static float GroundTop = 400;
     }
 }
