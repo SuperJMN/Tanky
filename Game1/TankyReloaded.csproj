@@ -44,6 +44,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Actors\ObservableMixin.cs" />
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GameApp.cs" />

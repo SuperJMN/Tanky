@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows.Threading;
@@ -62,8 +63,13 @@ namespace TankyReloaded.Actors
                 });
 
             shootAttempt
+                .SampleFirst(TimeSpan.FromSeconds(0.3), Scheduler.Default)
                 .ObserveOn(Dispatcher.CurrentDispatcher)
-                .Subscribe(_ => Stage.AddRelative(new Shot(), this, RelativePosition.Right));
+                .Subscribe(_ =>
+                {
+                    Stage.AddRelative(new Shot(), this, RelativePosition.Right);
+                    shootSound.Play();
+                });
         }
 
         public int WalkIndex { get; private set; }
@@ -173,7 +179,6 @@ namespace TankyReloaded.Actors
         public void Shoot()
         {
             shootAttempt.OnNext(Unit.Default);
-            shootSound.Play();
         }
     }
 }
