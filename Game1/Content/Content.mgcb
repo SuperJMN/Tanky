@@ -25,6 +25,12 @@
 /processorParam:TextureFormat=Color
 /build:beach-background-4.jpg;Background
 
+#begin E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/sand.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/sand.wav;sounds/sand.wav
+
 #begin E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/servo.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -84,12 +90,6 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sounds/jump.wav
-
-#begin sounds/sand.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:sounds/sand.wav
 
 #begin sounds/shoot.wav
 /importer:WavImporter

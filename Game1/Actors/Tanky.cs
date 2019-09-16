@@ -50,6 +50,7 @@ namespace TankyReloaded.Actors
             });
 
             var frameId = distanceAfterLastStop
+                .Where(x => Math.Abs(x) > 0)
                 .Select(x =>
                 {
                     var segment = Math.Abs(x) / 10;
@@ -60,6 +61,10 @@ namespace TankyReloaded.Actors
                 .Subscribe(i =>
                 {
                     WalkIndex = i;
+                    if (i % 4 == 0 && Math.Abs(Top - Constants.GroundTop) < 5)
+                    {
+                        //sandSound.Play();
+                    }
                 });
 
             shootAttempt
@@ -70,6 +75,19 @@ namespace TankyReloaded.Actors
                     Stage.AddRelative(new Shot(), this, RelativePosition.Right);
                     shootSound.Play();
                 });
+
+            speed.Select(s => Math.Abs(s) > 0).DistinctUntilChanged().Subscribe(isMoving =>
+            {
+                if (isMoving)
+                {
+                    servoSoundInstance?.Play();
+                }
+                else
+                {
+                    servoSoundInstance?.Stop(true);
+                }
+                Console.WriteLine($"IsMoving={isMoving}");
+            });
         }
 
         public int WalkIndex { get; private set; }
@@ -154,31 +172,38 @@ namespace TankyReloaded.Actors
             speed.OnNext(baseSpeed * walkFraction);
         }
 
-        //public void Stop()
-        //{
-        //    if (Animation != States.Jumping)
-        //    {
-        //        Animation = States.Stopped;
-        //    }
-
-        //    servoSoundInstance.Stop(true);
-        //    speed.OnNext(0);
-        //}
-
-        public void Jump()
+        public void StopRequest()
         {
-            Animation = States.Jumping;
-            jumpSound.Play();
+            if (Animation != States.Jumping)
+            {
+                Animation = States.Stopped;
+            }
+
+            Animation = States.Stopped;
+
+            speed.OnNext(0);
         }
 
-        public void Land()
+        public void JumpRequest()
+        {
+            if (Animation != States.Jumping)
+            {
+                Animation = States.Jumping;
+                jumpSound.Play();
+            }
+        }
+
+        private void Land()
         {
             Animation = States.Stopped;
         }
 
-        public void Shoot()
+        public void ShootRequest()
         {
             shootAttempt.OnNext(Unit.Default);
         }
+
+        public JumpState JumpState { get; set; }
+        public WalkState WalkState { get; set; }
     }
 }

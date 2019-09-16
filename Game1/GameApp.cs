@@ -88,23 +88,23 @@ namespace TankyReloaded
 
             if (kstate.IsKeyDown(Keys.Space))
             {
-                tanky.Shoot();
+                tanky.ShootRequest();
             }
 
             if (kstate.IsKeyDown(Keys.Up))
             {
                 if (tanky.Animation != Tanky.States.Jumping)
                 {
-                    tanky.Jump();
+                    tanky.JumpRequest();
                     tanky.VerticalSpeed = -600;
                 }
             }
 
-            //if (kstate.IsKeyUp(Keys.Left) && kstate.IsKeyUp(Keys.Right))
-            //{
-            //    tanky.Stop();
-            //}
-            
+            if (kstate.IsKeyUp(Keys.Left) && kstate.IsKeyUp(Keys.Right) && tanky.Animation != Tanky.States.Jumping)
+            {
+                tanky.StopRequest();
+            }
+
             stage.Update(gameTime);
 
             base.Update(gameTime);
