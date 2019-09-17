@@ -1,30 +1,20 @@
 ﻿using System;
-using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using TimeSpan = System.TimeSpan;
 
 namespace TankyReloaded.Actors
 {
-    internal class Ship : StageObject
+    internal class Ship : StageObject, IDisposable
     {
         private static Texture2D texture;
-        private readonly double speed = 200;
         private readonly IDisposable bombDropper;
-
-        public double VerticalSpeed { get; set; }
-
-        private static int Number;
+        private readonly double speed = 200;
 
         public Ship()
         {
-            Id = ++Number;
             Height = 64;
             VerticalSpeed = Utils.Random.NextDouble() * 50;
 
@@ -32,14 +22,14 @@ namespace TankyReloaded.Actors
                 .ObserveOn(Dispatcher.CurrentDispatcher)
                 .Subscribe(_ =>
                 {
-                    if (Top + Height +20 < Constants.GroundTop)
+                    if (Top + Height + 20 < Constants.GroundTop)
                     {
                         Stage.AddRelative(new Bomb(), this, RelativePosition.Bottom);
                     }
                 });
         }
 
-        public int Id { get; }
+        public double VerticalSpeed { get; set; }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -50,7 +40,7 @@ namespace TankyReloaded.Actors
         public override void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("Ship2");
-            Width = (double)texture.Width / texture.Height * Height;
+            Width = (double) texture.Width / texture.Height * Height;
         }
 
         public override void Update(GameTime gameTime)
@@ -59,8 +49,7 @@ namespace TankyReloaded.Actors
             Top += gameTime.ElapsedGameTime.TotalSeconds * VerticalSpeed;
             if (Left + Width < 0)
             {
-                Stage.Remove(this);
-                bombDropper.Dispose();
+                Dispose();
             }
         }
 
@@ -68,9 +57,14 @@ namespace TankyReloaded.Actors
         {
             if (other is Shot)
             {
-                Stage.Remove(this);
-                bombDropper.Dispose();
+                Dispose();
             }
+        }
+
+        public void Dispose()
+        {
+            Stage.Remove(this);
+            bombDropper.Dispose();
         }
     }
 }

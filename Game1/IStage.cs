@@ -7,11 +7,14 @@ namespace TankyReloaded
 {
     public interface IStage
     {
-        ICollection<IStageObject> Objects { get; }
+        IEnumerable<IStageObject> Objects { get; }
+        double Width { get; }
+        double Height { get; }
         void Draw(SpriteBatch spriteBatch);
         void Add(IStageObject stageObject);
         void AddRelative(IStageObject subject, IStageObject origin, RelativePosition relativePosition);
         void Update(GameTime gameTime);
         void Remove(IStageObject stageObject);
+        void Dispose();
     }
 }

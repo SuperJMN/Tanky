@@ -29,6 +29,10 @@ namespace TankyReloaded.Actors
         public override void Update(GameTime gameTime)
         {
             Left += gameTime.ElapsedGameTime.TotalSeconds * speed;
+            if (Left + Width > Stage.Width)
+            {
+                Dispose();
+            }
         }
 
         public override void CollideWith(IStageObject other)
@@ -37,6 +41,11 @@ namespace TankyReloaded.Actors
             {
                 Stage.Remove(this);
             }
+        }
+
+        private void Dispose()
+        {
+            Stage.Remove(this);
         }
     }
 }

@@ -13,33 +13,41 @@ namespace TankyReloaded
     internal class Stage : IStage
     {
         private readonly ContentManager content;
-        private IDisposable enemyAdder;
+        private readonly IDisposable enemyAdder;
+
+        private readonly List<IStageObject> objects = new List<IStageObject>();
 
         public Stage(ContentManager content, double width, double height)
         {
+            Width = width;
+            Height = height;
             this.content = content;
-            
-            enemyAdder = Observable.Interval(TimeSpan.FromSeconds(2)).ObserveOn(Dispatcher.CurrentDispatcher).Subscribe(_ => this.Add(new Ship()
-            {
-                Top = Utils.Random.Next((int) Constants.GroundTop),
-                Left = width, 
-            }));
+
+            enemyAdder = Observable.Interval(TimeSpan.FromSeconds(2)).ObserveOn(Dispatcher.CurrentDispatcher).Subscribe(
+                _ => Add(new Ship
+                {
+                    Top = Utils.Random.Next((int) Constants.GroundTop),
+                    Left = width
+                }));
         }
 
-        public ICollection<IStageObject> Objects { get; } = new List<IStageObject>();
+        public double Width { get; }
+        public double Height { get; }
+
+        public IEnumerable<IStageObject> Objects => objects.AsReadOnly();
 
         public void AddRelative(IStageObject subject, IStageObject origin, RelativePosition relativePosition)
         {
             if (relativePosition == RelativePosition.Right)
             {
                 subject.Left = origin.Left + origin.Width;
-                subject.Top = origin.Top + (origin.Height - subject.Height)/2;
+                subject.Top = origin.Top + (origin.Height - subject.Height) / 2;
             }
 
             if (relativePosition == RelativePosition.Left)
             {
                 subject.Left = origin.Left - origin.Width;
-                subject.Top = origin.Top + (origin.Height - subject.Height)/2;
+                subject.Top = origin.Top + (origin.Height - subject.Height) / 2;
             }
 
             if (relativePosition == RelativePosition.Bottom)
@@ -53,16 +61,16 @@ namespace TankyReloaded
 
         public void Update(GameTime gameTime)
         {
-            var stageObjects = Objects.ToList();
+            var objs = objects.ToList();
 
-            foreach (var stageObject in stageObjects)
+            foreach (var stageObject in objs)
             {
                 stageObject.Update(gameTime);
             }
 
-            foreach (var stageObject in stageObjects)
+            foreach (var stageObject in objs)
             {
-                var others = stageObjects.Except(new[] {stageObject});
+                var others = objs.Except(new[] {stageObject});
                 foreach (var other in others)
                 {
                     if (stageObject.Collides(other))
@@ -76,12 +84,24 @@ namespace TankyReloaded
 
         public void Remove(IStageObject stageObject)
         {
-            Objects.Remove(stageObject);
+            objects.Remove(stageObject);
+        }
+
+        public void Dispose()
+        {
+            enemyAdder.Dispose();
+            foreach (var stageObject in objects)
+            {
+                if (stageObject is IDisposable d)
+                {
+                    d.Dispose();
+                }
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var stageObject in Objects.ToList())
+            foreach (var stageObject in objects)
             {
                 stageObject.Draw(spriteBatch);
             }
@@ -90,7 +110,7 @@ namespace TankyReloaded
         public void Add(IStageObject stageObject)
         {
             stageObject.Stage = this;
-            Objects.Add(stageObject);
+            objects.Add(stageObject);
             stageObject.LoadContent(content);
         }
     }
