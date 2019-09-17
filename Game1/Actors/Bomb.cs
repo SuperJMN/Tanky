@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Linq;
+using System.Windows.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,7 +17,11 @@ namespace TankyReloaded.Actors
         {
             Width = 32;
             Height = 32;
-            exploder = Observable.Timer(TimeSpan.FromSeconds(20)).Subscribe(_ => Dispose());
+            exploder = Observable.Timer(TimeSpan.FromSeconds(3)).ObserveOn(Dispatcher.CurrentDispatcher).Subscribe(_ =>
+            {
+                Stage.AddRelative(new Explosion(), this, RelativePosition.Center);
+                Dispose();
+            });
         }
 
         private void Dispose()
@@ -79,6 +84,21 @@ namespace TankyReloaded.Actors
                 
                 HorizontalSpeed += Coerce(200 / xr);
                 speed += Coerce(200 / yr);
+            }
+
+            if (other is Explosion)
+            {
+                var x1 = other.Left + other.Width / 2;
+                var x2 = this.Left + this.Width / 2;
+
+                var y1 = other.Left + other.Width / 2;
+                var y2 = this.Left + this.Width / 2;
+
+                var xr = x2 - x1;
+                var yr = y2 - y1;
+                
+                HorizontalSpeed += Coerce(500 / xr);
+                speed += Coerce(500 / yr);
             }
         }
 

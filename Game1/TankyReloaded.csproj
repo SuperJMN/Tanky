@@ -45,6 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Actors\Bomb.cs" />
+    <Compile Include="Actors\Explosion.cs" />
     <Compile Include="Actors\JumpState.cs" />
     <Compile Include="Actors\ObservableMixin.cs" />
     <Compile Include="Actors\Ship.cs" />

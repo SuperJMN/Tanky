@@ -6,5 +6,6 @@
         Right,
         Top,
         Bottom,
+        Center
     }
 }

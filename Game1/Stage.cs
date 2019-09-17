@@ -36,34 +36,40 @@ namespace TankyReloaded
 
         public IEnumerable<IStageObject> Objects => objects.AsReadOnly();
 
-        public void AddRelative(IStageObject subject, IStageObject origin, RelativePosition relativePosition)
+        public void AddRelative(IStageObject toAdd, IStageObject origin, RelativePosition relativePosition)
         {
             if (relativePosition == RelativePosition.Right)
             {
-                subject.Left = origin.Left + origin.Width;
-                subject.Top = origin.Top + (origin.Height - subject.Height) / 2;
+                toAdd.Left = origin.Left + origin.Width;
+                toAdd.Top = origin.Top + (origin.Height - toAdd.Height) / 2;
             }
 
             if (relativePosition == RelativePosition.Left)
             {
-                subject.Left = origin.Left - origin.Width;
-                subject.Top = origin.Top + (origin.Height - subject.Height) / 2;
+                toAdd.Left = origin.Left - origin.Width;
+                toAdd.Top = origin.Top + (origin.Height - toAdd.Height) / 2;
             }
 
             if (relativePosition == RelativePosition.Bottom)
             {
-                subject.Left = origin.Left + (origin.Width - subject.Width);
-                subject.Top = origin.Top + origin.Height;
+                toAdd.Left = origin.Left + (origin.Width - toAdd.Width) / 2;
+                toAdd.Top = origin.Top + origin.Height;
             }
 
-            Add(subject);
+            if (relativePosition == RelativePosition.Center)
+            {
+                toAdd.Left = origin.Left + (origin.Width - toAdd.Width) / 2;
+                toAdd.Top = origin.Top + origin.Height - toAdd.Height;
+            }
+
+            Add(toAdd);
         }
 
         public void Update(GameTime gameTime)
         {
             var objs = objects.ToList();
 
-            foreach (var stageObject in objs)
+            foreach (var stageObject in objs.ToList())
             {
                 stageObject.Update(gameTime);
             }
@@ -101,7 +107,7 @@ namespace TankyReloaded
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var stageObject in objects)
+            foreach (var stageObject in objects.ToList())
             {
                 stageObject.Draw(spriteBatch);
             }

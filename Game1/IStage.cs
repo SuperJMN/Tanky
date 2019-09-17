@@ -12,7 +12,7 @@ namespace TankyReloaded
         double Height { get; }
         void Draw(SpriteBatch spriteBatch);
         void Add(IStageObject stageObject);
-        void AddRelative(IStageObject subject, IStageObject origin, RelativePosition relativePosition);
+        void AddRelative(IStageObject toAdd, IStageObject origin, RelativePosition relativePosition);
         void Update(GameTime gameTime);
         void Remove(IStageObject stageObject);
         void Dispose();

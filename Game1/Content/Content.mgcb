@@ -55,6 +55,18 @@
 /processorParam:Quality=Best
 /build:E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/servo.wav;sounds/servo.wav
 
+#begin explosion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:explosion.png
+
 #begin Goomba_Artwork_(The_Thousand-Year_Door).png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -126,6 +138,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Shot.png
+
+#begin sounds/explosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/explosion.wav
 
 #begin sounds/jump.wav
 /importer:WavImporter
