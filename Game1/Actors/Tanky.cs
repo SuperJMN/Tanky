@@ -117,10 +117,10 @@ namespace TankyReloaded.Actors
             Top += VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             VerticalSpeed += 30;
 
-            if (Top > Constants.GroundTop)
+            if (Top + Height > Constants.GroundTop)
             {
                 VerticalSpeed = 0;
-                Top = Constants.GroundTop;
+                Top = Constants.GroundTop - Height;
                 Land();
             }
         }

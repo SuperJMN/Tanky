@@ -1,21 +1,45 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Reactive;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using TimeSpan = System.TimeSpan;
 
 namespace TankyReloaded.Actors
 {
     internal class Ship : StageObject
     {
         private static Texture2D texture;
-        private readonly double speed = 100;
+        private readonly double speed = 200;
+        private readonly IDisposable bombDropper;
 
         public double VerticalSpeed { get; set; }
 
+        private static int Number;
+
         public Ship()
         {
+            Id = ++Number;
             Height = 64;
             VerticalSpeed = Utils.Random.NextDouble() * 50;
+
+            bombDropper = ObservableMixin.PushRandomly(() => TimeSpan.FromMilliseconds(Utils.Random.Next(1000, 4000)))
+                .ObserveOn(Dispatcher.CurrentDispatcher)
+                .Subscribe(_ =>
+                {
+                    if (Top + Height +20 < Constants.GroundTop)
+                    {
+                        Stage.AddRelative(new Bomb(), this, RelativePosition.Bottom);
+                    }
+                });
         }
+
+        public int Id { get; }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -36,6 +60,7 @@ namespace TankyReloaded.Actors
             if (Left + Width < 0)
             {
                 Stage.Remove(this);
+                bombDropper.Dispose();
             }
         }
 
@@ -44,6 +69,7 @@ namespace TankyReloaded.Actors
             if (other is Shot)
             {
                 Stage.Remove(this);
+                bombDropper.Dispose();
             }
         }
     }

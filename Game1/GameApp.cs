@@ -25,7 +25,7 @@ namespace TankyReloaded
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 720;
             graphics.PreferredBackBufferHeight = 480;
-            graphics.ToggleFullScreen();
+            //graphics.ToggleFullScreen();
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace TankyReloaded
 
             stage = new Stage(Content, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             OnStageCreated(stage);
-            Constants.GroundTop = (float) (graphics.GraphicsDevice.Viewport.Height * (1-(double)1/5));
+            Constants.GroundTop = (float) (graphics.GraphicsDevice.Viewport.Height * (1-(double)1/7));
         }
 
         private void OnStageCreated(IStage stage)

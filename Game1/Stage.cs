@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Windows.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +19,7 @@ namespace TankyReloaded
         {
             this.content = content;
             
-            enemyAdder = Observable.Interval(TimeSpan.FromSeconds(3)).Subscribe(_ => this.Add(new Ship()
+            enemyAdder = Observable.Interval(TimeSpan.FromSeconds(2)).ObserveOn(Dispatcher.CurrentDispatcher).Subscribe(_ => this.Add(new Ship()
             {
                 Top = Utils.Random.Next((int) Constants.GroundTop),
                 Left = width, 
@@ -39,6 +40,12 @@ namespace TankyReloaded
             {
                 subject.Left = origin.Left - origin.Width;
                 subject.Top = origin.Top + (origin.Height - subject.Height)/2;
+            }
+
+            if (relativePosition == RelativePosition.Bottom)
+            {
+                subject.Left = origin.Left + (origin.Width - subject.Width);
+                subject.Top = origin.Top + origin.Height;
             }
 
             Add(subject);
@@ -74,7 +81,7 @@ namespace TankyReloaded
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var stageObject in Objects)
+            foreach (var stageObject in Objects.ToList())
             {
                 stageObject.Draw(spriteBatch);
             }
