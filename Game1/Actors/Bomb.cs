@@ -9,7 +9,7 @@ namespace TankyReloaded.Actors
     internal class Bomb : StageObject
     {
         private static Texture2D texture;
-        private double speed = 300;
+        private double speed = 100;
         private readonly IDisposable exploder;
 
         public Bomb()
@@ -48,7 +48,16 @@ namespace TankyReloaded.Actors
             }
 
             Left += HorizontalSpeed * gameTime.ElapsedGameTime.TotalSeconds;
-            HorizontalSpeed /= 2;
+            
+            if (Top + Height >= Constants.GroundTop)
+            {
+                HorizontalSpeed /= 2;
+            }
+            else
+            {
+                speed += Constants.Gravity;
+            }
+
             if (Math.Abs(HorizontalSpeed) < 5)
             {
                 HorizontalSpeed = 0;

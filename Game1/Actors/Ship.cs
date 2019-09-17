@@ -18,7 +18,7 @@ namespace TankyReloaded.Actors
             Height = 64;
             VerticalSpeed = Utils.Random.NextDouble() * 50;
 
-            bombDropper = ObservableMixin.PushRandomly(() => TimeSpan.FromMilliseconds(Utils.Random.Next(1000, 4000)))
+            bombDropper = ObservableMixin.PushRandomly(() => TimeSpan.FromMilliseconds(Utils.Random.Next(100, 2000)))
                 .ObserveOn(Dispatcher.CurrentDispatcher)
                 .Subscribe(_ =>
                 {

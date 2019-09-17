@@ -115,7 +115,7 @@ namespace TankyReloaded.Actors
         public override void Update(GameTime gameTime)
         {
             Top += VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            VerticalSpeed += 30;
+            VerticalSpeed += Constants.Gravity;
 
             if (Top + Height > Constants.GroundTop)
             {
