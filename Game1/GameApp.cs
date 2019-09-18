@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -25,7 +23,7 @@ namespace TankyReloaded
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 720;
             graphics.PreferredBackBufferHeight = 480;
-            graphics.ToggleFullScreen();
+            //graphics.ToggleFullScreen();
         }
 
         /// <summary>

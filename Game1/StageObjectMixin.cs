@@ -29,6 +29,12 @@ namespace TankyReloaded
         {
             return !self.Stage.GetBounds().Intersects(self.Bounds);
         }
+
+        public static bool WillTouchGround(this IStageObject self, GameTime gameTime)
+        {
+            var nextY = self.VerticalSpeed.Apply(gameTime);
+            return self.Bounds.Bottom + nextY >= Constants.GroundTop;
+        }
     }
 
     public static class StageMixin
@@ -36,6 +42,16 @@ namespace TankyReloaded
         public static Rectangle GetBounds(this IStage stage)
         {
             return new Rectangle(0, 0, (int) stage.Width, (int) stage.Height);
+        }
+
+        public static double ApplyDifferential(this GameTime time, double value)
+        {
+            return time.ElapsedGameTime.TotalSeconds * value;
+        }
+
+        public static double Apply(this double value, GameTime time)
+        {
+            return time.ElapsedGameTime.TotalSeconds * value;
         }
     }
 }

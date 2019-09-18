@@ -113,10 +113,7 @@ namespace TankyReloaded.Actors
 
         public override void Update(GameTime gameTime)
         {
-            var step = VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Top += step;
-            
-            if (this.IsTouchingGround(step))
+            if (this.WillTouchGround(gameTime))
             {
                 VerticalSpeed = 0;
                 Top = Constants.GroundTop - Height;
@@ -125,6 +122,7 @@ namespace TankyReloaded.Actors
             else
             {
                 VerticalSpeed += Constants.Gravity;
+                Top += VerticalSpeed.Apply(gameTime);
             }
         }
 

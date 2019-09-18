@@ -53,18 +53,17 @@ namespace TankyReloaded.Actors
 
         public override void Update(GameTime gameTime)
         {
-            if (Top + Height < Constants.GroundTop)
+            if (this.WillTouchGround(gameTime))
             {
-                Top += gameTime.ElapsedGameTime.TotalSeconds * VerticalSpeed;
+                Top = Constants.GroundTop - Height;
+                
             }
             else
             {
-                Top = Constants.GroundTop - Height;
+                Top += VerticalSpeed.Apply(gameTime);
             }
 
-            Left += HorizontalSpeed * gameTime.ElapsedGameTime.TotalSeconds;
-            
-            if (Top + Height  >= Constants.GroundTop)
+            if (this.IsTouchingGround())
             {
                 HorizontalSpeed /= 2;
             }
@@ -77,6 +76,8 @@ namespace TankyReloaded.Actors
             {
                 HorizontalSpeed = 0;
             }
+
+            Left += HorizontalSpeed.Apply(gameTime);
         }
 
         public override void CollideWith(IStageObject other)

@@ -28,8 +28,8 @@ namespace TankyReloaded.Actors
 
         public override void Update(GameTime gameTime)
         {
-            Left += gameTime.ElapsedGameTime.TotalSeconds * VerticalSpeed;
-            if (Left + Width > Stage.Width)
+            Left += VerticalSpeed.Apply(gameTime);
+            if (this.IsOutOfBounds())
             {
                 Dispose();
             }
