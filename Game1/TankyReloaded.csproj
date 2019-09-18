@@ -47,8 +47,10 @@
     <Compile Include="Actors\AerialExplosion.cs" />
     <Compile Include="Actors\Bomb.cs" />
     <Compile Include="Actors\Explosion.cs" />
+    <Compile Include="Actors\IReadonlyRectangle.cs" />
     <Compile Include="Actors\JumpState.cs" />
     <Compile Include="Actors\ObservableMixin.cs" />
+    <Compile Include="Actors\RectangleAdapter.cs" />
     <Compile Include="Actors\Ship.cs" />
     <Compile Include="Actors\TankyAnimation.cs" />
     <Compile Include="Actors\Utils.cs" />
@@ -56,13 +58,16 @@
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GameApp.cs" />
+    <Compile Include="IRectangle.cs" />
     <Compile Include="IStage.cs" />
     <Compile Include="IStageObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Actors\Shot.cs" />
+    <Compile Include="RectangleExtensions.cs" />
     <Compile Include="RelativePosition.cs" />
     <Compile Include="Stage.cs" />
+    <Compile Include="StageMixin.cs" />
     <Compile Include="StageObject.cs" />
     <Compile Include="Actors\Tanky.cs" />
     <Compile Include="StageObjectMixin.cs" />

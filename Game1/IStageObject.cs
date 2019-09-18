@@ -4,13 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TankyReloaded
 {
-    public interface IStageObject
+    public interface IStageObject : IRectangle
     {
         void Draw(SpriteBatch spriteBatch);
-        double Left { get; set; }
-        double Top { get; set; }
-        double Width { get; set; }
-        double Height { get; set;  }
+
 
         double VerticalSpeed { get; set; }
         double HorizontalSpeed { get; set; }

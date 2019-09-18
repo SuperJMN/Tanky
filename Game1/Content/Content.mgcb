@@ -43,7 +43,7 @@
 /processorParam:Quality=Best
 /build:bgm/ladynavigation.mp3
 
-#begin bomba.png
+#begin E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/bomb.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -53,7 +53,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bomba.png;bomb.png
+/build:E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/bomb.png;bomb.png
 
 #begin E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/explosion3.png
 /importer:TextureImporter

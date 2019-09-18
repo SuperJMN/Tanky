@@ -44,7 +44,7 @@ namespace TankyReloaded
         public int Columns { get; }
 
         public int CurrentFrame { get; set; }
-        public int TotalFrames { get; set; }
+        public int TotalFrames { get; }
 
         public int Height { get; }
 

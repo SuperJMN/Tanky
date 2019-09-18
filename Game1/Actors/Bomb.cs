@@ -17,6 +17,7 @@ namespace TankyReloaded.Actors
 
         public Bomb()
         {
+            
             Width = 32;
             Height = 40;
             VerticalSpeed = 100;
@@ -44,6 +45,7 @@ namespace TankyReloaded.Actors
         {
             var sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             spriteBatch.Draw(texture, Bounds, sourceRectangle, Color.White);
+            this.SetWidth(32, new RectangleAdapter(texture.Bounds));
         }
 
         public override void LoadContent(ContentManager content)
