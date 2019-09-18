@@ -44,6 +44,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Actors\AerialExplosion.cs" />
     <Compile Include="Actors\Bomb.cs" />
     <Compile Include="Actors\Explosion.cs" />
     <Compile Include="Actors\JumpState.cs" />

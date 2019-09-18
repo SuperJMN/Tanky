@@ -11,12 +11,12 @@ namespace TankyReloaded.Actors
     {
         private static Texture2D texture;
         private readonly IDisposable bombDropper;
-        private readonly double speed = 200;
-
+        
         public Ship()
         {
             Height = 64;
             VerticalSpeed = Utils.Random.NextDouble() * 50;
+            HorizontalSpeed = 200;
 
             bombDropper = ObservableMixin.PushRandomly(() => TimeSpan.FromMilliseconds(Utils.Random.Next(100, 2000)))
                 .ObserveOn(Dispatcher.CurrentDispatcher)
@@ -28,8 +28,6 @@ namespace TankyReloaded.Actors
                     }
                 });
         }
-
-        public double VerticalSpeed { get; set; }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -45,9 +43,10 @@ namespace TankyReloaded.Actors
 
         public override void Update(GameTime gameTime)
         {
-            Left -= gameTime.ElapsedGameTime.TotalSeconds * speed;
+            Left -= gameTime.ElapsedGameTime.TotalSeconds * HorizontalSpeed;
             Top += gameTime.ElapsedGameTime.TotalSeconds * VerticalSpeed;
-            if (Left + Width < 0)
+
+            if (this.IsOutOfBounds())
             {
                 Dispose();
             }
@@ -57,6 +56,7 @@ namespace TankyReloaded.Actors
         {
             if (other is Shot)
             {
+                Stage.AddRelative(new AerialExplosion(), this, RelativePosition.Center);
                 Dispose();
             }
         }

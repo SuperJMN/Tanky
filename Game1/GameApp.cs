@@ -25,7 +25,7 @@ namespace TankyReloaded
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 720;
             graphics.PreferredBackBufferHeight = 480;
-            //graphics.ToggleFullScreen();
+            graphics.ToggleFullScreen();
         }
 
         /// <summary>

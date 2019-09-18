@@ -87,7 +87,6 @@ namespace TankyReloaded.Actors
         public int WalkIndex { get; private set; }
 
         public TankyAnimation Animation { get; set; }
-        public float VerticalSpeed { get; set; }
 
         private static int Sign(float f)
         {
@@ -114,14 +113,18 @@ namespace TankyReloaded.Actors
 
         public override void Update(GameTime gameTime)
         {
-            Top += VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            VerticalSpeed += Constants.Gravity;
-
-            if (Top + Height > Constants.GroundTop)
+            var step = VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Top += step;
+            
+            if (this.IsTouchingGround(step))
             {
                 VerticalSpeed = 0;
                 Top = Constants.GroundTop - Height;
                 Land();
+            }
+            else
+            {
+                VerticalSpeed += Constants.Gravity;
             }
         }
 

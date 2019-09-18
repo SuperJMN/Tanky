@@ -8,13 +8,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TankyReloaded.Actors
 {
-    public class Explosion: StageObject, IDisposable
+    public class AerialExplosion: StageObject, IDisposable
     {
         private AnimatedSprite animation;
         private IDisposable animator;
         private SoundEffect sound;
 
-        public Explosion()
+        public AerialExplosion()
         {
             Width = 200;
             Height = 210;
@@ -37,10 +37,10 @@ namespace TankyReloaded.Actors
 
         public override void LoadContent(ContentManager content)
         {
-            var texture = content.Load<Texture2D>("explosion3");
-            animation = new AnimatedSprite(texture, 8, 1, 80);
+            var texture = content.Load<Texture2D>("aerial_explosion");
+            animation = new AnimatedSprite(texture, 5, 6, 120);
             animator = Observable
-                .Interval(TimeSpan.FromMilliseconds(100)).Take(animation.TotalFrames)
+                .Interval(TimeSpan.FromMilliseconds(50)).Take(animation.TotalFrames)
                 .ObserveOn(Dispatcher.CurrentDispatcher)
                 .Subscribe(l => animation.CurrentFrame++, Dispose);
             sound = content.Load<SoundEffect>("sounds/explosion");

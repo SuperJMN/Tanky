@@ -2,7 +2,6 @@
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Timers;
 using System.Windows.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -13,7 +12,6 @@ namespace TankyReloaded.Actors
     internal class Bomb : StageObject
     {
         private static Texture2D texture;
-        private double speed = 100;
         private readonly IDisposable exploder;
         private readonly ISubject<Unit> chainTrigger = new Subject<Unit>();
 
@@ -21,6 +19,7 @@ namespace TankyReloaded.Actors
         {
             Width = 32;
             Height = 40;
+            VerticalSpeed = 100;
 
             var explosion = chainTrigger.Delay(TimeSpan.FromMilliseconds(100)).Merge(Observable.Timer(TimeSpan.FromSeconds(3)).Select(_ => Unit.Default));
             exploder = explosion.ObserveOn(Dispatcher.CurrentDispatcher).Subscribe(_ => Explode());
@@ -28,9 +27,12 @@ namespace TankyReloaded.Actors
 
         private void Explode()
         {
-            Stage.AddRelative(new Explosion(), this, RelativePosition.Center);
+            var explosion = this.IsTouchingGround() ? (IStageObject) new Explosion() : new AerialExplosion();
+            Stage.AddRelative(explosion, this, RelativePosition.Center);
             Dispose();
         }
+
+        public bool IsTouchingGround => Top + Height + VerticalSpeed >= Constants.GroundTop;
 
         private void Dispose()
         {
@@ -53,7 +55,7 @@ namespace TankyReloaded.Actors
         {
             if (Top + Height < Constants.GroundTop)
             {
-                Top += gameTime.ElapsedGameTime.TotalSeconds * speed;
+                Top += gameTime.ElapsedGameTime.TotalSeconds * VerticalSpeed;
             }
             else
             {
@@ -68,7 +70,7 @@ namespace TankyReloaded.Actors
             }
             else
             {
-                speed += Constants.Gravity;
+                VerticalSpeed += Constants.Gravity;
             }
 
             if (Math.Abs(HorizontalSpeed) < 5)
@@ -91,7 +93,7 @@ namespace TankyReloaded.Actors
                 var yr = y2 - y1;
                 
                 HorizontalSpeed += Coerce(200 / xr);
-                speed += Coerce(200 / yr);
+                VerticalSpeed += Coerce(200 / yr);
             }
 
             if (other is Explosion)
@@ -109,11 +111,14 @@ namespace TankyReloaded.Actors
                 //HorizontalSpeed += Coerce(500 / xr * 2);
                 //speed += Coerce(500 / yr  * 2);
             }
+
+            if (other is Shot)
+            {
+                Explode();
+            }
         }
 
-        public double HorizontalSpeed { get; set; }
-
-        private double Coerce(double v)
+        private static double Coerce(double v)
         {
             return double.IsInfinity(v) ? 0 : v;
         }

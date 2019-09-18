@@ -11,8 +11,13 @@ namespace TankyReloaded
         double Top { get; set; }
         double Width { get; set; }
         double Height { get; set;  }
+
+        double VerticalSpeed { get; set; }
+        double HorizontalSpeed { get; set; }
+
         Rectangle Bounds { get; }
         IStage Stage { get; set; }
+        
         void LoadContent(ContentManager content);
         void Update(GameTime gameTime);
         void CollideWith(IStageObject other);

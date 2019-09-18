@@ -10,7 +10,7 @@ using TankyReloaded.Actors;
 
 namespace TankyReloaded
 {
-    internal class Stage : IStage
+    public class Stage : IStage
     {
         private readonly ContentManager content;
         private readonly IDisposable enemyAdder;

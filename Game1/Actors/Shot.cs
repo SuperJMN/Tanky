@@ -7,12 +7,12 @@ namespace TankyReloaded.Actors
     internal class Shot : StageObject
     {
         private static Texture2D texture;
-        private readonly double speed = 300;
 
         public Shot()
         {
             Width = 10;
             Height = 10;
+            VerticalSpeed = 300;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -28,7 +28,7 @@ namespace TankyReloaded.Actors
 
         public override void Update(GameTime gameTime)
         {
-            Left += gameTime.ElapsedGameTime.TotalSeconds * speed;
+            Left += gameTime.ElapsedGameTime.TotalSeconds * VerticalSpeed;
             if (Left + Width > Stage.Width)
             {
                 Dispose();
@@ -37,7 +37,7 @@ namespace TankyReloaded.Actors
 
         public override void CollideWith(IStageObject other)
         {
-            if (other is Ship)
+            if (other is Ship || other is Bomb)
             {
                 Stage.Remove(this);
             }

@@ -5,7 +5,7 @@ namespace TankyReloaded
 {
     public class AnimatedSprite
     {
-        public AnimatedSprite(Texture2D texture, int rows, int columns, int? width = null, int? height = null)
+        public AnimatedSprite(Texture2D texture, int columns, int rows, int? width = null, int? height = null)
         {
             Texture = texture;
             Rows = rows;
