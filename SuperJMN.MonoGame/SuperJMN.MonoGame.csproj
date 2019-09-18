@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{ACB1D3BE-7158-4222-A949-C56A97389772}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>SuperJMN.MonoGame</RootNamespace>
     <AssemblyName>SuperJMN.MonoGame</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
     <LangVersion>8</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
@@ -44,8 +47,10 @@
     <Compile Include="ObservableMixin.cs" />
     <Compile Include="RectangleAdapter.cs" />
     <Compile Include="RelativePosition.cs" />
+    <Compile Include="Stage.cs" />
     <Compile Include="StageMixin.cs" />
     <Compile Include="StageObject.cs" />
+    <Compile Include="StageObjectMixin.cs" />
     <Compile Include="TextureMixin.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>

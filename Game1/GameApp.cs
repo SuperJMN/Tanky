@@ -52,7 +52,7 @@ namespace TankyReloaded
             MediaPlayer.Volume = 0.25F;
             MediaPlayer.IsRepeating = true;
 
-            stage = new Stage(Content, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            stage = new MainStage(Content, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             OnStageCreated(stage);
             Constants.GroundTop = (float) (graphics.GraphicsDevice.Viewport.Height * (1-(double)1/7));
         }
@@ -60,11 +60,6 @@ namespace TankyReloaded
         private void OnStageCreated(IStage stage)
         {
             stage.Add(tanky);
-            stage.Add(new Ship()
-            {
-                Left = 720,
-                Top = 120,
-            });
         }
 
         /// <summary>

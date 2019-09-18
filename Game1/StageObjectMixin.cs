@@ -4,27 +4,17 @@ using SuperJMN.MonoGame;
 
 namespace TankyReloaded
 {
-    public static class StageObjectMixin 
+    public static class StageObjectMixin
     {
-        public static bool Collides(this IStageObject self, IStageObject another)
+        public static bool WillTouchGround(this IStageObject self, GameTime gameTime)
         {
-            return self.Bounds.Intersects(another.Bounds);
+            var nextY = self.VerticalSpeed.Apply(gameTime);
+            return self.Bounds.Bottom + nextY >= Constants.GroundTop;
         }
 
         public static bool IsTouchingGround(this IStageObject self)
         {
             return Math.Abs(self.Bounds.Bottom - Constants.GroundTop) < 2;
-        }
-
-        public static bool IsOutOfBounds(this IStageObject self)
-        {
-            return !self.Stage.GetBounds().Intersects(self.Bounds);
-        }
-
-        public static bool WillTouchGround(this IStageObject self, GameTime gameTime)
-        {
-            var nextY = self.VerticalSpeed.Apply(gameTime);
-            return self.Bounds.Bottom + nextY >= Constants.GroundTop;
         }
     }
 }

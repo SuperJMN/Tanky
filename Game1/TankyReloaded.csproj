@@ -53,10 +53,10 @@
     <Compile Include="Actors\WalkState.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GameApp.cs" />
+    <Compile Include="MainStage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Actors\Shot.cs" />
-    <Compile Include="Stage.cs" />
     <Compile Include="Actors\Tanky.cs" />
     <Compile Include="StageObjectMixin.cs" />
   </ItemGroup>

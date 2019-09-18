@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
-using System.Windows.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using SuperJMN.MonoGame;
-using TankyReloaded.Actors;
 
-namespace TankyReloaded
+namespace SuperJMN.MonoGame
 {
     public class Stage : IStage
     {
         private readonly ContentManager content;
-        private readonly IDisposable enemyAdder;
 
         private readonly List<IStageObject> objects = new List<IStageObject>();
 
@@ -23,13 +18,6 @@ namespace TankyReloaded
             Width = width;
             Height = height;
             this.content = content;
-
-            enemyAdder = Observable.Interval(TimeSpan.FromSeconds(2)).ObserveOn(Dispatcher.CurrentDispatcher).Subscribe(
-                _ => Add(new Ship
-                {
-                    Top = Utils.Random.Next((int) Constants.GroundTop),
-                    Left = width
-                }));
         }
 
         public double Width { get; }
@@ -94,9 +82,8 @@ namespace TankyReloaded
             objects.Remove(stageObject);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            enemyAdder.Dispose();
             foreach (var stageObject in objects.ToList())
             {
                 if (stageObject is IDisposable d)
