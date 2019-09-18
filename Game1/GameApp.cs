@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using SuperJMN.MonoGame;
 using TankyReloaded.Actors;
 
 namespace TankyReloaded

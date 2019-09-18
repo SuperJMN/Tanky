@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using TankyReloaded.Actors;
-
-namespace TankyReloaded
+﻿namespace SuperJMN.MonoGame.Common
 {
     public static class RectangleExtensions
     {

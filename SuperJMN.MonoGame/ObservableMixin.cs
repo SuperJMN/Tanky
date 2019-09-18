@@ -4,7 +4,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace TankyReloaded.Actors
+namespace SuperJMN.MonoGame
 {
     public static class ObservableMixin
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using SuperJMN.MonoGame;
 
 namespace TankyReloaded
 {
@@ -10,19 +11,9 @@ namespace TankyReloaded
             return self.Bounds.Intersects(another.Bounds);
         }
 
-        public static bool IsTouchingGround(this IStageObject self, double step)
-        {
-            return self.Bounds.Bottom + step >= Constants.GroundTop;
-        }
-
         public static bool IsTouchingGround(this IStageObject self)
         {
             return Math.Abs(self.Bounds.Bottom - Constants.GroundTop) < 2;
-        }
-
-        public static bool IsFlying(this IStageObject self, double step)
-        {
-            return !self.IsTouchingGround(step);
         }
 
         public static bool IsOutOfBounds(this IStageObject self)

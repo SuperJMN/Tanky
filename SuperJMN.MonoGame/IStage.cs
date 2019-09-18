@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using TankyReloaded.Actors;
 
-namespace TankyReloaded
+namespace SuperJMN.MonoGame
 {
     public interface IStage
     {

@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using SuperJMN.MonoGame.Common;
 
-namespace TankyReloaded.Actors
+namespace SuperJMN.MonoGame
 {
-    internal class RectangleAdapter :IReadonlyRectangle
+    public class RectangleAdapter :IReadonlyRectangle
     {
         private readonly Rectangle rect;
 

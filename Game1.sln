@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29123.89
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TankyReloaded", "Game1\TankyReloaded.csproj", "{49B5BFFF-C744-4E9F-BE8F-DE48243BF50B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zafiro.MonoGame", "Zafiro.MonoGame\Zafiro.MonoGame.csproj", "{A429F7D5-97C3-4FAF-BBDE-92100186A746}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperJMN.MonoGame.Common", "Zafiro.MonoGame\SuperJMN.MonoGame.Common.csproj", "{A429F7D5-97C3-4FAF-BBDE-92100186A746}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperJMN.MonoGame", "SuperJMN.MonoGame\SuperJMN.MonoGame.csproj", "{ACB1D3BE-7158-4222-A949-C56A97389772}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,14 @@ Global
 		{A429F7D5-97C3-4FAF-BBDE-92100186A746}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A429F7D5-97C3-4FAF-BBDE-92100186A746}.Release|x86.ActiveCfg = Release|Any CPU
 		{A429F7D5-97C3-4FAF-BBDE-92100186A746}.Release|x86.Build.0 = Release|Any CPU
+		{ACB1D3BE-7158-4222-A949-C56A97389772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACB1D3BE-7158-4222-A949-C56A97389772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACB1D3BE-7158-4222-A949-C56A97389772}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ACB1D3BE-7158-4222-A949-C56A97389772}.Debug|x86.Build.0 = Debug|Any CPU
+		{ACB1D3BE-7158-4222-A949-C56A97389772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACB1D3BE-7158-4222-A949-C56A97389772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACB1D3BE-7158-4222-A949-C56A97389772}.Release|x86.ActiveCfg = Release|Any CPU
+		{ACB1D3BE-7158-4222-A949-C56A97389772}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

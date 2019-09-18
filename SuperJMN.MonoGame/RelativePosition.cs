@@ -1,4 +1,4 @@
-﻿namespace TankyReloaded
+﻿namespace SuperJMN.MonoGame
 {
     public enum RelativePosition
     {

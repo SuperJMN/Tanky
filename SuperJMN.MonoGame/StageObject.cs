@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace TankyReloaded
+namespace SuperJMN.MonoGame
 {
     public abstract class StageObject : IStageObject
     {

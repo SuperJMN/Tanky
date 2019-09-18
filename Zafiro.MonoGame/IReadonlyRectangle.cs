@@ -1,4 +1,4 @@
-﻿namespace TankyReloaded.Actors
+﻿namespace SuperJMN.MonoGame.Common
 {
     public interface IReadonlyRectangle
     {

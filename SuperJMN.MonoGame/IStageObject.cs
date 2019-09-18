@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SuperJMN.MonoGame.Common;
 
-namespace TankyReloaded
+namespace SuperJMN.MonoGame
 {
     public interface IStageObject : IRectangle
     {

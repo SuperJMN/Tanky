@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace TankyReloaded
+namespace SuperJMN.MonoGame
 {
     public static class TextureMixin
     {

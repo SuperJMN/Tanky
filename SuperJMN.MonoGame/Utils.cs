@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TankyReloaded.Actors
+namespace SuperJMN.MonoGame
 {
     public static class Utils
     {

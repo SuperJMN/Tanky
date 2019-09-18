@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace TankyReloaded
+namespace SuperJMN.MonoGame
 {
     public class AnimatedSprite
     {
