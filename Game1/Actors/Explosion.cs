@@ -47,7 +47,7 @@ namespace TankyReloaded.Actors
         {
             if (!IsPlayingSound)
             {
-                sound.Play();
+                sound.Play(0.3F, 0, 0);
                 IsPlayingSound = true;
             }
         }
