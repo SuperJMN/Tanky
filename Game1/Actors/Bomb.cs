@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Timers;
 using System.Windows.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -12,16 +15,21 @@ namespace TankyReloaded.Actors
         private static Texture2D texture;
         private double speed = 100;
         private readonly IDisposable exploder;
+        private readonly ISubject<Unit> chainTrigger = new Subject<Unit>();
 
         public Bomb()
         {
             Width = 32;
-            Height = 32;
-            exploder = Observable.Timer(TimeSpan.FromSeconds(3)).ObserveOn(Dispatcher.CurrentDispatcher).Subscribe(_ =>
-            {
-                Stage.AddRelative(new Explosion(), this, RelativePosition.Center);
-                Dispose();
-            });
+            Height = 40;
+
+            var explosion = chainTrigger.Delay(TimeSpan.FromMilliseconds(100)).Merge(Observable.Timer(TimeSpan.FromSeconds(3)).Select(_ => Unit.Default));
+            exploder = explosion.ObserveOn(Dispatcher.CurrentDispatcher).Subscribe(_ => Explode());
+        }
+
+        private void Explode()
+        {
+            Stage.AddRelative(new Explosion(), this, RelativePosition.Center);
+            Dispose();
         }
 
         private void Dispose()
@@ -54,7 +62,7 @@ namespace TankyReloaded.Actors
 
             Left += HorizontalSpeed * gameTime.ElapsedGameTime.TotalSeconds;
             
-            if (Top + Height >= Constants.GroundTop)
+            if (Top + Height  >= Constants.GroundTop)
             {
                 HorizontalSpeed /= 2;
             }
@@ -88,17 +96,18 @@ namespace TankyReloaded.Actors
 
             if (other is Explosion)
             {
-                var x1 = other.Left + other.Width / 2;
-                var x2 = this.Left + this.Width / 2;
+                chainTrigger.OnNext(Unit.Default);
+                //var x1 = other.Left + other.Width / 2;
+                //var x2 = this.Left + this.Width / 2;
 
-                var y1 = other.Left + other.Width / 2;
-                var y2 = this.Left + this.Width / 2;
+                //var y1 = other.Left + other.Width / 2;
+                //var y2 = this.Left + this.Width / 2;
 
-                var xr = x2 - x1;
-                var yr = y2 - y1;
+                //var xr = x2 - x1;
+                //var yr = y2 - y1;
                 
-                HorizontalSpeed += Coerce(500 / xr);
-                speed += Coerce(500 / yr);
+                //HorizontalSpeed += Coerce(500 / xr * 2);
+                //speed += Coerce(500 / yr  * 2);
             }
         }
 

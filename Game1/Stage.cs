@@ -96,7 +96,7 @@ namespace TankyReloaded
         public void Dispose()
         {
             enemyAdder.Dispose();
-            foreach (var stageObject in objects)
+            foreach (var stageObject in objects.ToList())
             {
                 if (stageObject is IDisposable d)
                 {

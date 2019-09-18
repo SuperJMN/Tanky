@@ -16,10 +16,10 @@ namespace TankyReloaded.Actors
 
         public Explosion()
         {
-            Width = 80;
-            Height = 100;
+            Width = 200;
+            Height = 210;
         }
-
+        
         public void Dispose()
         {
             animator.Dispose();
@@ -28,14 +28,17 @@ namespace TankyReloaded.Actors
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            var location = new Vector2((float) Left, (float) Top);
+            var location = new Vector2((float) AnimationLeft, (float) AnimationTop);
             animation?.Draw(spriteBatch, location);
         }
 
+        public double AnimationLeft => Left + (this.Width - animation.Width) / 2;
+        public double AnimationTop => Top + this.Height - animation.Height;
+
         public override void LoadContent(ContentManager content)
         {
-            var texture = content.Load<Texture2D>("explosion");
-            animation = new AnimatedSprite(texture, 2, 3, (int) Width, (int) Height);
+            var texture = content.Load<Texture2D>("explosion3");
+            animation = new AnimatedSprite(texture, 1, 8, 80);
             animator = Observable
                 .Interval(TimeSpan.FromMilliseconds(100)).Take(animation.TotalFrames)
                 .ObserveOn(Dispatcher.CurrentDispatcher)
