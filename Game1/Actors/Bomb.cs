@@ -31,7 +31,8 @@ namespace TankyReloaded.Actors
         private void Explode()
         {
             var explosion = this.IsTouchingGround() ? (IStageObject) new Explosion() : new AerialExplosion();
-            Stage.AddRelative(explosion, this, RelativePosition.Center);
+            explosion.AlignTo(this, Alignment.JoinBottoms);
+            Stage.Add(explosion);
             Dispose();
         }
 

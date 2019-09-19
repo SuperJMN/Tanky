@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SuperJMN.MonoGame.Common;
 
 namespace SuperJMN.MonoGame
 {
@@ -25,30 +26,21 @@ namespace SuperJMN.MonoGame
 
         public IEnumerable<IStageObject> Objects => objects.AsReadOnly();
 
-        public void AddRelative(IStageObject toAdd, IStageObject origin, RelativePosition relativePosition)
+        public void AddRelative(IStageObject toAdd, IStageObject guide, RelativePosition relativePosition)
         {
             if (relativePosition == RelativePosition.Right)
             {
-                toAdd.Left = origin.Left + origin.Width;
-                toAdd.Top = origin.Top + (origin.Height - toAdd.Height) / 2;
+                toAdd.AlignTo(guide, Alignment.ToRightSide);
             }
 
             if (relativePosition == RelativePosition.Left)
             {
-                toAdd.Left = origin.Left - origin.Width;
-                toAdd.Top = origin.Top + (origin.Height - toAdd.Height) / 2;
+                toAdd.AlignTo(guide,  Alignment.ToLeftSide);
             }
 
             if (relativePosition == RelativePosition.Bottom)
             {
-                toAdd.Left = origin.Left + (origin.Width - toAdd.Width) / 2;
-                toAdd.Top = origin.Top + origin.Height;
-            }
-
-            if (relativePosition == RelativePosition.Center)
-            {
-                toAdd.Left = origin.Left + (origin.Width - toAdd.Width) / 2;
-                toAdd.Top = origin.Top + origin.Height - toAdd.Height;
+                toAdd.AlignTo(guide, Alignment.ToBottomSide);
             }
 
             Add(toAdd);
@@ -103,9 +95,24 @@ namespace SuperJMN.MonoGame
 
         public void Add(IStageObject stageObject)
         {
+            EnsurePositionAndSizeAreCorrect(stageObject);
+
             stageObject.Stage = this;
             objects.Add(stageObject);
             stageObject.LoadContent(content);
+        }
+
+        private static void EnsurePositionAndSizeAreCorrect(IStageObject stageObject)
+        {
+            if (stageObject.Left == 0 && stageObject.Top == 0)
+            {
+                throw new ApplicationException("The position of the object has not been set");
+            }
+
+            //if (stageObject.Width == 0 || stageObject.Height == 0)
+            //{
+            //    throw new ApplicationException("The size of the object has not been set");
+            //}
         }
     }
 }

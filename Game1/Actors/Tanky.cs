@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
+using SuperJMN.MonoGame.Common;
 
 namespace TankyReloaded.Actors
 {
@@ -63,11 +64,7 @@ namespace TankyReloaded.Actors
             shootAttempt
                 .SampleFirst(TimeSpan.FromSeconds(0.3), Scheduler.Default)
                 .ObserveOn(Dispatcher.CurrentDispatcher)
-                .Subscribe(_ =>
-                {
-                    Stage.AddRelative(new Shot(), this, RelativePosition.Right);
-                    shootSound.Play();
-                });
+                .Subscribe(_ =>  Shoot());
 
             speed.Select(s => Math.Abs(s) > 0).DistinctUntilChanged().Subscribe(isMoving =>
             {
@@ -81,8 +78,15 @@ namespace TankyReloaded.Actors
                     servoSoundInstance?.Stop(true);
                     WalkState = WalkState.Stopped;
                 }
-                Console.WriteLine($"IsMoving={isMoving}");
             });
+        }
+
+        private void Shoot()
+        {
+            var shot = new Shot();
+            shot.AlignTo(this, Alignment.ToRightSide);
+            Stage.Add(shot);
+            shootSound.Play();
         }
 
         public int WalkIndex { get; private set; }

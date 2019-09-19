@@ -15,12 +15,6 @@ namespace TankyReloaded.Actors
         private IDisposable animator;
         private SoundEffect sound;
 
-        public AerialExplosion()
-        {
-            Width = 200;
-            Height = 210;
-        }
-        
         public void Dispose()
         {
             animator.Dispose();
@@ -34,7 +28,7 @@ namespace TankyReloaded.Actors
         }
 
         public double AnimationLeft => Left + (this.Width - animation.Width) / 2;
-        public double AnimationTop => Top + this.Height - animation.Height;
+        public double AnimationTop => Top + (this.Height - animation.Height) / 2;
 
         public override void LoadContent(ContentManager content)
         {
@@ -45,6 +39,7 @@ namespace TankyReloaded.Actors
                 .ObserveOn(Dispatcher.CurrentDispatcher)
                 .Subscribe(l => animation.CurrentFrame++, Dispose);
             sound = content.Load<SoundEffect>("sounds/explosion");
+
         }
 
         public override void Update(GameTime gameTime)

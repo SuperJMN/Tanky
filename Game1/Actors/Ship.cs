@@ -5,19 +5,34 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
+using SuperJMN.MonoGame.Common;
 
 namespace TankyReloaded.Actors
 {
     internal class Ship : StageObject, IDisposable
     {
         private static Texture2D texture;
-        private readonly IDisposable bombDropper;
-        
+        private IDisposable bombDropper;
+        private Texture2D rect;
+
         public Ship()
         {
-            Height = 64;
             VerticalSpeed = Utils.Random.NextDouble() * 50;
             HorizontalSpeed = 200;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            var sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+            //spriteBatch.Draw(rect, Bounds, sourceRectangle, Color.AliceBlue);
+            spriteBatch.Draw(texture, Bounds, sourceRectangle, Color.White);
+        }
+
+        public override void LoadContent(ContentManager content)
+        {
+            texture = content.Load<Texture2D>("Ship2");
+            rect = content.Load<Texture2D>("rect");
+            this.SetHeight(64, new RectangleAdapter(texture.Bounds));
 
             bombDropper = ObservableMixin.PushRandomly(() => TimeSpan.FromMilliseconds(Utils.Random.Next(100, 2000)))
                 .ObserveOn(Dispatcher.CurrentDispatcher)
@@ -25,21 +40,11 @@ namespace TankyReloaded.Actors
                 {
                     if (Top + Height + 20 < Constants.GroundTop)
                     {
-                        Stage.AddRelative(new Bomb(), this, RelativePosition.Bottom);
+                        var stageObject = new Bomb();
+                        stageObject.AlignTo(this, Alignment.ToBottomSide);
+                        Stage.Add(stageObject);
                     }
                 });
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            var sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
-            spriteBatch.Draw(texture, Bounds, sourceRectangle, Color.White);
-        }
-
-        public override void LoadContent(ContentManager content)
-        {
-            texture = content.Load<Texture2D>("Ship2");
-            Width = (double) texture.Width / texture.Height * Height;
         }
 
         public override void Update(GameTime gameTime)
@@ -57,7 +62,9 @@ namespace TankyReloaded.Actors
         {
             if (other is Shot)
             {
-                Stage.AddRelative(new AerialExplosion(), this, RelativePosition.Center);
+                var aerialExplosion = new AerialExplosion();
+                aerialExplosion.AlignTo(this, Alignment.Center);
+                Stage.Add(aerialExplosion);
                 Dispose();
             }
         }
