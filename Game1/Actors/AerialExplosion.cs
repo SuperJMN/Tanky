@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
+using SuperJMN.MonoGame.Common;
 
 namespace TankyReloaded.Actors
 {
@@ -14,11 +15,12 @@ namespace TankyReloaded.Actors
         private AnimatedSprite animation;
         private IDisposable animator;
         private SoundEffect sound;
+        private const double ShockWaveSize = 200;
 
         public AerialExplosion()
         {
-            Width = 200;
-            Height = 210;
+            Width = ShockWaveSize;
+            Height = ShockWaveSize;
         }
         
         public void Dispose()
