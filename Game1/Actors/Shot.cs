@@ -16,6 +16,8 @@ namespace TankyReloaded.Actors
             VerticalSpeed = 300;
         }
 
+        public int Damage { get; set; } = 3;
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             var sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);

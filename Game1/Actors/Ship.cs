@@ -60,13 +60,32 @@ namespace TankyReloaded.Actors
 
         public override void CollideWith(IStageObject other)
         {
-            if (other is Shot)
+            if (other is Shot s)
             {
-                var aerialExplosion = new AerialExplosion();
-                aerialExplosion.AlignTo(this, Alignment.Center);
-                Stage.Add(aerialExplosion);
-                Dispose();
+                ReceiveDamage(s.Damage);
             }
+        }
+
+        private void ReceiveDamage(int damage)
+        {
+            HitPoints -= damage;
+            Left += 5;
+
+            if (HitPoints <= 0)
+            {
+                
+                Destroy();
+            }
+        }
+
+        public int HitPoints { get; set; } = 10;
+
+        private void Destroy()
+        {
+            var aerialExplosion = new AerialExplosion();
+            aerialExplosion.AlignTo(this, Alignment.Center);
+            Stage.Add(aerialExplosion);
+            Dispose();
         }
 
         public void Dispose()
