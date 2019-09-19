@@ -95,11 +95,10 @@ namespace SuperJMN.MonoGame
 
         public void Add(IStageObject stageObject)
         {
-            EnsurePositionAndSizeAreCorrect(stageObject);
-
             stageObject.Stage = this;
-            objects.Add(stageObject);
             stageObject.LoadContent(content);
+            EnsurePositionAndSizeAreCorrect(stageObject);
+            objects.Add(stageObject);
         }
 
         private static void EnsurePositionAndSizeAreCorrect(IStageObject stageObject)
@@ -109,10 +108,10 @@ namespace SuperJMN.MonoGame
                 throw new ApplicationException("The position of the object has not been set");
             }
 
-            //if (stageObject.Width == 0 || stageObject.Height == 0)
-            //{
-            //    throw new ApplicationException("The size of the object has not been set");
-            //}
+            if (stageObject.Width == 0 || stageObject.Height == 0)
+            {
+                throw new ApplicationException("The size of the object has not been set");
+            }
         }
     }
 }

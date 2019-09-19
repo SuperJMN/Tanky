@@ -19,9 +19,6 @@ namespace TankyReloaded.Actors
 
         public Bomb()
         {
-            
-            Width = 32;
-            Height = 40;
             VerticalSpeed = 100;
 
             var explosion = chainTrigger.Delay(TimeSpan.FromMilliseconds(100)).Merge(Observable.Timer(TimeSpan.FromSeconds(3)).Select(_ => Unit.Default));
@@ -36,8 +33,6 @@ namespace TankyReloaded.Actors
             Dispose();
         }
 
-        public bool IsTouchingGround => Top + Height + VerticalSpeed >= Constants.GroundTop;
-
         private void Dispose()
         {
             Stage.Remove(this);
@@ -48,12 +43,12 @@ namespace TankyReloaded.Actors
         {
             var sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             spriteBatch.Draw(texture, Bounds, sourceRectangle, Color.White);
-            this.SetWidth(32, new RectangleAdapter(texture.Bounds));
         }
 
         public override void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("Bomb");
+            this.SetWidth(32, new RectangleAdapter(texture.Bounds));
         }
 
         public override void Update(GameTime gameTime)
