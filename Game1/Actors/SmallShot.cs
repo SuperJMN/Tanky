@@ -9,43 +9,46 @@ namespace TankyReloaded.Actors
     internal class SmallShot : Shot
     {
         private static Texture2D texture;
-        private AnimatedSprite anim;
 
         public SmallShot()
         {
-            Width = 30;
-            Height = 25;
-            HorizontalSpeed = 500;
+            Width = 6;
+            Height = 6;
+            VerticalSpeed = 500;
         }
-
-        public override int Damage { get; } = 3;
-        public override int HealthPoints { get; set; } = 50;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            anim.Draw(spriteBatch, new Vector2((float) Left, (float) Top));
-            anim.Cycle();
+            var sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+            spriteBatch.Draw(texture, Bounds, sourceRectangle, Color.White);
         }
 
         public override void LoadContent(ContentManager content)
         {
-            texture = content.Load<Texture2D>("spr_burnmedallionflamescaled");
-            anim = new AnimatedSprite(texture, 3, 3, emptyFrames: 1, (int?) Width, (int?) Height);
-            ShootSound = content.Load<SoundEffect>("sounds/nsmb_fireball");
+            texture = content.Load<Texture2D>("Shot");
+            ShootSound = content.Load<SoundEffect>("sounds/shoot");
         }
 
         public override void Update(GameTime gameTime)
         {
-            Left += HorizontalSpeed.Apply(gameTime);
+            Left += VerticalSpeed.Apply(gameTime);
             if (this.IsOutOfBounds())
             {
                 Dispose();
             }
         }
 
+        private void Destroy()
+        {
+            Stage.Remove(this);
+        }
+
         private void Dispose()
         {
             Stage.Remove(this);
         }
+
+        public override int Damage { get; } = 3;
+        public override int HealthPoints { get; set; } = 30;
     }
 }

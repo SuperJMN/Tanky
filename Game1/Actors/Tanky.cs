@@ -83,7 +83,7 @@ namespace TankyReloaded.Actors
 
         private void Shoot()
         {
-            var shot = new SmallShot();
+            var shot = new FireBall();
             shot.AlignTo(this, Alignment.ToRightSide);
             Stage.Add(shot);
         }

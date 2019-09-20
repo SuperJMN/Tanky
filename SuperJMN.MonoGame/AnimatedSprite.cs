@@ -64,11 +64,9 @@ namespace SuperJMN.MonoGame
 
         public void Cycle()
         {
-            if (CurrentFrame +1 < TotalFrames)
-            {
-                CurrentFrame++;
-            }
-            else
+            CurrentFrame++;
+
+            if (CurrentFrame >= TotalFrames)
             {
                 CurrentFrame = 0;
             }
