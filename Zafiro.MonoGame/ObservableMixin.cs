@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace SuperJMN.MonoGame
+namespace SuperJMN.MonoGame.Common
 {
     public static class ObservableMixin
     {
@@ -30,6 +31,12 @@ namespace SuperJMN.MonoGame
                     obs.OnNext(Unit.Default);
                 }
             });
+        }
+
+        public static IDisposable DisposeWith(this IDisposable disposable, CompositeDisposable compositeDisposable)
+        {
+            compositeDisposable.Add(disposable);
+            return disposable;
         }
     }
 }

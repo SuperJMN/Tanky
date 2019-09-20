@@ -44,7 +44,6 @@
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="IStage.cs" />
     <Compile Include="IStageObject.cs" />
-    <Compile Include="ObservableMixin.cs" />
     <Compile Include="RectangleAdapter.cs" />
     <Compile Include="RelativePosition.cs" />
     <Compile Include="Stage.cs" />

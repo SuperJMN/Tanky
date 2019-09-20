@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reactive;
-using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows.Threading;
@@ -13,19 +13,20 @@ using SuperJMN.MonoGame.Common;
 
 namespace TankyReloaded.Actors
 {
-    public class Tanky : StageObject
+    public class Tanky : StageObject, IDisposable
     {
         private const int Size = 32;
+        private readonly float baseSpeed = 200F;
         private readonly ISubject<Unit> shootAttempt = new Subject<Unit>();
         private readonly ISubject<float> speed = new BehaviorSubject<float>(0F);
-        private readonly float baseSpeed = 200F;
         private Texture2D jump;
-        private Texture2D walkAnim;
         private SoundEffect jumpSound;
-        
-        private SoundEffect walkSound;
-        private SoundEffectInstance servoSoundInstance;
         private SoundEffect sandSound;
+        private SoundEffectInstance servoSoundInstance;
+        private Texture2D walkAnim;
+
+        private SoundEffect walkSound;
+        private readonly CompositeDisposable disposables = new CompositeDisposable();
 
         public Tanky()
         {
@@ -33,19 +34,21 @@ namespace TankyReloaded.Actors
             Height = Size;
             Top = Constants.GroundTop;
 
-            CurrentFrame().Subscribe(i =>
+            CurrentFrame()
+                .Subscribe(i =>
                 {
                     WalkIndex = i;
                     if (i % 4 == 0 && Math.Abs(Top - Constants.GroundTop) < 5)
                     {
                         //sandSound.Play();
                     }
-                });
+                }).DisposeWith(disposables);
 
             ShootObservable()
-                .Subscribe(_ =>  Shoot());
+                .Subscribe(_ => Shoot())
+                .DisposeWith(disposables);
 
-            speed.Select(s => Math.Abs(s) > 0).DistinctUntilChanged().Subscribe(isMoving =>
+            IsMovingChanged().Subscribe(isMoving =>
             {
                 if (isMoving)
                 {
@@ -57,7 +60,19 @@ namespace TankyReloaded.Actors
                     servoSoundInstance?.Stop(true);
                     WalkState = WalkState.Stopped;
                 }
-            });
+            }).DisposeWith(disposables);
+        }
+
+        public int WalkIndex { get; private set; }
+
+        public TankyAnimation Animation { get; set; }
+
+        private JumpState JumpState { get; set; }
+        private WalkState WalkState { get; set; }
+
+        private IObservable<bool> IsMovingChanged()
+        {
+            return speed.Select(s => Math.Abs(s) > 0).DistinctUntilChanged();
         }
 
         private IObservable<Unit> ShootObservable()
@@ -95,10 +110,6 @@ namespace TankyReloaded.Actors
             shot.AlignTo(this, Alignment.ToRightSide);
             Stage.Add(shot);
         }
-
-        public int WalkIndex { get; private set; }
-
-        public TankyAnimation Animation { get; set; }
 
         private static int Sign(float f)
         {
@@ -158,13 +169,13 @@ namespace TankyReloaded.Actors
 
             if (Animation == TankyAnimation.Walking || Animation == TankyAnimation.Stopped)
             {
-                var destinationRectangle = new Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
+                var destinationRectangle = new Rectangle((int) Left, (int) Top, (int) Width, (int) Height);
                 var sourceRectangle = TextureMixin.GetTile(WalkIndex, 0, Size, Size);
                 spriteBatch.Draw(walkAnim, destinationRectangle, sourceRectangle, Color.White);
             }
             else if (Animation == TankyAnimation.Jump)
             {
-                var destinationRectangle = new Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
+                var destinationRectangle = new Rectangle((int) Left, (int) Top, (int) Width, (int) Height);
                 var sourceRectangle = new Rectangle(0, 0, Size, Size);
                 spriteBatch.Draw(jump, destinationRectangle, sourceRectangle, Color.White);
             }
@@ -172,14 +183,14 @@ namespace TankyReloaded.Actors
 
         public void GoBack(TimeSpan walkingTime)
         {
-            var walkFraction = (float)walkingTime.TotalSeconds;
+            var walkFraction = (float) walkingTime.TotalSeconds;
             Left -= baseSpeed * walkFraction;
             speed.OnNext(-(baseSpeed * walkFraction));
         }
 
         public void Advance(TimeSpan walkingTime)
         {
-            var walkFraction = (float)walkingTime.TotalSeconds;
+            var walkFraction = (float) walkingTime.TotalSeconds;
             Left += baseSpeed * walkFraction;
             speed.OnNext(baseSpeed * walkFraction);
         }
@@ -190,7 +201,7 @@ namespace TankyReloaded.Actors
             {
                 return;
             }
-            
+
             Animation = TankyAnimation.Stopped;
             WalkState = WalkState.Stopped;
 
@@ -221,7 +232,9 @@ namespace TankyReloaded.Actors
             shootAttempt.OnNext(Unit.Default);
         }
 
-        private JumpState JumpState { get; set; }
-        private WalkState WalkState { get; set; }
+        public void Dispose()
+        {
+            disposables?.Dispose();
+        }
     }
 }
