@@ -27,6 +27,7 @@ namespace TankyReloaded.Actors
 
         private SoundEffect walkSound;
         private readonly CompositeDisposable disposables = new CompositeDisposable();
+        private IDisposable shooter;
 
         public Tanky()
         {
@@ -43,10 +44,6 @@ namespace TankyReloaded.Actors
                         //sandSound.Play();
                     }
                 }).DisposeWith(disposables);
-
-            ShootObservable()
-                .Subscribe(_ => Shoot())
-                .DisposeWith(disposables);
 
             IsMovingChanged().Subscribe(isMoving =>
             {
@@ -75,10 +72,10 @@ namespace TankyReloaded.Actors
             return speed.Select(s => Math.Abs(s) > 0).DistinctUntilChanged();
         }
 
-        private IObservable<Unit> ShootObservable()
+        private IObservable<Unit> ShootObservable(TimeSpan timeSpan)
         {
             return shootAttempt
-                .SampleFirst(TimeSpan.FromSeconds(0.15))
+                .SampleFirst(timeSpan)
                 .ObserveOn(Dispatcher.CurrentDispatcher);
         }
 
@@ -104,9 +101,8 @@ namespace TankyReloaded.Actors
             return frameId;
         }
 
-        private void Shoot()
+        private void Shoot(Shot shot)
         {
-            var shot = new FireBall();
             shot.AlignTo(this, Alignment.ToRightSide);
             Stage.Add(shot);
         }
@@ -135,6 +131,14 @@ namespace TankyReloaded.Actors
 
         public override void Initialized()
         {
+            ChangeWeapon(WeaponInfoFactory.Create(0));
+        }
+
+        private void ChangeWeapon(WeaponFactory factory)
+        {
+            shooter?.Dispose();
+            shooter = ShootObservable(factory.ShootingRate)
+                .Subscribe(_ => Shoot(factory.CreateShot()));
         }
 
         public override void Update(GameTime gameTime)
@@ -236,5 +240,18 @@ namespace TankyReloaded.Actors
         {
             disposables?.Dispose();
         }
+
+        public void SwitchWeapon()
+        {
+            CurrentWeapon++;
+            if (CurrentWeapon == 3)
+            {
+                CurrentWeapon = 0;
+            }
+
+            ChangeWeapon(WeaponInfoFactory.Create(CurrentWeapon));
+        }
+
+        public int CurrentWeapon { get; set; }
     }
 }

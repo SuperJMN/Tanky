@@ -106,6 +106,11 @@ namespace TankyReloaded
                 }
             }
 
+            if (kstate.IsKeyDown(Keys.F1))
+            {
+                tanky.SwitchWeapon();
+            }
+
             if (kstate.IsKeyUp(Keys.Left) && kstate.IsKeyUp(Keys.Right) && tanky.Animation != TankyAnimation.Jump)
             {
                 tanky.StopRequest();

@@ -18,7 +18,7 @@ namespace TankyReloaded.Actors
             HorizontalSpeed = 500;
         }
 
-        public override int Damage { get; } = 3;
+        public override int Damage { get; } = 7;
         public override int HealthPoints { get; set; } = 50;
 
         public override void Draw(SpriteBatch spriteBatch)

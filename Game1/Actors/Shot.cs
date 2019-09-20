@@ -3,7 +3,7 @@ using SuperJMN.MonoGame;
 
 namespace TankyReloaded.Actors
 {
-    internal abstract class Shot : StageObject
+    public abstract class Shot : StageObject
     {
         public abstract int Damage { get; }
         public abstract int HealthPoints { get; set; }

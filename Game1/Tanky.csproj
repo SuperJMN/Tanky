@@ -48,12 +48,17 @@
     <Compile Include="Actors\Bomb.cs" />
     <Compile Include="Actors\Explosion.cs" />
     <Compile Include="Actors\FireBall.cs" />
+    <Compile Include="Actors\FireBallFactory.cs" />
     <Compile Include="Actors\JumpState.cs" />
+    <Compile Include="Actors\RegularShotFactory.cs" />
     <Compile Include="Actors\Ship.cs" />
     <Compile Include="Actors\Shot.cs" />
     <Compile Include="Actors\SmallShot.cs" />
+    <Compile Include="Actors\SmallShotFactory.cs" />
     <Compile Include="Actors\TankyAnimation.cs" />
     <Compile Include="Actors\WalkState.cs" />
+    <Compile Include="Actors\WeaponFactory.cs" />
+    <Compile Include="Actors\WeaponInfoFactory.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GameApp.cs" />
     <Compile Include="MainStage.cs" />
