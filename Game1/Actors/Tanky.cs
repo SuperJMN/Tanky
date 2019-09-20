@@ -16,6 +16,7 @@ namespace TankyReloaded.Actors
     public class Tanky : StageObject, IDisposable
     {
         private const int Size = 32;
+        private const int JumpAcceleration = 700;
         private readonly float baseSpeed = 200F;
         private readonly ISubject<Unit> shootAttempt = new Subject<Unit>();
         private readonly ISubject<float> speed = new BehaviorSubject<float>(0F);
@@ -216,6 +217,7 @@ namespace TankyReloaded.Actors
         {
             if (JumpState != JumpState.Jumping)
             {
+                VerticalSpeed = -JumpAcceleration;
                 JumpState = JumpState.Jumping;
                 jumpSound.Play();
                 servoSoundInstance.Stop(true);

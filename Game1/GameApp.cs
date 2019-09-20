@@ -1,8 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Reactive;
+using System.Reactive.Disposables;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using SuperJMN.MonoGame;
+using SuperJMN.MonoGame.Common;
 using TankyReloaded.Actors;
 
 namespace TankyReloaded
@@ -17,6 +21,9 @@ namespace TankyReloaded
         private Texture2D background;
         private IStage stage;
         private readonly GraphicsDeviceManager graphics;
+        private readonly KeyboardObserver keyboardObserver = new KeyboardObserver();
+        private IDisposable weaponSwitcher;
+        private readonly CompositeDisposable disposables = new CompositeDisposable();
 
         public GameApp()
         {
@@ -25,6 +32,8 @@ namespace TankyReloaded
             graphics.PreferredBackBufferWidth = 720;
             graphics.PreferredBackBufferHeight = 480;
             //graphics.ToggleFullScreen();
+
+            weaponSwitcher = keyboardObserver.KeyDownChanged(Keys.F1).Subscribe(b => tanky.SwitchWeapon()).DisposeWith(disposables);
         }
 
         /// <summary>
@@ -69,6 +78,7 @@ namespace TankyReloaded
         protected override void UnloadContent()
         {
             stage.Dispose();
+            disposables.Dispose();
         }
 
         /// <summary>
@@ -82,6 +92,7 @@ namespace TankyReloaded
                 Exit();
 
             var kstate = Keyboard.GetState();
+            keyboardObserver.Sample();
 
             if (kstate.IsKeyDown(Keys.Right))
             {
@@ -102,13 +113,7 @@ namespace TankyReloaded
                 if (tanky.Animation != TankyAnimation.Jump)
                 {
                     tanky.JumpRequest();
-                    tanky.VerticalSpeed = -600;
                 }
-            }
-
-            if (kstate.IsKeyDown(Keys.F1))
-            {
-                tanky.SwitchWeapon();
             }
 
             if (kstate.IsKeyUp(Keys.Left) && kstate.IsKeyUp(Keys.Right) && tanky.Animation != TankyAnimation.Jump)

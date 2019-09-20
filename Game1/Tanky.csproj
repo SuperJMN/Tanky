@@ -61,6 +61,7 @@
     <Compile Include="Actors\WeaponInfoFactory.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GameApp.cs" />
+    <Compile Include="KeyboardObserver.cs" />
     <Compile Include="MainStage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
