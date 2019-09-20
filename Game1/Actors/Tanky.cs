@@ -33,26 +33,7 @@ namespace TankyReloaded.Actors
             Height = Size;
             Top = Constants.GroundTop;
 
-            var distanceAfterLastStop = speed.Scan(0F, (a, b) =>
-            {
-                if (Sign(a) == Sign(b) || a == 0)
-                {
-                    return a + b;
-                }
-
-                return 0;
-            });
-
-            var frameId = distanceAfterLastStop
-                .Where(x => Math.Abs(x) > 0)
-                .Select(x =>
-                {
-                    var segment = Math.Abs(x) / 10;
-                    return (int)(segment % 8);
-                });
-
-            frameId
-                .Subscribe(i =>
+            CurrentFrame().Subscribe(i =>
                 {
                     WalkIndex = i;
                     if (i % 4 == 0 && Math.Abs(Top - Constants.GroundTop) < 5)
@@ -61,9 +42,7 @@ namespace TankyReloaded.Actors
                     }
                 });
 
-            shootAttempt
-                .SampleFirst(TimeSpan.FromSeconds(0.15))
-                .ObserveOn(Dispatcher.CurrentDispatcher)
+            ShootObservable()
                 .Subscribe(_ =>  Shoot());
 
             speed.Select(s => Math.Abs(s) > 0).DistinctUntilChanged().Subscribe(isMoving =>
@@ -79,6 +58,35 @@ namespace TankyReloaded.Actors
                     WalkState = WalkState.Stopped;
                 }
             });
+        }
+
+        private IObservable<Unit> ShootObservable()
+        {
+            return shootAttempt
+                .SampleFirst(TimeSpan.FromSeconds(0.15))
+                .ObserveOn(Dispatcher.CurrentDispatcher);
+        }
+
+        private IObservable<int> CurrentFrame()
+        {
+            var distanceAfterLastStop = speed.Scan(0F, (a, b) =>
+            {
+                if (Sign(a) == Sign(b) || a == 0)
+                {
+                    return a + b;
+                }
+
+                return 0;
+            });
+
+            var frameId = distanceAfterLastStop
+                .Where(x => Math.Abs(x) > 0)
+                .Select(x =>
+                {
+                    var segment = Math.Abs(x) / 10;
+                    return (int) (segment % 8);
+                });
+            return frameId;
         }
 
         private void Shoot()
