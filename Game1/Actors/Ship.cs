@@ -17,7 +17,7 @@ namespace TankyReloaded.Actors
 
         public Ship()
         {
-            VerticalSpeed = Utils.Random.NextDouble() * 50;
+            VerticalSpeed = Utils.Random.Next(-120, 100);
             HorizontalSpeed = 200;
         }
 
@@ -52,10 +52,26 @@ namespace TankyReloaded.Actors
             Left -= gameTime.ElapsedGameTime.TotalSeconds * HorizontalSpeed;
             Top += gameTime.ElapsedGameTime.TotalSeconds * VerticalSpeed;
 
+            if (IsNearVerticalLimits())
+            {
+                DeccelerateVertically();
+            }
+
             if (this.IsOutOfBounds())
             {
                 Dispose();
             }
+        }
+
+        private bool IsNearVerticalLimits()
+        {
+            const int threshold = 50;
+            return Bounds.Bottom + threshold >= Constants.GroundTop || Top - threshold <= 0;
+        }
+
+        private void DeccelerateVertically()
+        {
+            VerticalSpeed /= 1.02;
         }
 
         public override void CollideWith(IStageObject other)

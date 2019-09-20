@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Windows.Threading;
 using Microsoft.Xna.Framework.Content;
 using SuperJMN.MonoGame;
+using SuperJMN.MonoGame.Common;
 using TankyReloaded.Actors;
 
 namespace TankyReloaded
@@ -14,11 +15,13 @@ namespace TankyReloaded
         public MainStage(ContentManager content, double width, double height) : base(content, width, height)
         {
             enemyAdder = Observable.Interval(TimeSpan.FromSeconds(2)).ObserveOn(Dispatcher.CurrentDispatcher).Subscribe(
-                _ => Add(new Ship
+                _ =>
                 {
-                    Top = Utils.Random.Next((int) Constants.GroundTop),
-                    Left = width
-                }));
+                    var ship = new Ship();
+                    ship.AlignTo(new RectangleAdapter(this.GetBounds()), Alignment.ToLeftSide);
+                    ship.Top -= 100;
+                    Add(ship);
+                });
         }
 
         public override void Dispose()
