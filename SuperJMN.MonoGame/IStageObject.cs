@@ -19,5 +19,6 @@ namespace SuperJMN.MonoGame
         void LoadContent(ContentManager content);
         void Update(GameTime gameTime);
         void CollideWith(IStageObject other);
+        void Initialized();
     }
 }

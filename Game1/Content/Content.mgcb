@@ -187,17 +187,41 @@
 /processorParam:Quality=Best
 /build:sounds/jump.wav
 
+#begin sounds/nsmb_fireball.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/nsmb_fireball.wav
+
 #begin sounds/shoot.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sounds/shoot.wav
 
+#begin sounds/smw_stomp.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/smw_stomp.wav
+
 #begin sounds/walk.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sounds/walk.mp3
+
+#begin spr_burnmedallionflamescaled.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spr_burnmedallionflamescaled.png
 
 #begin Tanky1.png
 /importer:TextureImporter

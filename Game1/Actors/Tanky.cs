@@ -22,7 +22,7 @@ namespace TankyReloaded.Actors
         private Texture2D jump;
         private Texture2D walkAnim;
         private SoundEffect jumpSound;
-        private SoundEffect shootSound;
+        
         private SoundEffect walkSound;
         private SoundEffectInstance servoSoundInstance;
         private SoundEffect sandSound;
@@ -62,7 +62,7 @@ namespace TankyReloaded.Actors
                 });
 
             shootAttempt
-                .SampleFirst(TimeSpan.FromSeconds(0.3), Scheduler.Default)
+                .SampleFirst(TimeSpan.FromSeconds(0.15))
                 .ObserveOn(Dispatcher.CurrentDispatcher)
                 .Subscribe(_ =>  Shoot());
 
@@ -83,10 +83,9 @@ namespace TankyReloaded.Actors
 
         private void Shoot()
         {
-            var shot = new Shot();
+            var shot = new SmallShot();
             shot.AlignTo(this, Alignment.ToRightSide);
             Stage.Add(shot);
-            shootSound.Play();
         }
 
         public int WalkIndex { get; private set; }
@@ -108,12 +107,15 @@ namespace TankyReloaded.Actors
             walkAnim = contentManager.Load<Texture2D>("Tanky");
             jump = contentManager.Load<Texture2D>("jump");
             jumpSound = contentManager.Load<SoundEffect>("sounds/jump");
-            shootSound = contentManager.Load<SoundEffect>("sounds/shoot");
             walkSound = contentManager.Load<SoundEffect>("sounds/servo");
             servoSoundInstance = walkSound.CreateInstance();
             servoSoundInstance.IsLooped = true;
             servoSoundInstance.Volume = 0.4F;
             sandSound = contentManager.Load<SoundEffect>("sounds/sand");
+        }
+
+        public override void Initialized()
+        {
         }
 
         public override void Update(GameTime gameTime)

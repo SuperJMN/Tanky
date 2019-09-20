@@ -39,12 +39,16 @@ namespace TankyReloaded.Actors
         public override void LoadContent(ContentManager content)
         {
             var texture = content.Load<Texture2D>("explosion3");
-            animation = new AnimatedSprite(texture, 8, 1, 80);
+            animation = new AnimatedSprite(texture, 8, 1, width: 80);
             animator = Observable
                 .Interval(TimeSpan.FromMilliseconds(100)).Take(animation.TotalFrames)
                 .ObserveOn(Dispatcher.CurrentDispatcher)
                 .Subscribe(l => animation.CurrentFrame++, Dispose);
             sound = content.Load<SoundEffect>("sounds/explosion");
+        }
+
+        public override void Initialized()
+        {
         }
 
         public override void Update(GameTime gameTime)

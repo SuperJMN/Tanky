@@ -20,6 +20,7 @@ namespace SuperJMN.MonoGame
         public IStage Stage { get; set; }
         
         public abstract void LoadContent(ContentManager content);
+        public abstract void Initialized();
         public abstract void Update(GameTime gameTime);
 
         public virtual void CollideWith(IStageObject other)

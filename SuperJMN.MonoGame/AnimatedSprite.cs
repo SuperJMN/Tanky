@@ -5,12 +5,13 @@ namespace SuperJMN.MonoGame
 {
     public class AnimatedSprite
     {
-        public AnimatedSprite(Texture2D texture, int columns, int rows, int? width = null, int? height = null)
+        public AnimatedSprite(Texture2D texture, int columns, int rows, int emptyFrames = 0, int? width = null,
+            int? height = null)
         {
             Texture = texture;
             Rows = rows;
             Columns = columns;
-            TotalFrames = rows * columns;
+            TotalFrames = rows * columns - emptyFrames;
 
             if (width.HasValue && height.HasValue)
             {
@@ -59,6 +60,18 @@ namespace SuperJMN.MonoGame
             var destinationRectangle = new Rectangle((int)location.X, (int)location.Y, Width, Height);
 
             spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
+        }
+
+        public void Cycle()
+        {
+            if (CurrentFrame +1 < TotalFrames)
+            {
+                CurrentFrame++;
+            }
+            else
+            {
+                CurrentFrame = 0;
+            }
         }
     }
 }

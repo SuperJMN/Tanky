@@ -47,8 +47,11 @@
     <Compile Include="Actors\AerialExplosion.cs" />
     <Compile Include="Actors\Bomb.cs" />
     <Compile Include="Actors\Explosion.cs" />
+    <Compile Include="Actors\FireBall.cs" />
     <Compile Include="Actors\JumpState.cs" />
     <Compile Include="Actors\Ship.cs" />
+    <Compile Include="Actors\Shot.cs" />
+    <Compile Include="Actors\SmallShot.cs" />
     <Compile Include="Actors\TankyAnimation.cs" />
     <Compile Include="Actors\WalkState.cs" />
     <Compile Include="Constants.cs" />
@@ -56,7 +59,7 @@
     <Compile Include="MainStage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Actors\Shot.cs" />
+    <Compile Include="Actors\RegularShot.cs" />
     <Compile Include="Actors\Tanky.cs" />
     <Compile Include="StageObjectMixin.cs" />
   </ItemGroup>

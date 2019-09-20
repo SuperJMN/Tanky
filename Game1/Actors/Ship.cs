@@ -47,6 +47,10 @@ namespace TankyReloaded.Actors
                 });
         }
 
+        public override void Initialized()
+        {
+        }
+
         public override void Update(GameTime gameTime)
         {
             Left -= gameTime.ElapsedGameTime.TotalSeconds * HorizontalSpeed;
@@ -85,8 +89,8 @@ namespace TankyReloaded.Actors
         private void ReceiveDamage(int damage)
         {
             HitPoints -= damage;
-            Left += 5;
-
+            Left += (float)damage / 3;
+            
             if (HitPoints <= 0)
             {
                 
@@ -94,7 +98,8 @@ namespace TankyReloaded.Actors
             }
         }
 
-        public int HitPoints { get; set; } = 10;
+        public int HitPoints { get; set; } = 25;
+        public int Damage { get; } = 50;
 
         private void Destroy()
         {

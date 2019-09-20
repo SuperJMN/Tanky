@@ -51,6 +51,10 @@ namespace TankyReloaded.Actors
             this.SetWidth(32, new RectangleAdapter(texture.Bounds));
         }
 
+        public override void Initialized()
+        {
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (this.WillTouchGround(gameTime))

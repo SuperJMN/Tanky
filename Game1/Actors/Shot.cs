@@ -1,52 +1,45 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Audio;
 using SuperJMN.MonoGame;
 
 namespace TankyReloaded.Actors
 {
-    internal class Shot : StageObject
+    internal abstract class Shot : StageObject
     {
-        private static Texture2D texture;
+        public abstract int Damage { get; }
+        public abstract int HealthPoints { get; set; }
+        protected SoundEffect ShootSound;
 
-        public Shot()
+        private void ReceiveDamage(int damage)
         {
-            Width = 10;
-            Height = 10;
-            VerticalSpeed = 300;
-        }
-
-        public int Damage { get; set; } = 3;
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            var sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
-            spriteBatch.Draw(texture, Bounds, sourceRectangle, Color.White);
-        }
-
-        public override void LoadContent(ContentManager content)
-        {
-            texture = content.Load<Texture2D>("Shot");
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            Left += VerticalSpeed.Apply(gameTime);
-            if (this.IsOutOfBounds())
+            if (HealthPoints <= 0)
             {
-                Dispose();
+                Destroy();
             }
+            else
+            {
+                HealthPoints -= damage;
+            }
+        }
+
+        public override void Initialized()
+        {
+            ShootSound.Play();
         }
 
         public override void CollideWith(IStageObject other)
         {
-            if (other is Ship || other is Bomb)
+            if (other is Bomb)
             {
-                Stage.Remove(this);
+                Destroy();
+            }
+
+            if (other is Ship s)
+            {
+                ReceiveDamage(s.Damage);
             }
         }
 
-        private void Dispose()
+        private void Destroy()
         {
             Stage.Remove(this);
         }

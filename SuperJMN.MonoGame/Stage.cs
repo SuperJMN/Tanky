@@ -97,6 +97,7 @@ namespace SuperJMN.MonoGame
         {
             stageObject.Stage = this;
             stageObject.LoadContent(content);
+            stageObject.Initialized();
             EnsurePositionAndSizeAreCorrect(stageObject);
             objects.Add(stageObject);
         }
