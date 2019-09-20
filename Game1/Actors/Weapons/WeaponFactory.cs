@@ -1,6 +1,7 @@
 ﻿using System;
+using TankyReloaded.Actors.Shots;
 
-namespace TankyReloaded.Actors
+namespace TankyReloaded.Actors.Weapons
 {
     public abstract class WeaponFactory
     {

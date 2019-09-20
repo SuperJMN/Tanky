@@ -4,17 +4,17 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 
-namespace TankyReloaded.Actors
+namespace TankyReloaded.Actors.Shots
 {
-    internal class SmallShot : Shot
+    internal class RegularShot : Shot
     {
         private static Texture2D texture;
 
-        public SmallShot()
+        public RegularShot()
         {
-            Width = 6;
-            Height = 6;
-            VerticalSpeed = 500;
+            Width = 10;
+            Height = 10;
+            HorizontalSpeed = 300;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -31,7 +31,7 @@ namespace TankyReloaded.Actors
 
         public override void Update(GameTime gameTime)
         {
-            Left += VerticalSpeed.Apply(gameTime);
+            Left += HorizontalSpeed.Apply(gameTime);
             if (this.IsOutOfBounds())
             {
                 Dispose();
@@ -48,7 +48,7 @@ namespace TankyReloaded.Actors
             Stage.Remove(this);
         }
 
-        public override int Damage { get; } = 3;
-        public override int HealthPoints { get; set; } = 30;
+        public override int Damage { get; } = 5;
+        public override int HealthPoints { get; set; } = 50;
     }
 }

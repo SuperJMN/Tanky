@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 using SuperJMN.MonoGame.Common;
+using TankyReloaded.Actors.Shots;
 
 namespace TankyReloaded.Actors
 {

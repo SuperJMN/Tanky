@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TankyReloaded.Actors
+namespace TankyReloaded.Actors.Weapons
 {
     public static class WeaponInfoFactory
     {

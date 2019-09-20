@@ -1,6 +1,7 @@
 ﻿using System;
+using TankyReloaded.Actors.Shots;
 
-namespace TankyReloaded.Actors
+namespace TankyReloaded.Actors.Weapons
 {
     public class SmallShotFactory : WeaponFactory
     {
@@ -9,6 +10,6 @@ namespace TankyReloaded.Actors
             return new SmallShot();
         }
 
-        public override TimeSpan ShootingRate => TimeSpan.FromSeconds(0.2);
+        public override TimeSpan ShootingRate => TimeSpan.FromSeconds(0.15);
     }
 }
