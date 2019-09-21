@@ -15,7 +15,7 @@ namespace TankyReloaded.Actors
         private AnimatedSprite animation;
         private IDisposable animator;
         private SoundEffect sound;
-        private const double ShockWaveSize = 200;
+        private const double ShockWaveSize = 120;
 
         public AerialExplosion()
         {

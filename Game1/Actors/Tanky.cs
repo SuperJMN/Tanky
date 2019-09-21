@@ -31,6 +31,7 @@ namespace TankyReloaded.Actors
         private SoundEffect walkSound;
         private readonly CompositeDisposable disposables = new CompositeDisposable();
         private IDisposable shooter;
+        private readonly ISubject<Unit> died = new Subject<Unit>();
 
         public Tanky()
         {
@@ -39,16 +40,11 @@ namespace TankyReloaded.Actors
             Top = Constants.GroundTop;
 
             CurrentFrame()
-                .Subscribe(i =>
-                {
-                    WalkIndex = i;
-                    if (i % 4 == 0 && Math.Abs(Top - Constants.GroundTop) < 5)
-                    {
-                        //sandSound.Play();
-                    }
-                }).DisposeWith(disposables);
+                .Subscribe(i =>  WalkIndex = i)
+                .DisposeWith(disposables);
 
-            IsMovingChanged().Subscribe(isMoving =>
+            IsMovingChanged()
+                .Subscribe(isMoving =>
             {
                 if (isMoving)
                 {
@@ -161,6 +157,11 @@ namespace TankyReloaded.Actors
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (!IsVisible)
+            {
+                return;
+            }
+
             if (JumpState == JumpState.Jumping)
             {
                 Animation = TankyAnimation.Jump;
@@ -256,6 +257,62 @@ namespace TankyReloaded.Actors
             ChangeWeapon(WeaponInfoFactory.Create(CurrentWeapon));
         }
 
+        public override void CollideWith(IStageObject other)
+        {
+            if (IsEnemy(other))
+            {
+                ReceiveDamage(10);
+            }
+        }
+
+        private static bool IsEnemy(IStageObject other)
+        {
+            return other is Explosion || other is AerialExplosion || other is Ship;
+        }
+
+        private void ReceiveDamage(int damage)
+        {
+            if (HealthPoints <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                HealthPoints -= damage;
+            }
+        }
+
+        public int HealthPoints { get; set; } = 10;
+
+        private void Die()
+        {
+            if (LiveStatus != LiveStatus.Dead)
+            {
+                died.OnNext(Unit.Default);
+                LiveStatus = LiveStatus.Dead;
+            }
+        }
+
+        public void Respawn()
+        {
+            Observable
+                .Interval(TimeSpan.FromMilliseconds(50)).Select(l => l % 2 == 0)
+                .StartWith(false)
+                .Do(isVisible => IsVisible = isVisible)
+                .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(3)))
+                .Subscribe(_ => { }, onCompleted: () =>
+                {
+                    IsVisible = true;
+                    LiveStatus = LiveStatus.Alive;
+                })
+                .DisposeWith(disposables);
+        }
+
+        public bool IsVisible { get; set; } = true;
+
+        public LiveStatus LiveStatus { get; set; } = LiveStatus.Alive;
+
         public int CurrentWeapon { get; set; }
+        public IObservable<Unit> Died => died;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -24,6 +25,7 @@ namespace TankyReloaded
         private readonly KeyboardObserver keyboardObserver = new KeyboardObserver();
         private IDisposable weaponSwitcher;
         private readonly CompositeDisposable disposables = new CompositeDisposable();
+        private IDisposable respawner;
 
         public GameApp()
         {
@@ -31,10 +33,29 @@ namespace TankyReloaded
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 720;
             graphics.PreferredBackBufferHeight = 480;
-            //graphics.ToggleFullScreen();
+            graphics.ToggleFullScreen();
 
             weaponSwitcher = keyboardObserver.KeyDownChanged(Keys.F1).Subscribe(b => tanky.SwitchWeapon()).DisposeWith(disposables);
+
+            tanky.Died.Subscribe(_ =>
+            {
+                if (Lives-- >= 0)
+                {
+                    tanky.Respawn();
+                }
+                else
+                {
+                    GameOver();
+                }
+            });
         }
+
+        private void GameOver()
+        {
+            Exit();
+        }
+
+        public int Lives { get; set; } = 2;
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.

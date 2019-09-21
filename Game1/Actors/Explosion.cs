@@ -17,8 +17,8 @@ namespace TankyReloaded.Actors
 
         public Explosion()
         {
-            Width = 200;
-            Height = 210;
+            Width = 80;
+            Height = 100;
         }
         
         public void Dispose()
