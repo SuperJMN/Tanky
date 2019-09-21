@@ -1,4 +1,4 @@
-﻿namespace TankyReloaded
+﻿namespace Tanky
 {
     public static class Constants
     {

@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Reactive;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using SuperJMN.MonoGame;
 using SuperJMN.MonoGame.Common;
-using TankyReloaded.Actors;
+using Tanky.Actors;
 
-namespace TankyReloaded
+namespace Tanky
 {
     /// <summary>
     /// This is the main type for your game.
@@ -18,7 +16,7 @@ namespace TankyReloaded
     public class GameApp : Game
     {
         SpriteBatch spriteBatch;
-        private readonly Tanky tanky = new Tanky();
+        private readonly Actors.Tanky tanky = new Actors.Tanky();
         private Texture2D background;
         private IStage stage;
         private readonly GraphicsDeviceManager graphics;
@@ -35,6 +33,13 @@ namespace TankyReloaded
             graphics.ToggleFullScreen();
 
             keyboardObserver.KeyDownChanged(Keys.F1).Subscribe(b => tanky.SwitchWeapon()).DisposeWith(disposables);
+            keyboardObserver.KeyDownChanged(Keys.Up).Subscribe(isDown =>
+            {
+                if (tanky.JumpState == JumpState.Jumping)
+                {
+                    tanky.HaltJump();
+                }
+            });
 
             tanky.Died.Subscribe(_ =>
             {

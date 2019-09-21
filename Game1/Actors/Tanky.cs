@@ -10,28 +10,29 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 using SuperJMN.MonoGame.Common;
-using TankyReloaded.Actors.Shots;
-using TankyReloaded.Actors.Weapons;
+using Tanky.Actors.Shots;
+using Tanky.Actors.Weapons;
 
-namespace TankyReloaded.Actors
+namespace Tanky.Actors
 {
     public class Tanky : StageObject, IDisposable
     {
         private const int Size = 32;
-        private const int JumpAcceleration = 700;
-        private readonly float baseSpeed = 200F;
+        private const int JumpAcceleration =  800;
+        private const float WalkSpeed = 200F;
+
+        private readonly ISubject<Unit> died = new Subject<Unit>();
+        private readonly CompositeDisposable disposables = new CompositeDisposable();
         private readonly ISubject<Unit> shootAttempt = new Subject<Unit>();
         private readonly ISubject<float> speed = new BehaviorSubject<float>(0F);
+
         private Texture2D jump;
         private SoundEffect jumpSound;
-        private SoundEffect sandSound;
         private SoundEffectInstance servoSoundInstance;
+        private IDisposable shooter;
         private Texture2D walkAnim;
 
         private SoundEffect walkSound;
-        private readonly CompositeDisposable disposables = new CompositeDisposable();
-        private IDisposable shooter;
-        private readonly ISubject<Unit> died = new Subject<Unit>();
 
         public Tanky()
         {
@@ -40,31 +41,45 @@ namespace TankyReloaded.Actors
             Top = Constants.GroundTop;
 
             CurrentFrame()
-                .Subscribe(i =>  WalkIndex = i)
+                .Subscribe(i => WalkIndex = i)
                 .DisposeWith(disposables);
 
             IsMovingChanged()
                 .Subscribe(isMoving =>
-            {
-                if (isMoving)
                 {
-                    servoSoundInstance?.Play();
-                    WalkState = WalkState.Walking;
-                }
-                else
-                {
-                    servoSoundInstance?.Stop(true);
-                    WalkState = WalkState.Stopped;
-                }
-            }).DisposeWith(disposables);
+                    if (isMoving)
+                    {
+                        servoSoundInstance?.Play();
+                        WalkState = WalkState.Walking;
+                    }
+                    else
+                    {
+                        servoSoundInstance?.Stop(true);
+                        WalkState = WalkState.Stopped;
+                    }
+                }).DisposeWith(disposables);
         }
 
         public int WalkIndex { get; private set; }
 
         public TankyAnimation Animation { get; set; }
 
-        private JumpState JumpState { get; set; }
+        public JumpState JumpState { get; set; }
         private WalkState WalkState { get; set; }
+
+        public int HealthPoints { get; set; } = 10;
+
+        public bool IsVisible { get; set; } = true;
+
+        public LiveStatus LiveStatus { get; set; } = LiveStatus.Alive;
+
+        public int CurrentWeapon { get; set; }
+        public IObservable<Unit> Died => died;
+
+        public void Dispose()
+        {
+            disposables?.Dispose();
+        }
 
         private IObservable<bool> IsMovingChanged()
         {
@@ -125,7 +140,6 @@ namespace TankyReloaded.Actors
             servoSoundInstance = walkSound.CreateInstance();
             servoSoundInstance.IsLooped = true;
             servoSoundInstance.Volume = 0.4F;
-            sandSound = contentManager.Load<SoundEffect>("sounds/sand");
         }
 
         public override void Initialized()
@@ -152,6 +166,14 @@ namespace TankyReloaded.Actors
             {
                 VerticalSpeed += Constants.Gravity;
                 Top += VerticalSpeed.Apply(gameTime);
+            }
+        }
+
+        public void HaltJump()
+        {
+            if (JumpState == JumpState.Jumping && VerticalSpeed < 0)
+            {
+                VerticalSpeed /= 2;
             }
         }
 
@@ -192,15 +214,15 @@ namespace TankyReloaded.Actors
         public void GoBack(TimeSpan walkingTime)
         {
             var walkFraction = (float) walkingTime.TotalSeconds;
-            Left -= baseSpeed * walkFraction;
-            speed.OnNext(-(baseSpeed * walkFraction));
+            Left -= WalkSpeed * walkFraction;
+            speed.OnNext(-(WalkSpeed * walkFraction));
         }
 
         public void Advance(TimeSpan walkingTime)
         {
             var walkFraction = (float) walkingTime.TotalSeconds;
-            Left += baseSpeed * walkFraction;
-            speed.OnNext(baseSpeed * walkFraction);
+            Left += WalkSpeed * walkFraction;
+            speed.OnNext(WalkSpeed * walkFraction);
         }
 
         public void StopRequest()
@@ -241,11 +263,6 @@ namespace TankyReloaded.Actors
             shootAttempt.OnNext(Unit.Default);
         }
 
-        public void Dispose()
-        {
-            disposables?.Dispose();
-        }
-
         public void SwitchWeapon()
         {
             CurrentWeapon++;
@@ -282,8 +299,6 @@ namespace TankyReloaded.Actors
             }
         }
 
-        public int HealthPoints { get; set; } = 10;
-
         private void Die()
         {
             if (LiveStatus != LiveStatus.Dead)
@@ -300,19 +315,12 @@ namespace TankyReloaded.Actors
                 .StartWith(false)
                 .Do(isVisible => IsVisible = isVisible)
                 .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(3)))
-                .Subscribe(_ => { }, onCompleted: () =>
+                .Subscribe(_ => { }, () =>
                 {
                     IsVisible = true;
                     LiveStatus = LiveStatus.Alive;
                 })
                 .DisposeWith(disposables);
         }
-
-        public bool IsVisible { get; set; } = true;
-
-        public LiveStatus LiveStatus { get; set; } = LiveStatus.Alive;
-
-        public int CurrentWeapon { get; set; }
-        public IObservable<Unit> Died => died;
     }
 }

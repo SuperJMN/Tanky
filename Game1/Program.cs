@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TankyReloaded
+namespace Tanky
 {
 #if WINDOWS || LINUX
     /// <summary>

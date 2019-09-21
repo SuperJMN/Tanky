@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Windows.Threading;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 using SuperJMN.MonoGame.Common;
-using TankyReloaded.Actors;
+using Tanky.Actors;
 
-namespace TankyReloaded
+namespace Tanky
 {
     public class MainStage : Stage, IDisposable
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using TankyReloaded.Actors.Shots;
+using Tanky.Actors.Shots;
 
-namespace TankyReloaded.Actors.Weapons
+namespace Tanky.Actors.Weapons
 {
     public class FireBallFactory : WeaponFactory
     {

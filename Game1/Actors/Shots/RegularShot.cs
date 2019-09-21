@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 
-namespace TankyReloaded.Actors.Shots
+namespace Tanky.Actors.Shots
 {
     internal class RegularShot : Shot
     {

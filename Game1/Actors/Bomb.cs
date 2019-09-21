@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 using SuperJMN.MonoGame.Common;
-using TankyReloaded.Actors.Shots;
+using Tanky.Actors.Shots;
 
-namespace TankyReloaded.Actors
+namespace Tanky.Actors
 {
     internal class Bomb : StageObject
     {

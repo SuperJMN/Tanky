@@ -3,7 +3,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Microsoft.Xna.Framework.Input;
 
-namespace TankyReloaded
+namespace Tanky
 {
     public class KeyboardObserver
     {
@@ -14,6 +14,7 @@ namespace TankyReloaded
             status.OnNext(Keyboard.GetState());
         }
 
-        public IObservable<bool> KeyDownChanged(Keys keys) => status.Select(x => x.IsKeyDown(keys)).DistinctUntilChanged();
+        public IObservable<bool> KeyDownChanged(Keys key) => status.Select(x => x.IsKeyDown(key)).DistinctUntilChanged();
+        public IObservable<bool> KeyUpChanged(Keys key) => status.Select(x => x.IsKeyDown(key)).DistinctUntilChanged();
     }
 }

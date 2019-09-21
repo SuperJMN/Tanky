@@ -1,4 +1,4 @@
-﻿namespace TankyReloaded.Actors
+﻿namespace Tanky.Actors
 {
     public enum LiveStatus
     {
