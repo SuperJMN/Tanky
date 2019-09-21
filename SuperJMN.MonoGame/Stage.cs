@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using SuperJMN.MonoGame.Common;
 
 namespace SuperJMN.MonoGame
 {
@@ -25,26 +24,6 @@ namespace SuperJMN.MonoGame
         public double Height { get; }
 
         public IEnumerable<IStageObject> Objects => objects.AsReadOnly();
-
-        public void AddRelative(IStageObject toAdd, IStageObject guide, RelativePosition relativePosition)
-        {
-            if (relativePosition == RelativePosition.Right)
-            {
-                toAdd.AlignTo(guide, Alignment.ToRightSide);
-            }
-
-            if (relativePosition == RelativePosition.Left)
-            {
-                toAdd.AlignTo(guide,  Alignment.ToLeftSide);
-            }
-
-            if (relativePosition == RelativePosition.Bottom)
-            {
-                toAdd.AlignTo(guide, Alignment.ToBottomSide);
-            }
-
-            Add(toAdd);
-        }
 
         public void Update(GameTime gameTime)
         {
@@ -72,6 +51,11 @@ namespace SuperJMN.MonoGame
         public void Remove(IStageObject stageObject)
         {
             objects.Remove(stageObject);
+            ObjectRemoved(stageObject);
+        }
+
+        protected virtual void ObjectRemoved(IStageObject stageObject)
+        {
         }
 
         public virtual void Dispose()
@@ -87,12 +71,18 @@ namespace SuperJMN.MonoGame
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            BeforeDraw(spriteBatch);
+
             foreach (var stageObject in objects.ToList())
             {
                 stageObject.Draw(spriteBatch);
             }
 
             AfterDraw(spriteBatch);
+        }
+
+        protected virtual void BeforeDraw(SpriteBatch spriteBatch)
+        {
         }
 
         protected virtual void AfterDraw(SpriteBatch spriteBatch)
@@ -106,6 +96,12 @@ namespace SuperJMN.MonoGame
             stageObject.Initialized();
             EnsurePositionAndSizeAreCorrect(stageObject);
             objects.Add(stageObject);
+
+            ObjectAdded(stageObject);
+        }
+
+        protected virtual void ObjectAdded(IStageObject stageObject)
+        {
         }
 
         private static void EnsurePositionAndSizeAreCorrect(IStageObject stageObject)
