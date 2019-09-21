@@ -35,7 +35,7 @@ namespace TankyReloaded.Actors
             rect = content.Load<Texture2D>("rect");
             this.SetHeight(64, new RectangleAdapter(texture.Bounds));
 
-            bombDropper = ObservableMixin.PushRandomly(() => TimeSpan.FromMilliseconds(Utils.Random.Next(100, 2000)))
+            bombDropper = ObservableMixin.RandomIntervals(() => TimeSpan.FromMilliseconds(Utils.Random.Next(100, 2000)))
                 .ObserveOn(Dispatcher.CurrentDispatcher)
                 .Subscribe(_ =>
                 {

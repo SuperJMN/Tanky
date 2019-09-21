@@ -20,17 +20,14 @@ namespace SuperJMN.MonoGame.Common
                     .SelectMany(x => x.Take(1)));
         }
 
-        public static IObservable<Unit> PushRandomly(Func<TimeSpan> intervalSelector)
+        public static IObservable<Unit> RandomIntervals(Func<TimeSpan> nextDelaySelector)
         {
-            return Observable.Create<Unit>(async (obs, ct) =>
-            {
-                while (!ct.IsCancellationRequested)
-                {
-                    var randomValue = intervalSelector();
-                    await Task.Delay(randomValue, ct);
-                    obs.OnNext(Unit.Default);
-                }
-            });
+            return Observable.Generate(
+                0,
+                x => x < 100,
+                x => x + 1,
+                x => Unit.Default,
+                _ => nextDelaySelector());
         }
 
         public static IDisposable DisposeWith(this IDisposable disposable, CompositeDisposable compositeDisposable)
