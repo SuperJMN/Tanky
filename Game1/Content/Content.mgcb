@@ -25,6 +25,13 @@
 /processorParam:TextureFormat=Color
 /build:aerial_explosion.png
 
+#begin Arial.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Arial.spritefont
+
 #begin beach-background-4.jpg
 /importer:TextureImporter
 /processor:TextureProcessor

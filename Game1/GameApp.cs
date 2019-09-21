@@ -23,9 +23,8 @@ namespace TankyReloaded
         private IStage stage;
         private readonly GraphicsDeviceManager graphics;
         private readonly KeyboardObserver keyboardObserver = new KeyboardObserver();
-        private IDisposable weaponSwitcher;
         private readonly CompositeDisposable disposables = new CompositeDisposable();
-        private IDisposable respawner;
+        private SpriteFont font;
 
         public GameApp()
         {
@@ -35,11 +34,11 @@ namespace TankyReloaded
             graphics.PreferredBackBufferHeight = 480;
             graphics.ToggleFullScreen();
 
-            weaponSwitcher = keyboardObserver.KeyDownChanged(Keys.F1).Subscribe(b => tanky.SwitchWeapon()).DisposeWith(disposables);
+            keyboardObserver.KeyDownChanged(Keys.F1).Subscribe(b => tanky.SwitchWeapon()).DisposeWith(disposables);
 
             tanky.Died.Subscribe(_ =>
             {
-                if (Lives-- >= 0)
+                if (--Lives  >= 0)
                 {
                     tanky.Respawn();
                 }
@@ -47,7 +46,7 @@ namespace TankyReloaded
                 {
                     GameOver();
                 }
-            });
+            }).DisposeWith(disposables);
         }
 
         private void GameOver()
@@ -85,6 +84,7 @@ namespace TankyReloaded
             stage = new MainStage(Content, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             OnStageCreated(stage);
             Constants.GroundTop = (float) (graphics.GraphicsDevice.Viewport.Height * (1-(double)1/7));
+            font = Content.Load<SpriteFont>("Arial");
         }
 
         private void OnStageCreated(IStage stage)
@@ -110,7 +110,9 @@ namespace TankyReloaded
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
+            }
 
             var kstate = Keyboard.GetState();
             keyboardObserver.Sample();
@@ -154,10 +156,13 @@ namespace TankyReloaded
         protected override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
+
             spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, Color.White);
             stage.Draw(spriteBatch);
-            spriteBatch.End();
+            spriteBatch.DrawString(font, $"Lives: {Lives}", Vector2.Zero, Color.AliceBlue);
 
+            spriteBatch.End();
+            
             base.Draw(gameTime);
         }
     }

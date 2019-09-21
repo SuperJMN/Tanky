@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Windows.Threading;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 using SuperJMN.MonoGame.Common;
 using TankyReloaded.Actors;
@@ -11,6 +13,7 @@ namespace TankyReloaded
     public class MainStage : Stage, IDisposable
     {
         private readonly IDisposable enemyAdder;
+        private readonly SpriteFont font;
 
         public MainStage(ContentManager content, double width, double height) : base(content, width, height)
         {
@@ -22,6 +25,13 @@ namespace TankyReloaded
                     ship.Top -= 100;
                     Add(ship);
                 });
+
+            font = content.Load<SpriteFont>("Arial");
+        }
+
+        protected override void AfterDraw(SpriteBatch spriteBatch)
+        {
+            //spriteBatch.DrawString(font, "Hola", Vector2.Zero, Color.AliceBlue);
         }
 
         public override void Dispose()

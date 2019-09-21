@@ -91,6 +91,12 @@ namespace SuperJMN.MonoGame
             {
                 stageObject.Draw(spriteBatch);
             }
+
+            AfterDraw(spriteBatch);
+        }
+
+        protected virtual void AfterDraw(SpriteBatch spriteBatch)
+        {
         }
 
         public void Add(IStageObject stageObject)
