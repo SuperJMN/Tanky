@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tanky.App.Actors
+namespace TankyApp.Actors
 {
     internal interface IDestructable
     {

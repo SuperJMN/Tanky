@@ -9,8 +9,8 @@
     <ProjectGuid>{49B5BFFF-C744-4E9F-BE8F-DE48243BF50B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tanky.App</RootNamespace>
-    <AssemblyName>Tanky.App</AssemblyName>
+    <RootNamespace>TankyApp</RootNamespace>
+    <AssemblyName>TankyApp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -63,7 +63,8 @@
     <Compile Include="Actors\Weapons\WeaponFactory.cs" />
     <Compile Include="Actors\Weapons\WeaponInfoFactory.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="GameApp.cs" />
+    <Compile Include="GameHost.cs" />
+    <Compile Include="MonoGameApp.cs" />
     <Compile Include="KeyboardObserver.cs" />
     <Compile Include="MainStage.cs" />
     <Compile Include="Program.cs" />

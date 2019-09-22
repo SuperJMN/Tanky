@@ -1,4 +1,4 @@
-﻿namespace Tanky.App
+﻿namespace TankyApp
 {
     public static class Constants
     {

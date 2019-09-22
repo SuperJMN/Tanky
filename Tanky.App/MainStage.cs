@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 using SuperJMN.MonoGame.Common;
-using Tanky.App.Actors;
+using TankyApp.Actors;
 
-namespace Tanky.App
+namespace TankyApp
 {
     public class MainStage : Stage, IDisposable
     {
@@ -49,9 +49,13 @@ namespace Tanky.App
             });
 
             background = content.Load<Texture2D>("Background");
+            Tanky = new Actors.Tanky();
+            Add(Tanky);
         }
 
         public int Score { get; set; }
+
+        public Tanky Tanky { get; }
 
         public override void Dispose()
         {
@@ -83,6 +87,10 @@ namespace Tanky.App
         protected override void BeforeDraw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(background, this.GetBounds(), Color.White);
+        }
+
+        public void SwitchWeapon()
+        {
         }
     }
 }

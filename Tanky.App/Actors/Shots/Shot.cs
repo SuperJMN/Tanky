@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using SuperJMN.MonoGame;
 
-namespace Tanky.App.Actors.Shots
+namespace TankyApp.Actors.Shots
 {
     public abstract class Shot : StageObject
     {

@@ -1,6 +1,6 @@
 ﻿using SuperJMN.MonoGame;
 
-namespace Tanky.App.Actors
+namespace TankyApp.Actors
 {
     internal class DefeatedEvent
     {

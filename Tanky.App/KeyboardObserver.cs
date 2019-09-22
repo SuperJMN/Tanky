@@ -3,7 +3,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Microsoft.Xna.Framework.Input;
 
-namespace Tanky.App
+namespace TankyApp
 {
     public class KeyboardObserver
     {

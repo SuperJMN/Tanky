@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 using SuperJMN.MonoGame.Common;
-using Tanky.App.Actors.Shots;
+using TankyApp.Actors.Shots;
 
-namespace Tanky.App.Actors
+namespace TankyApp.Actors
 {
     internal class Ship : StageObject, IDestructable, IDisposable
     {

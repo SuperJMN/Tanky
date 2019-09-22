@@ -1,8 +1,8 @@
 ﻿using System;
 using SuperJMN.MonoGame;
-using Tanky.App.Actors.Shots;
+using TankyApp.Actors.Shots;
 
-namespace Tanky.App.Actors.Weapons
+namespace TankyApp.Actors.Weapons
 {
     public abstract class WeaponFactory
     {

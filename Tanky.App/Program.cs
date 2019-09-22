@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tanky.App
+namespace TankyApp
 {
 #if WINDOWS || LINUX
     /// <summary>
@@ -14,7 +14,7 @@ namespace Tanky.App
         [STAThread]
         static void Main()
         {
-            using var game = new GameApp();
+            using var game = new MonoGameApp();
             game.Run();
         }
     }

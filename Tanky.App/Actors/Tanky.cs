@@ -10,10 +10,10 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 using SuperJMN.MonoGame.Common;
-using Tanky.App.Actors.Shots;
-using Tanky.App.Actors.Weapons;
+using TankyApp.Actors.Shots;
+using TankyApp.Actors.Weapons;
 
-namespace Tanky.App.Actors
+namespace TankyApp.Actors
 {
     public class Tanky : StageObject, IDisposable
     {

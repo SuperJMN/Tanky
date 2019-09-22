@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tanky.App.Actors.Weapons
+namespace TankyApp.Actors.Weapons
 {
     public static class WeaponInfoFactory
     {

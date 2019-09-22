@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using SuperJMN.MonoGame;
 
-namespace Tanky.App
+namespace TankyApp
 {
     public static class StageObjectMixin
     {

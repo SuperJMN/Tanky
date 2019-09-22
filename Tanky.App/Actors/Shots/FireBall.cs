@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperJMN.MonoGame;
 
-namespace Tanky.App.Actors.Shots
+namespace TankyApp.Actors.Shots
 {
     internal class FireBall : Shot
     {
