@@ -32,7 +32,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
-#begin beach-background-4.jpg
+#begin background.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -42,49 +42,13 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:beach-background-4.jpg;Background
+/build:background.jpg
 
 #begin bgm/ladynavigation.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:bgm/ladynavigation.mp3
-
-#begin E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/bomb.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/bomb.png;bomb.png
-
-#begin E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/explosion3.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/explosion3.png;explosion3.png
-
-#begin E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/sand.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/sand.wav;sounds/sand.wav
-
-#begin E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/servo.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:E:/OneDrive JMN/OneDrive/Imágenes no fotos/Tanky/servo.wav;sounds/servo.wav
 
 #begin explosion.png
 /importer:TextureImporter
@@ -98,7 +62,7 @@
 /processorParam:TextureFormat=Color
 /build:explosion.png
 
-#begin Goomba_Artwork_(The_Thousand-Year_Door).png
+#begin ground_explosion.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -108,7 +72,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Goomba_Artwork_(The_Thousand-Year_Door).png;goomba.png
+/build:ground_explosion.png
 
 #begin jump.png
 /importer:TextureImporter
@@ -199,6 +163,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sounds/nsmb_fireball.wav
+
+#begin sounds/servo.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/servo.wav
 
 #begin sounds/shoot.wav
 /importer:WavImporter

@@ -38,10 +38,10 @@ namespace TankyApp.Actors
 
         public override void LoadContent(ContentManager content)
         {
-            var texture = content.Load<Texture2D>("explosion3");
-            animation = new AnimatedSprite(texture, 8, 1, width: 80);
+            var texture = content.Load<Texture2D>("ground_explosion");
+            animation = new AnimatedSprite(texture, 7, 4, width: 80, emptyFrames: 4);
             animator = Observable
-                .Interval(TimeSpan.FromMilliseconds(100)).Take(animation.TotalFrames)
+                .Interval(TimeSpan.FromMilliseconds(20)).Take(animation.TotalFrames)
                 .ObserveOn(Dispatcher.CurrentDispatcher)
                 .Subscribe(l => animation.CurrentFrame++, Dispose);
             sound = content.Load<SoundEffect>("sounds/explosion");
