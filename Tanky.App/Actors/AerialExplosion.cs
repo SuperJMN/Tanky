@@ -42,7 +42,7 @@ namespace TankyApp.Actors
             var texture = content.Load<Texture2D>("aerial_explosion");
             animation = new AnimatedSprite(texture, 5, 6, width: 120);
             animator = Observable
-                .Interval(TimeSpan.FromMilliseconds(50)).Take(animation.TotalFrames)
+                .Interval(TimeSpan.FromMilliseconds(20)).Take(animation.TotalFrames)
                 .ObserveOn(Dispatcher.CurrentDispatcher)
                 .Subscribe(l => animation.CurrentFrame++, Dispose);
             sound = content.Load<SoundEffect>("sounds/explosion");
