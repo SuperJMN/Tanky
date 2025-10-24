@@ -1,12 +1,8 @@
-[gd_resource type="SpriteFrames" load_steps=2 format=3]
+[gd_resource type="SpriteFrames" load_steps=11 format=3 uid="uid://bfrlk7mijvf0"]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/tanky_spritesheet.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://1acx6580gm4n" path="res://assets/sprites/tanky_spritesheet.png" id="1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_idle"]
-atlas = ExtResource("1")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_walk1"]
 atlas = ExtResource("1")
 region = Rect2(0, 0, 32, 32)
 
@@ -38,6 +34,10 @@ region = Rect2(192, 0, 32, 32)
 atlas = ExtResource("1")
 region = Rect2(224, 0, 32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk1"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 32, 32)
+
 [resource]
 animations = [{
 "frames": [{
@@ -50,8 +50,13 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_walk1")
+"texture": SubResource("AtlasTexture_idle")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 5.0
 }, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_walk2")
 }, {
@@ -72,16 +77,11 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_walk8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk1")
 }],
 "loop": true,
 "name": &"walk",
 "speed": 10.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_idle")
-}],
-"loop": false,
-"name": &"jump",
-"speed": 5.0
 }]

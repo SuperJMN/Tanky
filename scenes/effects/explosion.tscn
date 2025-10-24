@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://e1234567890"]
+[gd_scene load_steps=4 format=3 uid="uid://e1234568aa0"]
 
-[ext_resource type="Script" path="res://scripts/explosion.gd" id="1_explosion"]
-[ext_resource type="SpriteFrames" path="res://assets/explosion_animation.tres" id="2_anim"]
+[ext_resource type="Script" uid="uid://if76nfmkgw8j" path="res://scripts/explosion.gd" id="1_explosion"]
+[ext_resource type="SpriteFrames" uid="uid://dgx5mtncxd5dv" path="res://assets/explosion_animation.tres" id="2_anim"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_explosion"]
 size = Vector2(80, 100)
@@ -10,8 +10,9 @@ size = Vector2(80, 100)
 script = ExtResource("1_explosion")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = ExtResource("2_anim")
 scale = Vector2(0.4, 0.25)
+sprite_frames = ExtResource("2_anim")
+animation = &"explode"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_explosion")

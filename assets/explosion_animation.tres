@@ -1,6 +1,6 @@
-[gd_resource type="SpriteFrames" load_steps=26 format=3]
+[gd_resource type="SpriteFrames" load_steps=26 format=3 uid="uid://dgx5mtncxd5dv"]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/ground_explosion.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://cq2i35p4fv1ym" path="res://assets/sprites/ground_explosion.png" id="1"]
 
 [sub_resource type="AtlasTexture" id="frame_0"]
 atlas = ExtResource("1")
@@ -100,32 +100,79 @@ region = Rect2(406, 1239, 203, 413)
 
 [resource]
 animations = [{
-"frames": [
-	{"duration": 1.0, "texture": SubResource("frame_0")},
-	{"duration": 1.0, "texture": SubResource("frame_1")},
-	{"duration": 1.0, "texture": SubResource("frame_2")},
-	{"duration": 1.0, "texture": SubResource("frame_3")},
-	{"duration": 1.0, "texture": SubResource("frame_4")},
-	{"duration": 1.0, "texture": SubResource("frame_5")},
-	{"duration": 1.0, "texture": SubResource("frame_6")},
-	{"duration": 1.0, "texture": SubResource("frame_7")},
-	{"duration": 1.0, "texture": SubResource("frame_8")},
-	{"duration": 1.0, "texture": SubResource("frame_9")},
-	{"duration": 1.0, "texture": SubResource("frame_10")},
-	{"duration": 1.0, "texture": SubResource("frame_11")},
-	{"duration": 1.0, "texture": SubResource("frame_12")},
-	{"duration": 1.0, "texture": SubResource("frame_13")},
-	{"duration": 1.0, "texture": SubResource("frame_14")},
-	{"duration": 1.0, "texture": SubResource("frame_15")},
-	{"duration": 1.0, "texture": SubResource("frame_16")},
-	{"duration": 1.0, "texture": SubResource("frame_17")},
-	{"duration": 1.0, "texture": SubResource("frame_18")},
-	{"duration": 1.0, "texture": SubResource("frame_19")},
-	{"duration": 1.0, "texture": SubResource("frame_20")},
-	{"duration": 1.0, "texture": SubResource("frame_21")},
-	{"duration": 1.0, "texture": SubResource("frame_22")},
-	{"duration": 1.0, "texture": SubResource("frame_23")}
-],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("frame_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_9")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_10")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_11")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_12")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_13")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_14")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_15")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_16")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_17")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_18")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_19")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_20")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_21")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_22")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_23")
+}],
 "loop": false,
 "name": &"explode",
 "speed": 50.0
