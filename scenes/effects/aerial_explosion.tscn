@@ -11,8 +11,8 @@ script = ExtResource("1_aerial")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_texture")
-hframes = 8
-vframes = 5
+hframes = 7
+vframes = 4
 frame = 2
 scale = Vector2(0.6, 0.6)
 
