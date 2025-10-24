@@ -1,10 +1,9 @@
 extends Area2D
 
-# Simple aerial explosion - could use AnimatedSprite2D or particles
-var lifetime = 0.5
-var lifetime_timer: Timer
-
-@onready var sprite = $Sprite2D
+@onready var sprite: Sprite2D = $Sprite2D
+var timer: Timer
+var fps := 30.0
+var start_frame := 2
 
 func _ready():
 	# Setup collision
@@ -12,17 +11,18 @@ func _ready():
 	collision_mask = 2    # Enemy layer
 	add_to_group("explosion")
 	
-	# Setup lifetime timer
-	lifetime_timer = Timer.new()
-	lifetime_timer.one_shot = true
-	lifetime_timer.wait_time = lifetime
-	lifetime_timer.timeout.connect(_on_lifetime_timeout)
-	add_child(lifetime_timer)
-	lifetime_timer.start()
-	
-	# Fade out animation
-	var tween = create_tween()
-	tween.tween_property(sprite, "modulate:a", 0.0, lifetime)
+	# Setup animation timer to iterate through sprite sheet frames
+	sprite.frame = start_frame
+	timer = Timer.new()
+	timer.wait_time = 1.0 / fps
+	timer.one_shot = false
+	timer.timeout.connect(_on_tick)
+	add_child(timer)
+	timer.start()
 
-func _on_lifetime_timeout():
-	call_deferred("queue_free")
+func _on_tick():
+	var total := sprite.hframes * sprite.vframes
+	if sprite.frame >= total - 1:
+		call_deferred("queue_free")
+		return
+	sprite.frame += 1
