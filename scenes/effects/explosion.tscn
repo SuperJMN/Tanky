@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://e1234567890"]
+
+[ext_resource type="Script" path="res://scripts/explosion.gd" id="1_explosion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ground_explosion.png" id="2_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_explosion"]
+size = Vector2(80, 100)
+
+[node name="Explosion" type="Area2D"]
+script = ExtResource("1_explosion")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+hframes = 7
+vframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_explosion")
+
+[node name="ExplosionSound" type="AudioStreamPlayer2D" parent="."]
+volume_db = -10.0

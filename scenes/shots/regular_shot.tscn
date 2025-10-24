@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://s1234567890"]
+
+[ext_resource type="Script" path="res://scripts/regular_shot.gd" id="1_shot"]
+[ext_resource type="Texture2D" path="res://assets/sprites/shot.png" id="2_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shot"]
+size = Vector2(16, 8)
+
+[node name="RegularShot" type="Area2D"]
+script = ExtResource("1_shot")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+scale = Vector2(0.5, 0.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_shot")
