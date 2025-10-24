@@ -97,7 +97,15 @@ func destroy_by(killer):
 	
 	if explosion_scene:
 		var explosion = explosion_scene.instantiate()
-		explosion.position = position
+		# If the bomb is on the ground, align the explosion to start at the bomb's base
+		if is_touching_ground():
+			var h := 0.0
+			var cs: CollisionShape2D = explosion.get_node_or_null("CollisionShape2D")
+			if cs and cs.shape is RectangleShape2D:
+				h = (cs.shape as RectangleShape2D).size.y / 2.0
+			explosion.position = Vector2(position.x, Constants.ground_top - h)
+		else:
+			explosion.position = position
 		get_parent().call_deferred("add_child", explosion)
 	
 	defeated.emit(killer)
