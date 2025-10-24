@@ -1,12 +1,15 @@
-[gd_scene load_steps=8 format=3 uid="uid://m1234567890"]
+[gd_scene load_steps=13 format=3 uid="uid://m1234568aa0"]
 
-[ext_resource type="Script" path="res://scripts/game_host.gd" id="1_host"]
-[ext_resource type="Script" path="res://scripts/main_stage.gd" id="2_stage"]
-[ext_resource type="Texture2D" path="res://assets/sprites/background.jpg" id="3_bg"]
-[ext_resource type="Script" path="res://scripts/tanky.gd" id="4_tanky"]
-[ext_resource type="Texture2D" path="res://assets/sprites/tanky.png" id="5_tanky_tex"]
-[ext_resource type="SpriteFrames" path="res://assets/tanky_animations.tres" id="6_tanky_anim"]
-[ext_resource type="Script" path="res://scripts/ui.gd" id="7_ui"]
+[ext_resource type="Script" uid="uid://bxhjfmdv87u06" path="res://scripts/game_host.gd" id="1_host"]
+[ext_resource type="Script" uid="uid://clo5kgqlorcn1" path="res://scripts/main_stage.gd" id="2_stage"]
+[ext_resource type="Texture2D" uid="uid://c807mdns7k7e4" path="res://assets/sprites/background.jpg" id="3_bg"]
+[ext_resource type="Script" uid="uid://cxyse24of26pk" path="res://scripts/tanky.gd" id="4_tanky"]
+[ext_resource type="SpriteFrames" uid="uid://bfrlk7mijvf0" path="res://assets/tanky_animations.tres" id="6_tanky_anim"]
+[ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://assets/sounds/jump.wav" id="6_tipki"]
+[ext_resource type="AudioStream" uid="uid://dfnmuka8oyflw" path="res://Tanky.App/Content/sounds/walk.mp3" id="7_85g3d"]
+[ext_resource type="AudioStream" uid="uid://bvdu2uav1s2ua" path="res://Tanky.App/Content/bgm/ladynavigation.mp3" id="7_o6xl0"]
+[ext_resource type="Script" uid="uid://dppnwfx5va4l3" path="res://scripts/ui.gd" id="7_ui"]
+[ext_resource type="AudioStream" uid="uid://ctj882uqsyo5v" path="res://assets/sounds/smw_pipe.wav" id="8_choun"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(1000, 50)
@@ -22,13 +25,12 @@ script = ExtResource("2_stage")
 
 [node name="Background" type="Sprite2D" parent="MainStage"]
 position = Vector2(360, 240)
-texture = ExtResource("3_bg")
 scale = Vector2(0.3, 0.3)
+texture = ExtResource("3_bg")
 
 [node name="Ground" type="StaticBody2D" parent="MainStage"]
-collision_layer = 1
-collision_mask = 0
 position = Vector2(360, 450)
+collision_mask = 0
 
 [node name="ColorRect" type="ColorRect" parent="MainStage/Ground"]
 offset_left = -500.0
@@ -46,15 +48,20 @@ script = ExtResource("4_tanky")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="MainStage/Tanky"]
 sprite_frames = ExtResource("6_tanky_anim")
+animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MainStage/Tanky"]
 shape = SubResource("RectangleShape2D_tanky")
 
 [node name="JumpSound" type="AudioStreamPlayer" parent="MainStage/Tanky"]
+stream = ExtResource("6_tipki")
 
 [node name="WalkSound" type="AudioStreamPlayer" parent="MainStage/Tanky"]
+stream = ExtResource("7_85g3d")
+parameters/looping = true
 
 [node name="DieSound" type="AudioStreamPlayer" parent="MainStage/Tanky"]
+stream = ExtResource("8_choun")
 
 [node name="UI" type="CanvasLayer" parent="MainStage"]
 script = ExtResource("7_ui")
@@ -91,5 +98,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BGM" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_o6xl0")
 volume_db = -6.0
-autoplay = false

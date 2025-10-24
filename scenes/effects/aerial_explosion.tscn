@@ -1,8 +1,9 @@
-[gd_scene load_steps=32 format=3 uid="uid://1234568aa0"]
+[gd_scene load_steps=33 format=3 uid="uid://1234568aa0"]
 
 [ext_resource type="Script" uid="uid://if76nfmkgw8j" path="res://scripts/explosion.gd" id="1_explosion"]
 [ext_resource type="Script" uid="uid://dulyiqtrlv8k8" path="res://scripts/animated_sprite_grid_builder.gd" id="2_builder"]
 [ext_resource type="Texture2D" uid="uid://b02p22qegyysr" path="res://assets/sprites/aerial_explosion.png" id="2_prrc4"]
+[ext_resource type="AudioStream" uid="uid://0tl048b3llpg" path="res://assets/sounds/explosion.wav" id="3_explosion_snd"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gnj0r"]
 atlas = ExtResource("2_prrc4")
@@ -200,17 +201,16 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_aerial"]
-radius = 30.0
+radius = 45.0
 
 [node name="AerialExplosion" type="Area2D"]
 script = ExtResource("1_explosion")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-scale = Vector2(0.6, 0.6)
 sprite_frames = SubResource("SpriteFrames_ais4h")
 animation = &"explode"
-frame = 25
-frame_progress = 1.0
+frame = 2
+speed_scale = 0.4
 script = ExtResource("2_builder")
 texture = ExtResource("2_prrc4")
 hframes = 26
@@ -219,3 +219,7 @@ start_frame = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_aerial")
+
+[node name="ExplosionSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_explosion_snd")
+volume_db = 5.0

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://s1234567890"]
+[gd_scene load_steps=5 format=3 uid="uid://s1234568aa0"]
 
-[ext_resource type="Script" path="res://scripts/regular_shot.gd" id="1_shot"]
-[ext_resource type="Texture2D" path="res://assets/sprites/shot.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://bqwk4a7mmur6w" path="res://scripts/regular_shot.gd" id="1_shot"]
+[ext_resource type="Texture2D" uid="uid://xr1eho0srt16" path="res://assets/sprites/shot.png" id="2_texture"]
+[ext_resource type="AudioStream" uid="uid://cck36rk0lf51x" path="res://assets/sounds/shoot.wav" id="3_shoot"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_shot"]
 size = Vector2(16, 8)
@@ -10,8 +11,14 @@ size = Vector2(16, 8)
 script = ExtResource("1_shot")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_texture")
-scale = Vector2(0.5, 0.5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_shot")
+
+[node name="ShotSound" type="AudioStreamPlayer2D" parent="."]
+scale = Vector2(0.2, 0.2)
+stream = ExtResource("3_shoot")
+volume_db = 10.0
+autoplay = true
