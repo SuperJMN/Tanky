@@ -5,7 +5,8 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/background.jpg" id="3_bg"]
 [ext_resource type="Script" path="res://scripts/tanky.gd" id="4_tanky"]
 [ext_resource type="Texture2D" path="res://assets/sprites/tanky.png" id="5_tanky_tex"]
-[ext_resource type="Script" path="res://scripts/ui.gd" id="6_ui"]
+[ext_resource type="SpriteFrames" path="res://assets/tanky_animations.tres" id="6_tanky_anim"]
+[ext_resource type="Script" path="res://scripts/ui.gd" id="7_ui"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(1000, 50)
@@ -43,8 +44,8 @@ shape = SubResource("RectangleShape2D_ground")
 position = Vector2(100, 200)
 script = ExtResource("4_tanky")
 
-[node name="Sprite2D" type="Sprite2D" parent="MainStage/Tanky"]
-texture = ExtResource("5_tanky_tex")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="MainStage/Tanky"]
+sprite_frames = ExtResource("6_tanky_anim")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MainStage/Tanky"]
 shape = SubResource("RectangleShape2D_tanky")
@@ -56,7 +57,7 @@ shape = SubResource("RectangleShape2D_tanky")
 [node name="DieSound" type="AudioStreamPlayer" parent="MainStage/Tanky"]
 
 [node name="UI" type="CanvasLayer" parent="MainStage"]
-script = ExtResource("6_ui")
+script = ExtResource("7_ui")
 
 [node name="LivesLabel" type="Label" parent="MainStage/UI"]
 offset_left = 10.0

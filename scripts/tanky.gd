@@ -10,13 +10,9 @@ const WALK_SPEED = 200.0
 
 # State enums
 enum JumpState { LANDED, JUMPING }
-enum WalkState { STOPPED, WALKING }
-enum TankyAnimation { STOPPED, WALKING, JUMP }
 
 # State variables
 var jump_state = JumpState.LANDED
-var walk_state = WalkState.STOPPED
-var animation = TankyAnimation.STOPPED
 var health_points = 10
 var is_visible_override = true
 var live_status = "alive"
@@ -27,17 +23,13 @@ var weapon_factories = []
 var can_shoot = true
 var shoot_cooldown_timer: Timer
 
-# Animation
-var walk_frame = 0
-var frame_distance = 0.0
-
 # Audio
 @onready var jump_sound = $JumpSound
 @onready var walk_sound = $WalkSound
 @onready var die_sound = $DieSound
 
 # Sprites
-@onready var sprite = $Sprite2D
+@onready var animated_sprite = $AnimatedSprite2D
 @onready var collision_shape = $CollisionShape2D
 
 func _ready():
@@ -80,8 +72,8 @@ func _physics_process(delta):
 		if collider and (collider.is_in_group("enemy") or collider.is_in_group("explosion")):
 			receive_damage(10)
 	
-	# Update animation frame
-	update_walk_frame(delta)
+	# Update animation
+	update_animation()
 
 func handle_input(delta):
 	# Horizontal movement
@@ -95,17 +87,13 @@ func handle_input(delta):
 	else:
 		velocity.x = 0
 	
-	# Update walk state
+	# Update walk sound
 	if moving and jump_state != JumpState.JUMPING:
-		if walk_state != WalkState.WALKING:
-			walk_state = WalkState.WALKING
-			if walk_sound and not walk_sound.playing:
-				walk_sound.play()
+		if walk_sound and not walk_sound.playing:
+			walk_sound.play()
 	else:
-		if walk_state != WalkState.STOPPED:
-			walk_state = WalkState.STOPPED
-			if walk_sound:
-				walk_sound.stop()
+		if walk_sound and walk_sound.playing:
+			walk_sound.stop()
 	
 	# Jump
 	if Input.is_action_just_pressed("jump"):
@@ -134,27 +122,21 @@ func handle_input(delta):
 	if Input.is_action_just_pressed("quit"):
 		get_tree().quit()
 
-func update_walk_frame(delta):
-	if velocity.x != 0:
-		frame_distance += abs(velocity.x * delta)
-		if frame_distance > 10:
-			walk_frame = int(frame_distance / 10) % 8
-			frame_distance = fmod(frame_distance, 10)
-	
-	# Update sprite frame based on state
+func update_animation():
+	# Automatically update animation based on state
 	if jump_state == JumpState.JUMPING:
-		animation = TankyAnimation.JUMP
-	elif walk_state == WalkState.WALKING:
-		animation = TankyAnimation.WALKING
-		# Animation would go here if we had sprite sheet
+		if animated_sprite.animation != "jump":
+			animated_sprite.play("jump")
+	elif abs(velocity.x) > 0:
+		if animated_sprite.animation != "walk":
+			animated_sprite.play("walk")
 	else:
-		animation = TankyAnimation.STOPPED
-		walk_frame = 0
+		if animated_sprite.animation != "idle":
+			animated_sprite.play("idle")
 
 func land():
 	jump_state = JumpState.LANDED
-	if walk_state == WalkState.WALKING and walk_sound:
-		walk_sound.play()
+	# Walk sound will resume automatically in handle_input if moving
 
 func shoot_request():
 	if can_shoot:
@@ -218,10 +200,10 @@ func respawn():
 	# Blink effect
 	var tween = create_tween()
 	tween.set_loops(30)
-	tween.tween_property(sprite, "visible", false, 0.05)
-	tween.tween_property(sprite, "visible", true, 0.05)
+	tween.tween_property(animated_sprite, "visible", false, 0.05)
+	tween.tween_property(animated_sprite, "visible", true, 0.05)
 	tween.finished.connect(_on_respawn_finished)
 
 func _on_respawn_finished():
-	sprite.visible = true
+	animated_sprite.visible = true
 	live_status = "alive"
