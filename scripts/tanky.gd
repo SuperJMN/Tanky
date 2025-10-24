@@ -145,7 +145,7 @@ func shoot_request():
 		shoot_cooldown_timer.start(get_current_weapon_cooldown())
 
 func shoot():
-	var shot = create_shot()
+	var shot                               = create_shot()
 	if shot:
 		shot.position = position + Vector2(SIZE, SIZE / 2)
 		get_parent().add_child(shot)
