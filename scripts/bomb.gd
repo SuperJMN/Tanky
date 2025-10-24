@@ -92,13 +92,14 @@ func destroy_by(killer):
 	
 	is_destroyed = true
 	
-	# Create explosion (using ground explosion for both for now)
-	var explosion_scene = load("res://scenes/effects/explosion.tscn")
+	# Create explosion: ground when on floor, aerial otherwise
+	var scene_path := "res://scenes/effects/explosion.tscn" if is_touching_ground() else "res://scenes/effects/aerial_explosion.tscn"
+	var explosion_scene = load(scene_path)
 	
 	if explosion_scene:
 		var explosion = explosion_scene.instantiate()
-		# If the bomb is on the ground, align the explosion to start at the bomb's base
 		if is_touching_ground():
+			# Align ground explosion with bomb base (start from ground top)
 			var h := 0.0
 			var cs: CollisionShape2D = explosion.get_node_or_null("CollisionShape2D")
 			if cs and cs.shape is RectangleShape2D:
