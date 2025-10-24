@@ -1,13 +1,41 @@
+@tool
 extends AnimatedSprite2D
 
-@export var texture: Texture2D
-@export var hframes: int = 7
-@export var vframes: int = 4
-@export var start_frame: int = 0
-@export var animation_name: StringName = "explode"
-@export var fps: float = 50.0
+@export var texture: Texture2D: set = set_texture
+@export var hframes: int = 7: set = set_hframes
+@export var vframes: int = 4: set = set_vframes
+@export var start_frame: int = 0: set = set_start_frame
+@export var animation_name: StringName = "explode": set = set_animation_name
+@export var fps: float = 50.0: set = set_fps
 
 func _ready():
+	rebuild()
+
+func set_texture(t):
+	texture = t
+	rebuild()
+
+func set_hframes(h):
+	hframes = h
+	rebuild()
+
+func set_vframes(v):
+	vframes = v
+	rebuild()
+
+func set_start_frame(sf):
+	start_frame = sf
+	rebuild()
+
+func set_animation_name(n):
+	animation_name = n
+	rebuild()
+
+func set_fps(f):
+	fps = f
+	rebuild()
+
+func rebuild():
 	if texture == null:
 		return
 	var frames := SpriteFrames.new()
@@ -26,4 +54,4 @@ func _ready():
 			atlas.region = Rect2(h * fw, v * fh, fw, fh)
 			frames.add_frame(animation_name, atlas)
 	self.sprite_frames = frames
-	self.frame = start_frame
+	self.frame = clamp(start_frame, 0, hframes * vframes - 1)
