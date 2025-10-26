@@ -24,8 +24,8 @@ script = ExtResource("1_host")
 script = ExtResource("2_stage")
 
 [node name="Background" type="Sprite2D" parent="MainStage"]
-position = Vector2(360, 240)
-scale = Vector2(0.3, 0.3)
+position = Vector2(381.3333, 228)
+scale = Vector2(0.3166667, 0.3166667)
 texture = ExtResource("3_bg")
 
 [node name="Ground" type="StaticBody2D" parent="MainStage"]
@@ -37,7 +37,7 @@ offset_left = -500.0
 offset_top = -25.0
 offset_right = 500.0
 offset_bottom = 25.0
-color = Color(0.4, 0.3, 0.2, 1)
+color = Color(0.4, 0.3019608, 0.2, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MainStage/Ground"]
 shape = SubResource("RectangleShape2D_ground")
