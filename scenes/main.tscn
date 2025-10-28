@@ -1,0 +1,64 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Texture2D" path="res://sprites/background.jpg" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/tanky.tscn" id="2"]
+[ext_resource type="AudioStream" path="res://sounds/ladynavigation.mp3" id="3"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="4"]
+[ext_resource type="Texture2D" path="res://sprites/rect.png" id="5"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(180, 24)
+
+[sub_resource type="PhysicsMaterial" id="2"]
+friction = 1.4
+rough = true
+
+[node name="Main" type="Node2D"]
+script = ExtResource("4")
+
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Background" type="TextureRect" parent="BackgroundLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("1")
+stretch_mode = 6
+expand = true
+mouse_filter = 2
+
+[node name="World" type="Node2D" parent="."]
+z_index = 1
+
+[node name="Terrain" type="StaticBody2D" parent="World"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="World/Terrain"]
+physics_material_override = SubResource("2")
+polygon = PackedVector2Array(-900, 320, -900, 60, -600, 10, -300, -30, -100, -50, 120, -40, 300, -20, 520, -70, 760, -10, 900, 120, 900, 320)
+
+[node name="Visual" type="Polygon2D" parent="World/Terrain"]
+color = Color(0.18, 0.52, 0.23, 1)
+polygon = PackedVector2Array(-900, 320, -900, 60, -600, 10, -300, -30, -100, -50, 120, -40, 300, -20, 520, -70, 760, -10, 900, 120, 900, 320)
+
+[node name="Platform" type="StaticBody2D" parent="World"]
+position = Vector2(320, -140)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Platform"]
+physics_material_override = SubResource("2")
+shape = SubResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Platform"]
+texture = ExtResource("5")
+scale = Vector2(2.4, 0.4)
+centered = true
+
+[node name="Tanky" parent="World" instance=ExtResource("2")]
+position = Vector2(-600, -150)
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3")
+bus = "Music"
+autoplay = false
+volume_db = -6.0

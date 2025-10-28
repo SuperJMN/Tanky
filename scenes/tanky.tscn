@@ -1,0 +1,112 @@
+[gd_scene load_steps=9 format=3 uid="uid://dwxypa12ogkws"]
+
+[ext_resource type="Script" uid="uid://bnbl65m2at2j5" path="res://scripts/tanky.gd" id="1"]
+[ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://sounds/jump.wav" id="2"]
+[ext_resource type="AudioStream" uid="uid://cck36rk0lf51x" path="res://sounds/shoot.wav" id="3"]
+[ext_resource type="Texture2D" uid="uid://cmqd6kpvcrl24" path="res://sprites/rect.png" id="4"]
+[ext_resource type="SpriteFrames" uid="uid://dp3qhyfsuuvuq" path="res://sprites/tanky_frames.tres" id="5"]
+
+[sub_resource type="PhysicsMaterial" id="1"]
+friction = 3.5
+rough = true
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(52, 18)
+
+[sub_resource type="CircleShape2D" id="3"]
+radius = 12.0
+
+[node name="Tanky" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Chassis" type="RigidBody2D" parent="."]
+collision_layer = 2
+mass = 50.0
+physics_material_override = SubResource("1")
+center_of_mass_mode = 1
+center_of_mass = Vector2(0, 10)
+linear_damp = 0.1
+angular_damp = 3.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chassis"]
+position = Vector2(0, -7)
+shape = SubResource("2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Chassis"]
+position = Vector2(0, -18)
+scale = Vector2(1.6, 1.6)
+sprite_frames = ExtResource("5")
+animation = &"move"
+frame = 4
+frame_progress = 0.1811275
+
+[node name="Muzzle" type="Marker2D" parent="Chassis"]
+position = Vector2(32, -18)
+
+[node name="GroundCastFront" type="RayCast2D" parent="Chassis"]
+position = Vector2(22, -6)
+target_position = Vector2(0, 36)
+
+[node name="GroundCastRear" type="RayCast2D" parent="Chassis"]
+position = Vector2(-22, -6)
+target_position = Vector2(0, 36)
+
+[node name="JumpPlayer" type="AudioStreamPlayer2D" parent="Chassis"]
+stream = ExtResource("2")
+volume_db = -4.0
+bus = &"SFX"
+
+[node name="ShootPlayer" type="AudioStreamPlayer2D" parent="Chassis"]
+stream = ExtResource("3")
+volume_db = -2.0
+bus = &"SFX"
+
+[node name="FrontWheel" type="RigidBody2D" parent="."]
+position = Vector2(17, -2)
+collision_layer = 2
+mass = 8.0
+physics_material_override = SubResource("1")
+linear_damp = 0.1
+angular_damp = 1.2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FrontWheel"]
+shape = SubResource("3")
+
+[node name="Sprite2D" type="Sprite2D" parent="FrontWheel"]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("4")
+
+[node name="RearWheel" type="RigidBody2D" parent="."]
+position = Vector2(-26, 4)
+collision_layer = 2
+mass = 8.0
+physics_material_override = SubResource("1")
+linear_damp = 0.1
+angular_damp = 1.2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RearWheel"]
+position = Vector2(10, -5)
+shape = SubResource("3")
+
+[node name="Sprite2D" type="Sprite2D" parent="RearWheel"]
+position = Vector2(10.000001, -5.0000005)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("4")
+
+[node name="FrontJoint" type="PinJoint2D" parent="."]
+position = Vector2(17, -2)
+node_a = NodePath("../Chassis")
+node_b = NodePath("../FrontWheel")
+bias = 0.7
+softness = 0.1
+
+[node name="RearJoint" type="PinJoint2D" parent="."]
+position = Vector2(-16, -1)
+node_a = NodePath("../Chassis")
+node_b = NodePath("../RearWheel")
+bias = 0.7
+softness = 0.1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, -18)
+limit_smoothed = true

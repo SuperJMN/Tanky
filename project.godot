@@ -1,0 +1,108 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Tanky Reloaded"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.5")
+
+[audio]
+
+buses/default_bus_layout="res://audio/default_bus_layout.tres"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[input]
+
+move_left={
+"deadzone": 0.5,
+"events": [{
+"device": -1,
+"physical_keycode": 80,
+"type": "InputEventKey"
+}, {
+"axis": 0,
+"axis_value": -1.0,
+"device": -1,
+"type": "InputEventJoypadMotion"
+}, {
+"button_index": 13,
+"device": -1,
+"type": "InputEventJoypadButton"
+}]
+}
+move_right={
+"deadzone": 0.5,
+"events": [{
+"device": -1,
+"physical_keycode": 79,
+"type": "InputEventKey"
+}, {
+"axis": 0,
+"axis_value": 1.0,
+"device": -1,
+"type": "InputEventJoypadMotion"
+}, {
+"button_index": 14,
+"device": -1,
+"type": "InputEventJoypadButton"
+}]
+}
+jump={
+"deadzone": 0.5,
+"events": [{
+"device": -1,
+"keycode": 32,
+"type": "InputEventKey"
+}, {
+"device": -1,
+"keycode": 87,
+"type": "InputEventKey"
+}, {
+"button_index": 0,
+"device": -1,
+"type": "InputEventJoypadButton"
+}]
+}
+shoot={
+"deadzone": 0.5,
+"events": [{
+"device": -1,
+"keycode": 90,
+"type": "InputEventKey"
+}, {
+"device": -1,
+"keycode": 88,
+"type": "InputEventKey"
+}, {
+"button_index": 2,
+"device": -1,
+"type": "InputEventJoypadButton"
+}]
+}
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[physics_2d]
+
+default_gravity=980.0
+default_sleep_time=0.5
+
+[rendering]
+
+textures/default_filters=false
