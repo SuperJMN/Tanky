@@ -2,7 +2,10 @@ extends Node2D
 class_name Tanky
 
 const PIXELS_PER_METER := 100.0
-const MAX_SPEED := 150.0  # 3 body-lengths/sec * 0.5m * 100px/m
+const BODY_LENGTH := 50.0  # 0.5m * 100px/m
+const MIN_SPEED := 100.0  # 2 body-lengths/sec
+const MAX_SPEED := 150.0  # 3 body-lengths/sec
+const ACCEL_TIME := 1.5  # seconds to reach max speed
 const DRIVE_TORQUE := 50000.0
 const BRAKE_TORQUE := 10000.0
 const AIR_CONTROL := 0.55
@@ -23,16 +26,19 @@ const PROJECTILE_SCENE := preload("res://scenes/projectile.tscn")
 
 var _facing := 1
 var _muzzle_offset := 0.0
+var _accel_time := 0.0
+var _last_move_dir := 0.0
 
 func _ready() -> void:
 	_muzzle_offset = muzzle.position.x
 	sprite.play("idle")
 	camera.make_current()
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	var move := Input.get_axis("move_left", "move_right")
 	var grounded := ground_casts.any(func(c): return c.is_colliding())
 	
+	_update_acceleration(move, delta)
 	_apply_drive(move, grounded)
 	_apply_drag(move, grounded)
 	
@@ -48,12 +54,20 @@ func _physics_process(_delta: float) -> void:
 	camera.global_position = chassis.global_position
 
 
+func _update_acceleration(move: float, delta: float) -> void:
+	if move != 0.0 and sign(move) == sign(_last_move_dir):
+		_accel_time = min(_accel_time + delta, ACCEL_TIME)
+	else:
+		_accel_time = 0.0
+	_last_move_dir = move
+
 func _apply_drive(move: float, grounded: bool) -> void:
 	if move == 0.0:
 		return
 	
+	var current_max: float = lerp(MIN_SPEED, MAX_SPEED, _accel_time / ACCEL_TIME)
 	var velocity := chassis.linear_velocity.x
-	if abs(velocity) > MAX_SPEED and sign(velocity) == sign(move):
+	if abs(velocity) > current_max and sign(velocity) == sign(move):
 		return
 	
 	var torque := DRIVE_TORQUE * move * (AIR_CONTROL if not grounded else 1.0)
@@ -61,7 +75,8 @@ func _apply_drive(move: float, grounded: bool) -> void:
 	rear_wheel.apply_torque(torque)
 
 func _apply_drag(move: float, grounded: bool) -> void:
-	var drag := (move * MAX_SPEED - chassis.linear_velocity.x) * DRIVE_FORCE * (1.0 if grounded else AIR_CONTROL)
+	var current_max: float = lerp(MIN_SPEED, MAX_SPEED, _accel_time / ACCEL_TIME)
+	var drag: float = (move * current_max - chassis.linear_velocity.x) * DRIVE_FORCE * (1.0 if grounded else AIR_CONTROL)
 	chassis.apply_central_force(Vector2(drag, 0.0))
 	
 	if move == 0.0:
