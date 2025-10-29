@@ -3,8 +3,8 @@ class_name Tanky
 
 const PIXELS_PER_METER := 100.0
 const BODY_LENGTH := 50.0  # 0.5m * 100px/m
-const MIN_SPEED := 100.0  # 2 body-lengths/sec
-const MAX_SPEED := 150.0  # 3 body-lengths/sec
+const MIN_SPEED := 150.0  # 3 body-lengths/sec
+const MAX_SPEED := 250.0  # 5 body-lengths/sec
 const ACCEL_TIME := 1.5  # seconds to reach max speed
 const DRIVE_TORQUE := 50000.0
 const BRAKE_TORQUE := 10000.0
@@ -60,6 +60,9 @@ func _update_acceleration(move: float, delta: float) -> void:
 	else:
 		_accel_time = 0.0
 	_last_move_dir = move
+	
+	var current_max: float = lerp(MIN_SPEED, MAX_SPEED, _accel_time / ACCEL_TIME)
+	print("Speed: %.1f px/s | Accel: %.2fs | Max: %.1f px/s" % [abs(chassis.linear_velocity.x), _accel_time, current_max])
 
 func _apply_drive(move: float, grounded: bool) -> void:
 	if move == 0.0:
