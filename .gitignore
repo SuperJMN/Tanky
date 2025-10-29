@@ -1,0 +1,29 @@
+# Godot editor caches and generated data
+.godot/
+.import/
+mono/
+
+# Exported builds
+/android/
+/export/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.old
+*~
+
+# IDE and tooling metadata
+.vscode/
+.idea/
+*.iml
+*.suo
+*.user
+*.swp
+*.swo
+
+# OS-specific clutter
+.DS_Store
+Thumbs.db
+desktop.ini
