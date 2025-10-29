@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cmqd6kpvcrl24" path="res://sprites/rect.png" id="5"]
 
 [sub_resource type="RectangleShape2D" id="1"]
-size = Vector2(180, 24)
+size = Vector2(48, 8)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("4")
@@ -50,7 +50,7 @@ color = Color(0.9086288, 0.54618007, 0.76747733, 1)
 polygon = PackedVector2Array(-900, 320, -900, 60, -600, 10, -300, -30, -100, -50, 120, -40, 300, -20, 520, -70, 760, -10, 900, 120, 900, 320)
 
 [node name="Platform" type="StaticBody2D" parent="World"]
-position = Vector2(1169, 516)
+position = Vector2(1175, 536)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Platform"]
 shape = SubResource("1")
