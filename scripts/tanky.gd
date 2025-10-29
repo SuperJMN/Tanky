@@ -3,10 +3,12 @@ class_name Tanky
 
 const PIXELS_PER_METER := 100.0
 const BODY_LENGTH_METERS := 0.5
-const MAX_SPEED := 2.0 * BODY_LENGTH_METERS * PIXELS_PER_METER
-const DRIVE_TORQUE := 16000.0
-const BRAKE_TORQUE := 6000.0
-const AIR_CONTROL_FACTOR := 0.4
+const TOP_SPEED_BODY_LENGTHS := 3.0
+const MAX_SPEED := TOP_SPEED_BODY_LENGTHS * BODY_LENGTH_METERS * PIXELS_PER_METER
+const DRIVE_TORQUE := 50000.0
+const BRAKE_TORQUE := 10000.0
+const AIR_CONTROL_FACTOR := 0.55
+const DRIVE_FORCE_GAIN := 650.0
 const JUMP_HEIGHT_METERS := 1.5
 const SHOOT_COOLDOWN := 0.35
 const PROJECTILE_SCENE := preload("res://scenes/projectile.tscn")
@@ -79,7 +81,7 @@ func _apply_drive(move_input: float, grounded: bool) -> void:
 func _apply_drag(move_input: float, grounded: bool) -> void:
 	var target_speed := move_input * MAX_SPEED
 	var speed := chassis.linear_velocity.x
-	var drag_strength := (target_speed - speed) * 120.0
+	var drag_strength := (target_speed - speed) * DRIVE_FORCE_GAIN
 	var drag_factor := 1.0 if grounded else AIR_CONTROL_FACTOR
 	chassis.apply_central_force(Vector2(drag_strength * drag_factor, 0.0))
 
