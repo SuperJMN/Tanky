@@ -1,12 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://d34wn350jojva"]
+[gd_scene load_steps=7 format=3 uid="uid://d34wn350jojva"]
 
 [ext_resource type="Texture2D" uid="uid://c807mdns7k7e4" path="res://sprites/background.jpg" id="1"]
 [ext_resource type="PackedScene" uid="uid://dwxypa12ogkws" path="res://scenes/tanky.tscn" id="2"]
 [ext_resource type="AudioStream" uid="uid://b0dckviyt5pnf" path="res://sounds/ladynavigation.mp3" id="3"]
 [ext_resource type="Script" uid="uid://bhigjol5laa1k" path="res://scripts/main.gd" id="4"]
 [ext_resource type="Texture2D" uid="uid://cmqd6kpvcrl24" path="res://sprites/rect.png" id="5"]
-[ext_resource type="Texture2D" path="res://sprites/palmtree2.png" id="6"]
-[ext_resource type="Texture2D" path="res://sprites/palmtree3.png" id="7"]
 
 [sub_resource type="RectangleShape2D" id="1"]
 size = Vector2(180, 24)
@@ -32,6 +30,7 @@ stretch_mode = 6
 layer = -1
 
 [node name="PalmTrees" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2(11, 599)
 motion_scale = Vector2(0.3, 1)
 motion_mirroring = Vector2(3000, 0)
 
@@ -41,16 +40,17 @@ motion_mirroring = Vector2(3000, 0)
 z_index = 1
 
 [node name="Terrain" type="StaticBody2D" parent="World"]
+position = Vector2(896, 616)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="World/Terrain"]
 polygon = PackedVector2Array(-900, 320, -900, 60, -600, 10, -300, -30, -100, -50, 120, -40, 300, -20, 520, -70, 760, -10, 900, 120, 900, 320)
 
 [node name="Visual" type="Polygon2D" parent="World/Terrain"]
-color = Color(0.18, 0.52, 0.23, 1)
+color = Color(0.9086288, 0.54618007, 0.76747733, 1)
 polygon = PackedVector2Array(-900, 320, -900, 60, -600, 10, -300, -30, -100, -50, 120, -40, 300, -20, 520, -70, 760, -10, 900, 120, 900, 320)
 
 [node name="Platform" type="StaticBody2D" parent="World"]
-position = Vector2(320, -140)
+position = Vector2(1169, 516)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Platform"]
 shape = SubResource("1")
@@ -60,7 +60,7 @@ scale = Vector2(2.4, 0.4)
 texture = ExtResource("5")
 
 [node name="Tanky" parent="World" instance=ExtResource("2")]
-position = Vector2(-600, -150)
+position = Vector2(204, 590)
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3")

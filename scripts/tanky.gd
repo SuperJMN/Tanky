@@ -62,7 +62,6 @@ func _update_acceleration(move: float, delta: float) -> void:
 	_last_move_dir = move
 	
 	var current_max: float = lerp(MIN_SPEED, MAX_SPEED, _accel_time / ACCEL_TIME)
-	print("Speed: %.1f px/s | Accel: %.2fs | Max: %.1f px/s" % [abs(chassis.linear_velocity.x), _accel_time, current_max])
 
 func _apply_drive(move: float, grounded: bool) -> void:
 	if move == 0.0:
