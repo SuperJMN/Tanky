@@ -110,3 +110,7 @@ softness = 0.1
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -18)
 limit_smoothed = true
+
+[node name="ShootTimer" type="Timer" parent="."]
+wait_time = 0.35
+one_shot = true
