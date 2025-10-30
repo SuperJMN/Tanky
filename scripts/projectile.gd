@@ -22,9 +22,13 @@ func _physics_process(delta: float) -> void:
 		rotation = velocity.angle()
 
 func _on_hit(body: Node) -> void:
-	if body != shooter:
-		_spawn_explosion()
-		queue_free()
+	if body == shooter:
+		return
+	# Ignore one-way platforms when approaching from below (bullet going up)
+	if body is TileMapLayer and velocity.y < 0.0:
+		return
+	_spawn_explosion()
+	queue_free()
 
 func _spawn_explosion() -> void:
 	var explosion := EXPLOSION_SCENE.instantiate()
