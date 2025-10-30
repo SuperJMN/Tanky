@@ -1,0 +1,47 @@
+[gd_scene load_steps=9 format=3 uid="uid://tanky_rigid_scene"]
+
+[ext_resource type="Script" path="res://scripts/tanky_rigid.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/tanky_animations.tres" id="2_anim"]
+[ext_resource type="AudioStream" path="res://assets/sounds/jump.wav" id="3_jump"]
+[ext_resource type="AudioStream" path="res://Tanky.App/Content/sounds/walk.mp3" id="4_walk"]
+[ext_resource type="AudioStream" path="res://assets/sounds/smw_pipe.wav" id="5_die"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(32, 32)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wheel"]
+radius = 6.0
+
+[node name="Tanky" type="RigidBody2D"]
+script = ExtResource("1_script")
+
+[node name="Chassis" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Chassis"]
+sprite_frames = ExtResource("2_anim")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+
+[node name="FrontWheel" type="RigidBody2D" parent="."]
+position = Vector2(12, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FrontWheel"]
+shape = SubResource("CircleShape2D_wheel")
+
+[node name="RearWheel" type="RigidBody2D" parent="."]
+position = Vector2(-12, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RearWheel"]
+shape = SubResource("CircleShape2D_wheel")
+
+[node name="JumpSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_jump")
+
+[node name="WalkSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_walk")
+parameters/looping = true
+
+[node name="DieSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_die")

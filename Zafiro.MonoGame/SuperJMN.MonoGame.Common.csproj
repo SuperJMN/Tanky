@@ -9,4 +9,8 @@
     <PackageReference Include="System.Reactive" Version="4.1.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="obj\Debug\netstandard2.0\" />
+  </ItemGroup>
+
 </Project>
