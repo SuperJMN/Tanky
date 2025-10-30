@@ -1,14 +1,10 @@
 extends Area2D
 class_name Projectile
 
-@export var speed := 420.0
-@export var lifespan := 2.0
+@export var lifespan := 2.5
+@export var gravity_scale := 1.0
 
-var direction := 1:
-	set(value):
-		direction = 1 if value >= 0 else -1
-		$Sprite2D.flip_h = direction < 0
-
+var velocity: Vector2 = Vector2.ZERO
 var shooter: Node
 
 func _ready() -> void:
@@ -17,7 +13,11 @@ func _ready() -> void:
 	get_tree().create_timer(lifespan).timeout.connect(queue_free)
 
 func _physics_process(delta: float) -> void:
-	global_position.x += speed * direction * delta
+	var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity", 980.0)
+	velocity.y += gravity * gravity_scale * delta
+	global_position += velocity * delta
+	if velocity.length() > 0.01:
+		rotation = velocity.angle()
 
 func _on_hit(body: Node) -> void:
 	if body != shooter:

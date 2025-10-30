@@ -53,12 +53,12 @@ target_position = Vector2(0, 36)
 
 [node name="JumpPlayer" type="AudioStreamPlayer2D" parent="Chassis"]
 stream = ExtResource("2")
-volume_db = -4.0
+volume_db = 10.0
 bus = &"SFX"
 
 [node name="ShootPlayer" type="AudioStreamPlayer2D" parent="Chassis"]
 stream = ExtResource("3")
-volume_db = -2.0
+volume_db = 10.0
 bus = &"SFX"
 
 [node name="FrontWheel" type="RigidBody2D" parent="."]

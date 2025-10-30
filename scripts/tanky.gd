@@ -12,6 +12,9 @@ const AIR_CONTROL := 0.55
 const DRIVE_FORCE := 650.0
 const JUMP_HEIGHT := 150.0  # 1.5m in pixels
 const PROJECTILE_SCENE := preload("res://scenes/projectile.tscn")
+const PROJECTILE_SPEED := 700.0
+const SHOOT_ELEVATION_DEG := 30.0
+const PROJECTILE_INHERIT_VEL := 0.25
 
 @onready var chassis: RigidBody2D = $Chassis
 @onready var front_wheel: RigidBody2D = $FrontWheel
@@ -88,7 +91,9 @@ func _apply_drag(move: float, grounded: bool) -> void:
 func _shoot() -> void:
 	var projectile := PROJECTILE_SCENE.instantiate()
 	projectile.global_position = muzzle.global_position
-	projectile.direction = _facing
+	var base_dir: Vector2 = muzzle.global_transform.x.normalized()
+	var aim_dir: Vector2 = base_dir.rotated(-deg_to_rad(SHOOT_ELEVATION_DEG))
+	projectile.velocity = aim_dir * PROJECTILE_SPEED + chassis.linear_velocity * PROJECTILE_INHERIT_VEL
 	projectile.shooter = chassis
 	get_tree().current_scene.add_child(projectile)
 	shoot_player.play()
