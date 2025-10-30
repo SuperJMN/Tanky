@@ -97,15 +97,11 @@ func _shoot() -> void:
 
 func _update_facing() -> void:
 	var vel := chassis.linear_velocity
-	var input := Input.get_axis("move_left", "move_right")
 	
-	if abs(vel.x) > 2.0:
-		_facing = sign(vel.x)
-	elif input != 0.0:
-		_facing = sign(input)
-	
-	sprite.flip_h = _facing < 0
-	muzzle.position.x = _muzzle_offset * _facing
+	# Always face right
+	_facing = 1
+	sprite.flip_h = false
+	muzzle.position.x = abs(_muzzle_offset)
 	
 	var grounded := ground_casts.any(func(c): return c.is_colliding())
 	var anim := "idle"
