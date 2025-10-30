@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://de2rij7qb0jos"]
+
+[ext_resource type="Script" uid="uid://bmpdp4ctdxl8c" path="res://scripts/explosion.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://b02p22qegyysr" path="res://sprites/aerial_explosion.png" id="2"]
+
+[node name="Explosion" type="Node2D"]
+z_index = 5
+script = ExtResource("1")
+fps = 30.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2")
+hframes = 26
+frame = 0
