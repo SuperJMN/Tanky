@@ -56,6 +56,22 @@ animations = [{
 }]
 [node name="Tanky" type="Node2D"]
 script = ExtResource("1")
+chassis_path = NodePath("RigidBody2D")
+front_wheel_path = NodePath("FrontWheel")
+rear_wheel_path = NodePath("RearWheel")
+sprite_path = NodePath("RigidBody2D/BodyAnim")
+gun_path = NodePath("RigidBody2D/Cannon")
+muzzle_path = NodePath("RigidBody2D/Cannon/Muzzle")
+jump_player_path = NodePath("RigidBody2D/JumpPlayer")
+shoot_player_path = NodePath("RigidBody2D/ShootPlayer")
+cannon_move_player_path = NodePath("RigidBody2D/CannonMovePlayer")
+ground_cast_front_path = NodePath("RigidBody2D/GroundCastFront")
+ground_cast_rear_path = NodePath("RigidBody2D/GroundCastRear")
+camera_path = NodePath("FollowCamera")
+shoot_timer_path = NodePath("ShootTimer")
+head_rig_path = NodePath("RigidBody2D/HeadRig")
+antenna_path = NodePath("RigidBody2D/HeadRig/Antenna")
+eye_path = NodePath("RigidBody2D/HeadRig/Eye")
 
 [node name="RigidBody2D" type="RigidBody2D" parent="."]
 collision_layer = 2
@@ -77,35 +93,35 @@ position = Vector2(13, -1.0000005)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("3_jbh7c")
 
-[node name="Node2D" type="Node2D" parent="RigidBody2D"]
+[node name="HeadRig" type="Node2D" parent="RigidBody2D"]
 
-[node name="Antenna" type="AnimatedSprite2D" parent="RigidBody2D/Node2D"]
+[node name="Antenna" type="AnimatedSprite2D" parent="RigidBody2D/HeadRig"]
 position = Vector2(-12, -35)
 scale = Vector2(1.6, 1.6)
 sprite_frames = ExtResource("10_ant")
 animation = &"idle"
 
-[node name="Body" type="Sprite2D" parent="RigidBody2D/Node2D"]
+[node name="Body" type="Sprite2D" parent="RigidBody2D/HeadRig"]
 position = Vector2(0.99999994, -7.9999995)
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_mjy1q")
 
-[node name="Head" type="Sprite2D" parent="RigidBody2D/Node2D"]
+[node name="Head" type="Sprite2D" parent="RigidBody2D/HeadRig"]
 position = Vector2(0, -25)
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_wl5jv")
 
-[node name="Eye" type="AnimatedSprite2D" parent="RigidBody2D/Node2D"]
+[node name="Eye" type="AnimatedSprite2D" parent="RigidBody2D/HeadRig"]
 z_index = 2
 position = Vector2(6, -27)
 scale = Vector2(1.6, 1.6)
 sprite_frames = SubResource("SpriteFrames_fsvaa")
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+[node name="BodyCollision" type="CollisionShape2D" parent="RigidBody2D"]
 position = Vector2(0, -1)
 rotation = 1.5708
 shape = SubResource("5")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="RigidBody2D"]
+[node name="BodyAnim" type="AnimatedSprite2D" parent="RigidBody2D"]
 position = Vector2(0, -1.9073486e-06)
 scale = Vector2(1.6, 1.6)
 sprite_frames = ExtResource("5")
@@ -142,11 +158,11 @@ physics_material_override = SubResource("1")
 linear_damp = 0.1
 angular_damp = 1.2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FrontWheel"]
+[node name="Collision" type="CollisionShape2D" parent="FrontWheel"]
 scale = Vector2(0.7, 0.7)
 shape = SubResource("3")
 
-[node name="Sprite2D" type="Sprite2D" parent="FrontWheel"]
+[node name="DebugSprite" type="Sprite2D" parent="FrontWheel"]
 visible = false
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("4")
@@ -159,12 +175,12 @@ physics_material_override = SubResource("1")
 linear_damp = 0.1
 angular_damp = 1.2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RearWheel"]
+[node name="Collision" type="CollisionShape2D" parent="RearWheel"]
 position = Vector2(9.536743e-07, -2.842171e-14)
 scale = Vector2(0.7, 0.7)
 shape = SubResource("3")
 
-[node name="Sprite2D" type="Sprite2D" parent="RearWheel"]
+[node name="DebugSprite" type="Sprite2D" parent="RearWheel"]
 visible = false
 position = Vector2(10.000001, -5.0000005)
 scale = Vector2(0.4, 0.4)
@@ -184,7 +200,7 @@ node_b = NodePath("../RearWheel")
 bias = 0.7
 softness = 0.1
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="FollowCamera" type="Camera2D" parent="."]
 position = Vector2(0, -18)
 offset = Vector2(0, -200)
 limit_smoothed = true

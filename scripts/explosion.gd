@@ -6,8 +6,10 @@ class_name Explosion
 @export var pitch_min: float = 0.92
 @export var pitch_max: float = 1.08
 
-@onready var sprite: Sprite2D = $Sprite2D
-@onready var sfx: AudioStreamPlayer2D = $SFX
+@export_node_path("Sprite2D") var sprite_path: NodePath
+@export_node_path("AudioStreamPlayer2D") var sfx_path: NodePath
+@onready var sprite: Sprite2D = get_node(sprite_path)
+@onready var sfx: AudioStreamPlayer2D = get_node(sfx_path)
 var _acc: float = 0.0
 var _frame_index: int = 0
 var _anim_finished: bool = false

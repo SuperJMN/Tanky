@@ -5,10 +5,13 @@ const PALMTREE_TEXTURES := [
 	preload("res://sprites/palmtree3.png")
 ]
 
-@onready var palm_container: Node2D = $ParallaxBackground/PalmTrees/PalmContainer
+@export_node_path("Node2D") var palm_container_path: NodePath
+@export_node_path("AudioStreamPlayer") var music_path: NodePath
+@onready var palm_container: Node2D = get_node(palm_container_path)
+@onready var music: AudioStreamPlayer = get_node(music_path)
 
 func _ready() -> void:
-	$Music.play()
+	music.play()
 	_spawn_palm_trees()
 
 func _spawn_palm_trees() -> void:

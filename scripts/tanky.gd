@@ -32,21 +32,40 @@ const ANGULAR_VEL_LIMIT := 7.0
 const GROUND_NORMAL_DOT_THRESHOLD := 0.6  # Accept surfaces close to "up"
 const GROUNDED_ASCENT_MAX := -30.0        # Consider grounded only if not moving up faster than this (px/s)
 
-@onready var chassis: RigidBody2D = $RigidBody2D
-@onready var front_wheel: RigidBody2D = $FrontWheel
-@onready var rear_wheel: RigidBody2D = $RearWheel
-@onready var sprite: AnimatedSprite2D = $RigidBody2D/AnimatedSprite2D
-@onready var gun: Node2D = $RigidBody2D/Cannon
-@onready var muzzle: Marker2D = $RigidBody2D/Cannon/Muzzle
-@onready var jump_player: AudioStreamPlayer2D = $RigidBody2D/JumpPlayer
-@onready var shoot_player: AudioStreamPlayer2D = $RigidBody2D/ShootPlayer
-@onready var cannon_move_player: AudioStreamPlayer2D = $RigidBody2D/CannonMovePlayer
-@onready var ground_casts: Array[RayCast2D] = [$RigidBody2D/GroundCastFront, $RigidBody2D/GroundCastRear]
-@onready var camera: Camera2D = $Camera2D
-@onready var shoot_timer: Timer = $ShootTimer
-@onready var head_rig: Node2D = $RigidBody2D/Node2D
-@onready var antenna: Node = $RigidBody2D/Node2D/Antenna
-@onready var eye: Node = $RigidBody2D/Node2D/Eye
+@export_node_path("RigidBody2D") var chassis_path: NodePath
+@export_node_path("RigidBody2D") var front_wheel_path: NodePath
+@export_node_path("RigidBody2D") var rear_wheel_path: NodePath
+@export_node_path("AnimatedSprite2D") var sprite_path: NodePath
+@export_node_path("Node2D") var gun_path: NodePath
+@export_node_path("Marker2D") var muzzle_path: NodePath
+@export_node_path("AudioStreamPlayer2D") var jump_player_path: NodePath
+@export_node_path("AudioStreamPlayer2D") var shoot_player_path: NodePath
+@export_node_path("AudioStreamPlayer2D") var cannon_move_player_path: NodePath
+@export_node_path("RayCast2D") var ground_cast_front_path: NodePath
+@export_node_path("RayCast2D") var ground_cast_rear_path: NodePath
+@export_node_path("Camera2D") var camera_path: NodePath
+@export_node_path("Timer") var shoot_timer_path: NodePath
+@export_node_path("Node2D") var head_rig_path: NodePath
+@export_node_path("Node") var antenna_path: NodePath
+@export_node_path("Node") var eye_path: NodePath
+
+@onready var chassis: RigidBody2D = get_node(chassis_path)
+@onready var front_wheel: RigidBody2D = get_node(front_wheel_path)
+@onready var rear_wheel: RigidBody2D = get_node(rear_wheel_path)
+@onready var sprite: AnimatedSprite2D = get_node(sprite_path)
+@onready var gun: Node2D = get_node(gun_path)
+@onready var muzzle: Marker2D = get_node(muzzle_path)
+@onready var jump_player: AudioStreamPlayer2D = get_node(jump_player_path)
+@onready var shoot_player: AudioStreamPlayer2D = get_node(shoot_player_path)
+@onready var cannon_move_player: AudioStreamPlayer2D = get_node(cannon_move_player_path)
+@onready var ground_cast_front: RayCast2D = get_node(ground_cast_front_path)
+@onready var ground_cast_rear: RayCast2D = get_node(ground_cast_rear_path)
+@onready var ground_casts: Array[RayCast2D] = [ground_cast_front, ground_cast_rear]
+@onready var camera: Camera2D = get_node(camera_path)
+@onready var shoot_timer: Timer = get_node(shoot_timer_path)
+@onready var head_rig: Node2D = get_node(head_rig_path)
+@onready var antenna: Node = get_node(antenna_path)
+@onready var eye: Node = get_node(eye_path)
 
 var _facing := 1
 var _accel_time := 0.0

@@ -7,8 +7,10 @@
 [node name="Explosion" type="Node2D"]
 z_index = 5
 script = ExtResource("1")
+sprite_path = NodePath("Sprite")
+sfx_path = NodePath("SFX")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="."]
 texture = ExtResource("2")
 hframes = 26
 
