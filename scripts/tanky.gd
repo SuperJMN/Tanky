@@ -144,7 +144,7 @@ func _update_gun_aim(delta: float) -> void:
 	if axis != 0.0:
 		var new_angle := gun.rotation + deg_to_rad(GUN_AIM_SPEED_DEG) * axis * delta
 		gun.rotation = clampf(new_angle, deg_to_rad(GUN_MIN_DEG), deg_to_rad(GUN_MAX_DEG))
-		# Start/maintain cannon movement SFX
+		# Start SFX; rely on resource loop settings for looping
 		if not cannon_move_player.playing:
 			var rng := RandomNumberGenerator.new()
 			rng.randomize()

@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cmqd6kpvcrl24" path="res://sprites/rect.png" id="4"]
 [ext_resource type="SpriteFrames" uid="uid://dp3qhyfsuuvuq" path="res://sprites/tanky_frames.tres" id="5"]
 [ext_resource type="Texture2D" uid="uid://dsqss6xaaign3" path="res://sprites/TankyEye.png" id="6_mftdd"]
-[ext_resource type="AudioStream" path="res://sounds/walk.mp3" id="7"]
+[ext_resource type="AudioStream" uid="uid://dbtt3lbwigj8w" path="res://sounds/servo2.wav" id="9_dw7xg"]
 
 [sub_resource type="PhysicsMaterial" id="1"]
 friction = 3.5
@@ -91,7 +91,7 @@ volume_db = 15.0
 bus = &"SFX"
 
 [node name="CannonMovePlayer" type="AudioStreamPlayer2D" parent="RigidBody2D"]
-stream = ExtResource("7")
+stream = ExtResource("9_dw7xg")
 volume_db = 6.0
 bus = &"SFX"
 

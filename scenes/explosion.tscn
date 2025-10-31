@@ -2,18 +2,16 @@
 
 [ext_resource type="Script" uid="uid://bmpdp4ctdxl8c" path="res://scripts/explosion.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://b02p22qegyysr" path="res://sprites/aerial_explosion.png" id="2"]
-[ext_resource type="AudioStream" uid="uid://explosion_sfx" path="res://sounds/explosion.wav" id="3"]
+[ext_resource type="AudioStream" uid="uid://0tl048b3llpg" path="res://sounds/explosion.wav" id="3"]
 
 [node name="Explosion" type="Node2D"]
 z_index = 5
 script = ExtResource("1")
-fps = 30.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2")
 hframes = 26
-frame = 0
 
 [node name="SFX" type="AudioStreamPlayer2D" parent="."]
-bus = &"SFX"
 stream = ExtResource("3")
+bus = &"SFX"
