@@ -44,3 +44,9 @@ func _process(delta: float) -> void:
 func _on_sfx_finished() -> void:
 	if _anim_finished:
 		queue_free()
+
+func _exit_tree() -> void:
+	if sfx:
+		sfx.stop()
+		# Desreferenciar el stream para no retener el recurso en salida
+		sfx.stream = null

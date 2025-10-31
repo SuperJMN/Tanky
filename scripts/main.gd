@@ -11,8 +11,23 @@ const PALMTREE_TEXTURES := [
 @onready var music: AudioStreamPlayer = get_node(music_path)
 
 func _ready() -> void:
+	if _is_headless():
+		if music:
+			music.stop()
+			music.stream = null
+		return
+	music.stream = load("res://sounds/ladynavigation.mp3")
 	music.play()
 	_spawn_palm_trees()
+
+func _is_headless() -> bool:
+	return OS.has_feature("headless") or (Engine.has_singleton("DisplayServer") and DisplayServer.get_name() == "headless")
+
+func _exit_tree() -> void:
+	if music:
+		music.stop()
+		# Liberar el recurso para evitar que quede "in use" al salir
+		music.stream = null
 
 func _spawn_palm_trees() -> void:
 	var rng := RandomNumberGenerator.new()

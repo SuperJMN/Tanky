@@ -73,8 +73,10 @@ var _last_move_dir := 0.0
 var _head_bob_t := 0.0
 var _head_rig_base_y := 0.0
 var _blink_rng := RandomNumberGenerator.new()
+var _alive := true
 
 func _ready() -> void:
+
 	sprite.play("idle")
 	camera.make_current()
 	
@@ -86,6 +88,10 @@ func _ready() -> void:
 	chassis.angular_damp = 4.0
 	front_wheel.angular_damp = 2.4
 	rear_wheel.angular_damp = 2.4
+	
+	# En headless evitamos timers/sonidos de cosmetica
+	if OS.has_feature("headless") or (Engine.has_singleton("DisplayServer") and DisplayServer.get_name() == "headless"):
+		return
 	
 	# Initialize eye/blink behavior (only if AnimatedSprite2D is available)
 	_blink_rng.randomize()
@@ -178,7 +184,7 @@ func _update_gun_aim(delta: float) -> void:
 		var new_angle := gun.rotation + deg_to_rad(GUN_AIM_SPEED_DEG) * axis * delta
 		gun.rotation = clampf(new_angle, deg_to_rad(GUN_MIN_DEG), deg_to_rad(GUN_MAX_DEG))
 		# Start SFX; rely on resource loop settings for looping
-		if not cannon_move_player.playing:
+		if not OS.has_feature("headless") and not cannon_move_player.playing:
 			var rng := RandomNumberGenerator.new()
 			rng.randomize()
 			cannon_move_player.pitch_scale = rng.randf_range(0.96, 1.06)
@@ -194,7 +200,8 @@ func _shoot() -> void:
 	projectile.velocity = aim_dir * PROJECTILE_SPEED + chassis.linear_velocity * PROJECTILE_INHERIT_VEL
 	projectile.shooter = chassis
 	get_tree().current_scene.add_child(projectile)
-	shoot_player.play()
+	if not OS.has_feature("headless"):
+		shoot_player.play()
 	shoot_timer.start()
 
 
@@ -232,22 +239,43 @@ func _update_facing() -> void:
 		if ant.animation != ant_anim:
 			ant.play(ant_anim)
 
+func _exit_tree() -> void:
+	_alive = false
+	if cannon_move_player:
+		cannon_move_player.stop()
+	if jump_player:
+		jump_player.stop()
+	if shoot_player:
+		shoot_player.stop()
+	if shoot_timer:
+		shoot_timer.stop()
+
 # --- Eye blink ---
 func _start_blink_loop() -> void:
-	while eye and eye is AnimatedSprite2D:
+	while _alive and eye and eye is AnimatedSprite2D:
 		var wait := _blink_rng.randf_range(2.0, 6.0)
 		await get_tree().create_timer(wait).timeout
+		if not _alive:
+			break
 		await _blink_once()
+		if not _alive:
+			break
 		if _blink_rng.randf() < 0.15:
 			await get_tree().create_timer(0.18).timeout
+			if not _alive:
+				break
 			await _blink_once()
 
 func _blink_once() -> void:
+	if not _alive:
+		return
 	if not eye or not (eye is AnimatedSprite2D):
 		return
 	# Manually step frames: open -> half -> closed -> half -> open
 	var e := eye as AnimatedSprite2D
 	e.stop()
 	for f in [0, 1, 2, 1, 0]:
+		if not _alive:
+			return
 		e.frame = f
 		await get_tree().create_timer(_blink_rng.randf_range(0.03, 0.07)).timeout
