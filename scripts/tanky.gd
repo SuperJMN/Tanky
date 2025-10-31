@@ -13,8 +13,9 @@ const DRIVE_FORCE := 650.0
 const JUMP_HEIGHT := 150.0  # 1.5m in pixels
 const PROJECTILE_SCENE := preload("res://scenes/projectile.tscn")
 const PROJECTILE_SPEED := 700.0
-const SHOOT_ELEVATION_DEG := 30.0
 const PROJECTILE_INHERIT_VEL := 0.25
+const GUN_MIN_DEG := -60.0
+const GUN_MAX_DEG := 10.0
 
 # Air auto-balance controller (scaled by mass)
 const AIR_TILT_KP_PER_MASS := 800.0
@@ -26,7 +27,8 @@ const ANGULAR_VEL_LIMIT := 7.0
 @onready var front_wheel: RigidBody2D = $FrontWheel
 @onready var rear_wheel: RigidBody2D = $RearWheel
 @onready var sprite: AnimatedSprite2D = $Chassis/AnimatedSprite2D
-@onready var muzzle: Marker2D = $Chassis/Muzzle
+@onready var gun: Node2D = $Chassis/Gun
+@onready var muzzle: Marker2D = $Chassis/Gun/Muzzle
 @onready var jump_player: AudioStreamPlayer2D = $Chassis/JumpPlayer
 @onready var shoot_player: AudioStreamPlayer2D = $Chassis/ShootPlayer
 @onready var ground_casts: Array[RayCast2D] = [$Chassis/GroundCastFront, $Chassis/GroundCastRear]
@@ -34,12 +36,10 @@ const ANGULAR_VEL_LIMIT := 7.0
 @onready var shoot_timer: Timer = $ShootTimer
 
 var _facing := 1
-var _muzzle_offset := 0.0
 var _accel_time := 0.0
 var _last_move_dir := 0.0
 
 func _ready() -> void:
-	_muzzle_offset = muzzle.position.x
 	sprite.play("idle")
 	camera.make_current()
 	
@@ -55,6 +55,7 @@ func _physics_process(delta: float) -> void:
 	_update_acceleration(move, delta)
 	_apply_drive(move, grounded)
 	_apply_drag(move, grounded)
+	_update_gun_aim()
 	
 	# Air auto-balance: keep chassis near 0° while airborne
 	if not grounded:
@@ -110,11 +111,15 @@ func _apply_drag(move: float, grounded: bool) -> void:
 		for wheel in [front_wheel, rear_wheel]:
 			wheel.apply_torque(-wheel.angular_velocity * BRAKE_TORQUE)
 
+func _update_gun_aim() -> void:
+	var mouse := get_global_mouse_position()
+	var world_angle := (mouse - gun.global_position).angle()
+	var local_angle := world_angle - chassis.global_rotation
+	gun.rotation = clampf(local_angle, deg_to_rad(GUN_MIN_DEG), deg_to_rad(GUN_MAX_DEG))
 func _shoot() -> void:
 	var projectile := PROJECTILE_SCENE.instantiate()
 	projectile.global_position = muzzle.global_position
-	var base_dir: Vector2 = muzzle.global_transform.x.normalized()
-	var aim_dir: Vector2 = base_dir.rotated(-deg_to_rad(SHOOT_ELEVATION_DEG))
+	var aim_dir: Vector2 = muzzle.global_transform.x.normalized()
 	projectile.velocity = aim_dir * PROJECTILE_SPEED + chassis.linear_velocity * PROJECTILE_INHERIT_VEL
 	projectile.shooter = chassis
 	get_tree().current_scene.add_child(projectile)
@@ -128,7 +133,6 @@ func _update_facing() -> void:
 	# Always face right
 	_facing = 1
 	sprite.flip_h = false
-	muzzle.position.x = abs(_muzzle_offset)
 	
 	var grounded := ground_casts.any(func(c): return c.is_colliding())
 	var anim := "idle"

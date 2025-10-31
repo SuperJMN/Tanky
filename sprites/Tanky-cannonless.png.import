@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0lgaqtrjjk5f"
-path="res://.godot/imported/explosion.png-dd7434c2b7b548e19d49e62996eee12b.ctex"
+uid="uid://cc05gygsfs4yg"
+path="res://.godot/imported/Tanky-cannonless.png-09f55818d831b12c3700ae34c854f1f6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/explosion.png"
-dest_files=["res://.godot/imported/explosion.png-dd7434c2b7b548e19d49e62996eee12b.ctex"]
+source_file="res://sprites/Tanky-cannonless.png"
+dest_files=["res://.godot/imported/Tanky-cannonless.png-09f55818d831b12c3700ae34c854f1f6.ctex"]
 
 [params]
 
