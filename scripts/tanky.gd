@@ -45,8 +45,8 @@ const GROUNDED_ASCENT_MAX := -30.0        # Consider grounded only if not moving
 @onready var camera: Camera2D = $Camera2D
 @onready var shoot_timer: Timer = $ShootTimer
 @onready var head_rig: Node2D = $RigidBody2D/Node2D
-@onready var antenna: AnimatedSprite2D = $RigidBody2D/Node2D/Antenna
-@onready var eye: AnimatedSprite2D = $RigidBody2D/Node2D/Eye
+@onready var antenna: Node = $RigidBody2D/Node2D/Antenna
+@onready var eye: Node = $RigidBody2D/Node2D/Eye
 
 var _facing := 1
 var _accel_time := 0.0
@@ -68,11 +68,12 @@ func _ready() -> void:
 	front_wheel.angular_damp = 2.4
 	rear_wheel.angular_damp = 2.4
 	
-	# Initialize eye/blink behavior
+	# Initialize eye/blink behavior (only if AnimatedSprite2D is available)
 	_blink_rng.randomize()
-	if eye:
-		eye.stop()
-		eye.frame = 0
+	if eye and eye is AnimatedSprite2D:
+		var e := eye as AnimatedSprite2D
+		e.stop()
+		e.frame = 0
 		_start_blink_loop()
 
 func _physics_process(delta: float) -> void:
@@ -204,16 +205,17 @@ func _update_facing() -> void:
 	if sprite.animation != anim:
 		sprite.play(anim)
 	# Keep antenna in sync, using "fall" when descending
-	if antenna:
+	if antenna and antenna is AnimatedSprite2D:
 		var ant_anim := anim
 		if not grounded and vel.y > 20.0:
 			ant_anim = "fall"
-		if antenna.animation != ant_anim:
-			antenna.play(ant_anim)
+		var ant := antenna as AnimatedSprite2D
+		if ant.animation != ant_anim:
+			ant.play(ant_anim)
 
 # --- Eye blink ---
 func _start_blink_loop() -> void:
-	while true:
+	while eye and eye is AnimatedSprite2D:
 		var wait := _blink_rng.randf_range(2.0, 6.0)
 		await get_tree().create_timer(wait).timeout
 		await _blink_once()
@@ -222,10 +224,11 @@ func _start_blink_loop() -> void:
 			await _blink_once()
 
 func _blink_once() -> void:
-	if not eye:
+	if not eye or not (eye is AnimatedSprite2D):
 		return
 	# Manually step frames: open -> half -> closed -> half -> open
-	eye.stop()
+	var e := eye as AnimatedSprite2D
+	e.stop()
 	for f in [0, 1, 2, 1, 0]:
-		eye.frame = f
+		e.frame = f
 		await get_tree().create_timer(_blink_rng.randf_range(0.03, 0.07)).timeout
