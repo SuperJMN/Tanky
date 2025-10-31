@@ -2,9 +2,13 @@ extends Area2D
 class_name Projectile
 
 const EXPLOSION_SCENE := preload("res://scenes/explosion.tscn")
+const EXPLOSION_SOUND := preload("res://sounds/explosion.wav")
 
 @export var lifespan := 2.5
 @export var gravity_scale := 1.0
+@export var explosion_volume_db: float = 6.0
+@export var explosion_pitch_min: float = 0.92
+@export var explosion_pitch_max: float = 1.08
 
 var velocity: Vector2 = Vector2.ZERO
 var shooter: Node
@@ -34,3 +38,15 @@ func _spawn_explosion() -> void:
 	var explosion := EXPLOSION_SCENE.instantiate()
 	explosion.global_position = global_position
 	get_tree().current_scene.add_child(explosion)
+	# Play explosion SFX at impact point on SFX bus as a detached one-shot
+	var sfx := AudioStreamPlayer2D.new()
+	sfx.bus = "SFX"
+	sfx.stream = EXPLOSION_SOUND
+	sfx.global_position = global_position
+	sfx.volume_db = explosion_volume_db
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	sfx.pitch_scale = rng.randf_range(explosion_pitch_min, explosion_pitch_max)
+	get_tree().current_scene.add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(Callable(sfx, "queue_free"))
