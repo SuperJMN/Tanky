@@ -17,6 +17,11 @@ const PROJECTILE_INHERIT_VEL := 0.25
 const GUN_MIN_DEG := -60.0
 const GUN_MAX_DEG := 10.0
 
+# Head bobbing
+const HEAD_BOB_AMPLITUDE := 0.8
+const HEAD_BOB_FREQ := 3.0
+const HEAD_BOB_SPEED_THRESHOLD := 40.0
+
 # Air auto-balance controller (scaled by mass)
 const AIR_TILT_KP_PER_MASS := 800.0
 const AIR_TILT_KD_PER_MASS := 120.0
@@ -34,14 +39,21 @@ const ANGULAR_VEL_LIMIT := 7.0
 @onready var ground_casts: Array[RayCast2D] = [$RigidBody2D/GroundCastFront, $RigidBody2D/GroundCastRear]
 @onready var camera: Camera2D = $Camera2D
 @onready var shoot_timer: Timer = $ShootTimer
+@onready var head_rig: Node2D = $RigidBody2D/Node2D
 
 var _facing := 1
 var _accel_time := 0.0
 var _last_move_dir := 0.0
+var _head_bob_t := 0.0
+var _head_rig_base_y := 0.0
 
 func _ready() -> void:
 	sprite.play("idle")
 	camera.make_current()
+	
+	# Cache head rig base position
+	if head_rig:
+		_head_rig_base_y = head_rig.position.y
 	
 	# Increase angular damping to reduce wobble
 	chassis.angular_damp = 4.0
@@ -55,6 +67,7 @@ func _physics_process(delta: float) -> void:
 	_update_acceleration(move, delta)
 	_apply_drive(move, grounded)
 	_apply_drag(move, grounded)
+	_update_head_bob(grounded, delta)
 	_update_gun_aim()
 	
 	# Air auto-balance: keep chassis near 0° while airborne
@@ -110,6 +123,19 @@ func _apply_drag(move: float, grounded: bool) -> void:
 	if move == 0.0:
 		for wheel in [front_wheel, rear_wheel]:
 			wheel.apply_torque(-wheel.angular_velocity * BRAKE_TORQUE)
+
+func _update_head_bob(grounded: bool, delta: float) -> void:
+	if not head_rig or not chassis:
+		return
+	var speed := absf(chassis.linear_velocity.x)
+	if grounded and speed > HEAD_BOB_SPEED_THRESHOLD:
+		var freq_scale := clampf(speed / 200.0, 0.5, 1.1)
+		_head_bob_t += delta * HEAD_BOB_FREQ * freq_scale
+		var offset := sin(_head_bob_t * TAU) * HEAD_BOB_AMPLITUDE
+		head_rig.position.y = _head_rig_base_y + offset
+	else:
+		# Smoothly return to base when not walking
+		head_rig.position.y = move_toward(head_rig.position.y, _head_rig_base_y, 20.0 * delta)
 
 func _update_gun_aim() -> void:
 	var mouse := get_global_mouse_position()

@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://dwxypa12ogkws"]
+[gd_scene load_steps=13 format=3 uid="uid://dwxypa12ogkws"]
 
 [ext_resource type="Script" uid="uid://bnbl65m2at2j5" path="res://scripts/tanky.gd" id="1"]
 [ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://sounds/jump.wav" id="2"]
 [ext_resource type="AudioStream" uid="uid://cck36rk0lf51x" path="res://sounds/shoot.wav" id="3"]
 [ext_resource type="Texture2D" uid="uid://dgqwxgo6sb1sr" path="res://sprites/cannon.png" id="3_jbh7c"]
+[ext_resource type="Texture2D" uid="uid://cyj6ulb8wn3es" path="res://sprites/TankyBody.png" id="3_mjy1q"]
 [ext_resource type="Texture2D" uid="uid://bb1eeae2rfx4y" path="res://sprites/Head.png" id="3_wl5jv"]
 [ext_resource type="Texture2D" uid="uid://cmqd6kpvcrl24" path="res://sprites/rect.png" id="4"]
 [ext_resource type="SpriteFrames" uid="uid://dp3qhyfsuuvuq" path="res://sprites/tanky_frames.tres" id="5"]
@@ -44,15 +45,20 @@ texture = ExtResource("3_jbh7c")
 
 [node name="Node2D" type="Node2D" parent="RigidBody2D"]
 
+[node name="Body" type="Sprite2D" parent="RigidBody2D/Node2D"]
+position = Vector2(0.99999994, -7.9999995)
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("3_mjy1q")
+
 [node name="Head" type="Sprite2D" parent="RigidBody2D/Node2D"]
-position = Vector2(-0.99999994, -25)
+position = Vector2(0, -24)
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_wl5jv")
 
 [node name="Eye" type="Sprite2D" parent="RigidBody2D/Node2D"]
 z_index = 2
-position = Vector2(4, -27.000002)
-scale = Vector2(1.4, 1.4)
+position = Vector2(6, -27)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("6_mftdd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
@@ -60,10 +66,10 @@ position = Vector2(0, -7)
 shape = SubResource("2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="RigidBody2D"]
-position = Vector2(0, -18)
+position = Vector2(0, -1.9073486e-06)
 scale = Vector2(1.6, 1.6)
 sprite_frames = ExtResource("5")
-animation = &"idle"
+animation = &"move"
 
 [node name="GroundCastFront" type="RayCast2D" parent="RigidBody2D"]
 position = Vector2(22, -6)
