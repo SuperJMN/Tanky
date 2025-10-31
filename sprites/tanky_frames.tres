@@ -1,6 +1,6 @@
 [gd_resource type="SpriteFrames" load_steps=12 format=3 uid="uid://dp3qhyfsuuvuq"]
 
-[ext_resource type="Texture2D" uid="uid://cc05gygsfs4yg" path="res://sprites/Tanky-cannonless.png" id="1_fu3fg"]
+[ext_resource type="Texture2D" uid="uid://cyj6ulb8wn3es" path="res://sprites/TankyBody.png" id="1_fu3fg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v3v1x"]
 atlas = ExtResource("1_fu3fg")
@@ -8,7 +8,7 @@ region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_oeytq"]
 atlas = ExtResource("1_fu3fg")
-region = Rect2(0, 0, 32, 32)
+region = Rect2(224, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5vvt7"]
 atlas = ExtResource("1_fu3fg")

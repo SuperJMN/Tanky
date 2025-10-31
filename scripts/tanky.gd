@@ -23,15 +23,15 @@ const AIR_TILT_KD_PER_MASS := 120.0
 const AIR_MAX_TORQUE_PER_MASS := 1500.0
 const ANGULAR_VEL_LIMIT := 7.0
 
-@onready var chassis: RigidBody2D = $Chassis
+@onready var chassis: RigidBody2D = $RigidBody2D
 @onready var front_wheel: RigidBody2D = $FrontWheel
 @onready var rear_wheel: RigidBody2D = $RearWheel
-@onready var sprite: AnimatedSprite2D = $Chassis/AnimatedSprite2D
-@onready var gun: Node2D = $Chassis/Gun
-@onready var muzzle: Marker2D = $Chassis/Gun/Muzzle
-@onready var jump_player: AudioStreamPlayer2D = $Chassis/JumpPlayer
-@onready var shoot_player: AudioStreamPlayer2D = $Chassis/ShootPlayer
-@onready var ground_casts: Array[RayCast2D] = [$Chassis/GroundCastFront, $Chassis/GroundCastRear]
+@onready var sprite: AnimatedSprite2D = $RigidBody2D/AnimatedSprite2D
+@onready var gun: Node2D = $RigidBody2D/Cannon
+@onready var muzzle: Marker2D = $RigidBody2D/Cannon/Muzzle
+@onready var jump_player: AudioStreamPlayer2D = $RigidBody2D/JumpPlayer
+@onready var shoot_player: AudioStreamPlayer2D = $RigidBody2D/ShootPlayer
+@onready var ground_casts: Array[RayCast2D] = [$RigidBody2D/GroundCastFront, $RigidBody2D/GroundCastRear]
 @onready var camera: Camera2D = $Camera2D
 @onready var shoot_timer: Timer = $ShootTimer
 

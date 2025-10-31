@@ -1,11 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://dwxypa12ogkws"]
+[gd_scene load_steps=12 format=3 uid="uid://dwxypa12ogkws"]
 
 [ext_resource type="Script" uid="uid://bnbl65m2at2j5" path="res://scripts/tanky.gd" id="1"]
 [ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://sounds/jump.wav" id="2"]
 [ext_resource type="AudioStream" uid="uid://cck36rk0lf51x" path="res://sounds/shoot.wav" id="3"]
 [ext_resource type="Texture2D" uid="uid://dgqwxgo6sb1sr" path="res://sprites/cannon.png" id="3_jbh7c"]
+[ext_resource type="Texture2D" uid="uid://bb1eeae2rfx4y" path="res://sprites/Head.png" id="3_wl5jv"]
 [ext_resource type="Texture2D" uid="uid://cmqd6kpvcrl24" path="res://sprites/rect.png" id="4"]
 [ext_resource type="SpriteFrames" uid="uid://dp3qhyfsuuvuq" path="res://sprites/tanky_frames.tres" id="5"]
+[ext_resource type="Texture2D" uid="uid://dsqss6xaaign3" path="res://sprites/TankyEye.png" id="6_mftdd"]
 
 [sub_resource type="PhysicsMaterial" id="1"]
 friction = 3.5
@@ -20,7 +22,7 @@ radius = 12.0
 [node name="Tanky" type="Node2D"]
 script = ExtResource("1")
 
-[node name="Chassis" type="RigidBody2D" parent="."]
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
 collision_layer = 2
 mass = 50.0
 physics_material_override = SubResource("1")
@@ -29,41 +31,54 @@ center_of_mass = Vector2(0, 10)
 linear_damp = 0.1
 angular_damp = 3.0
 
-[node name="Gun" type="Node2D" parent="Chassis"]
-position = Vector2(0, -18)
+[node name="Cannon" type="Node2D" parent="RigidBody2D"]
+position = Vector2(5, -22)
 
-[node name="Muzzle" type="Marker2D" parent="Chassis/Gun"]
+[node name="Muzzle" type="Marker2D" parent="RigidBody2D/Cannon"]
 position = Vector2(24, -5)
 
-[node name="Sprite2D" type="Sprite2D" parent="Chassis/Gun"]
-position = Vector2(18, -6)
+[node name="CannonSprite" type="Sprite2D" parent="RigidBody2D/Cannon"]
+position = Vector2(13, -1.0000005)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("3_jbh7c")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Chassis"]
+[node name="Node2D" type="Node2D" parent="RigidBody2D"]
+
+[node name="Head" type="Sprite2D" parent="RigidBody2D/Node2D"]
+position = Vector2(-0.99999994, -25)
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("3_wl5jv")
+
+[node name="Eye" type="Sprite2D" parent="RigidBody2D/Node2D"]
+z_index = 2
+position = Vector2(4, -27.000002)
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("6_mftdd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
 position = Vector2(0, -7)
 shape = SubResource("2")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Chassis"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="RigidBody2D"]
 position = Vector2(0, -18)
 scale = Vector2(1.6, 1.6)
 sprite_frames = ExtResource("5")
 animation = &"idle"
 
-[node name="GroundCastFront" type="RayCast2D" parent="Chassis"]
+[node name="GroundCastFront" type="RayCast2D" parent="RigidBody2D"]
 position = Vector2(22, -6)
 target_position = Vector2(0, 36)
 
-[node name="GroundCastRear" type="RayCast2D" parent="Chassis"]
+[node name="GroundCastRear" type="RayCast2D" parent="RigidBody2D"]
 position = Vector2(-22, -6)
 target_position = Vector2(0, 36)
 
-[node name="JumpPlayer" type="AudioStreamPlayer2D" parent="Chassis"]
+[node name="JumpPlayer" type="AudioStreamPlayer2D" parent="RigidBody2D"]
 stream = ExtResource("2")
 volume_db = 10.0
 bus = &"SFX"
 
-[node name="ShootPlayer" type="AudioStreamPlayer2D" parent="Chassis"]
+[node name="ShootPlayer" type="AudioStreamPlayer2D" parent="RigidBody2D"]
 stream = ExtResource("3")
 volume_db = 10.0
 bus = &"SFX"
@@ -108,14 +123,14 @@ texture = ExtResource("4")
 
 [node name="FrontJoint" type="PinJoint2D" parent="."]
 position = Vector2(17, -1)
-node_a = NodePath("../Chassis")
+node_a = NodePath("../RigidBody2D")
 node_b = NodePath("../FrontWheel")
 bias = 0.7
 softness = 0.1
 
 [node name="RearJoint" type="PinJoint2D" parent="."]
 position = Vector2(-16, -1)
-node_a = NodePath("../Chassis")
+node_a = NodePath("../RigidBody2D")
 node_b = NodePath("../RearWheel")
 bias = 0.7
 softness = 0.1

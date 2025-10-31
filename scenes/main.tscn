@@ -43,7 +43,7 @@ position = Vector2(146, 322)
 scale = Vector2(3, 3)
 
 [node name="Tanky" parent="World" instance=ExtResource("2")]
-position = Vector2(204, 590)
+position = Vector2(205, 590)
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3")
