@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dwxypa12ogkws"]
+[gd_scene load_steps=14 format=3 uid="uid://dwxypa12ogkws"]
 
 [ext_resource type="Script" uid="uid://bnbl65m2at2j5" path="res://scripts/tanky.gd" id="1"]
 [ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://sounds/jump.wav" id="2"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cmqd6kpvcrl24" path="res://sprites/rect.png" id="4"]
 [ext_resource type="SpriteFrames" uid="uid://dp3qhyfsuuvuq" path="res://sprites/tanky_frames.tres" id="5"]
 [ext_resource type="Texture2D" uid="uid://dsqss6xaaign3" path="res://sprites/TankyEye.png" id="6_mftdd"]
+[ext_resource type="AudioStream" path="res://sounds/walk.mp3" id="7"]
 
 [sub_resource type="PhysicsMaterial" id="1"]
 friction = 3.5
@@ -87,6 +88,11 @@ bus = &"SFX"
 [node name="ShootPlayer" type="AudioStreamPlayer2D" parent="RigidBody2D"]
 stream = ExtResource("3")
 volume_db = 15.0
+bus = &"SFX"
+
+[node name="CannonMovePlayer" type="AudioStreamPlayer2D" parent="RigidBody2D"]
+stream = ExtResource("7")
+volume_db = 6.0
 bus = &"SFX"
 
 [node name="FrontWheel" type="RigidBody2D" parent="."]

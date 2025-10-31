@@ -37,6 +37,7 @@ const ANGULAR_VEL_LIMIT := 7.0
 @onready var muzzle: Marker2D = $RigidBody2D/Cannon/Muzzle
 @onready var jump_player: AudioStreamPlayer2D = $RigidBody2D/JumpPlayer
 @onready var shoot_player: AudioStreamPlayer2D = $RigidBody2D/ShootPlayer
+@onready var cannon_move_player: AudioStreamPlayer2D = $RigidBody2D/CannonMovePlayer
 @onready var ground_casts: Array[RayCast2D] = [$RigidBody2D/GroundCastFront, $RigidBody2D/GroundCastRear]
 @onready var camera: Camera2D = $Camera2D
 @onready var shoot_timer: Timer = $ShootTimer
@@ -143,6 +144,16 @@ func _update_gun_aim(delta: float) -> void:
 	if axis != 0.0:
 		var new_angle := gun.rotation + deg_to_rad(GUN_AIM_SPEED_DEG) * axis * delta
 		gun.rotation = clampf(new_angle, deg_to_rad(GUN_MIN_DEG), deg_to_rad(GUN_MAX_DEG))
+		# Start/maintain cannon movement SFX
+		if not cannon_move_player.playing:
+			var rng := RandomNumberGenerator.new()
+			rng.randomize()
+			cannon_move_player.pitch_scale = rng.randf_range(0.96, 1.06)
+			cannon_move_player.play()
+	else:
+		# Stop SFX when not aiming
+		if cannon_move_player.playing:
+			cannon_move_player.stop()
 func _shoot() -> void:
 	var projectile := PROJECTILE_SCENE.instantiate()
 	projectile.global_position = muzzle.global_position
