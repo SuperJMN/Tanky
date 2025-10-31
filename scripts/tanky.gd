@@ -28,6 +28,9 @@ const AIR_TILT_KP_PER_MASS := 800.0
 const AIR_TILT_KD_PER_MASS := 120.0
 const AIR_MAX_TORQUE_PER_MASS := 1500.0
 const ANGULAR_VEL_LIMIT := 7.0
+# Grounding filters
+const GROUND_NORMAL_DOT_THRESHOLD := 0.6  # Accept surfaces close to "up"
+const GROUNDED_ASCENT_MAX := -30.0        # Consider grounded only if not moving up faster than this (px/s)
 
 @onready var chassis: RigidBody2D = $RigidBody2D
 @onready var front_wheel: RigidBody2D = $FrontWheel
@@ -42,6 +45,7 @@ const ANGULAR_VEL_LIMIT := 7.0
 @onready var camera: Camera2D = $Camera2D
 @onready var shoot_timer: Timer = $ShootTimer
 @onready var head_rig: Node2D = $RigidBody2D/Node2D
+@onready var antenna: AnimatedSprite2D = $RigidBody2D/Node2D/Antenna
 
 var _facing := 1
 var _accel_time := 0.0
@@ -64,7 +68,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var move := Input.get_axis("move_left", "move_right")
-	var grounded := ground_casts.any(func(c): return c.is_colliding())
+	var grounded := _is_grounded()
 	
 	_update_acceleration(move, delta)
 	_apply_drive(move, grounded)
@@ -165,6 +169,15 @@ func _shoot() -> void:
 	shoot_timer.start()
 
 
+func _is_grounded() -> bool:
+	# Consider grounded only on near-upward normals and while not ascending fast
+	for c in ground_casts:
+		if c.is_colliding():
+			var n: Vector2 = c.get_collision_normal()
+			if n.dot(Vector2.UP) > GROUND_NORMAL_DOT_THRESHOLD and chassis.linear_velocity.y >= GROUNDED_ASCENT_MAX:
+				return true
+	return false
+
 func _update_facing() -> void:
 	var vel := chassis.linear_velocity
 	
@@ -172,7 +185,7 @@ func _update_facing() -> void:
 	_facing = 1
 	sprite.flip_h = false
 	
-	var grounded := ground_casts.any(func(c): return c.is_colliding())
+	var grounded := _is_grounded()
 	var anim := "idle"
 	if not grounded and vel.y < -20.0:
 		anim = "jump"
@@ -181,3 +194,10 @@ func _update_facing() -> void:
 	
 	if sprite.animation != anim:
 		sprite.play(anim)
+	# Keep antenna in sync, using "fall" when descending
+	if antenna:
+		var ant_anim := anim
+		if not grounded and vel.y > 20.0:
+			ant_anim = "fall"
+		if antenna.animation != ant_anim:
+			antenna.play(ant_anim)

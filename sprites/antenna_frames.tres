@@ -1,0 +1,91 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3 uid="uid://dy7qd8te0uncc"]
+
+[ext_resource type="Texture2D" uid="uid://cwpbsa804j25i" path="res://sprites/Antenna.png" id="1_antenna"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a2"]
+atlas = ExtResource("1_antenna")
+region = Rect2(30, 0, 15, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a0"]
+atlas = ExtResource("1_antenna")
+region = Rect2(0, 0, 15, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a7"]
+atlas = ExtResource("1_antenna")
+region = Rect2(105, 0, 15, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a1"]
+atlas = ExtResource("1_antenna")
+region = Rect2(15, 0, 15, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a3"]
+atlas = ExtResource("1_antenna")
+region = Rect2(45, 0, 15, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a4"]
+atlas = ExtResource("1_antenna")
+region = Rect2(60, 0, 15, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a5"]
+atlas = ExtResource("1_antenna")
+region = Rect2(75, 0, 15, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a6"]
+atlas = ExtResource("1_antenna")
+region = Rect2(90, 0, 15, 16)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a2")
+}],
+"loop": false,
+"name": &"fall",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a0")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a7")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a7")
+}],
+"loop": true,
+"name": &"move",
+"speed": 12.0
+}]

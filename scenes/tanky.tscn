@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dwxypa12ogkws"]
+[gd_scene load_steps=15 format=3 uid="uid://dwxypa12ogkws"]
 
 [ext_resource type="Script" uid="uid://bnbl65m2at2j5" path="res://scripts/tanky.gd" id="1"]
 [ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://sounds/jump.wav" id="2"]
@@ -10,6 +10,7 @@
 [ext_resource type="SpriteFrames" uid="uid://dp3qhyfsuuvuq" path="res://sprites/tanky_frames.tres" id="5"]
 [ext_resource type="Texture2D" uid="uid://dsqss6xaaign3" path="res://sprites/TankyEye.png" id="6_mftdd"]
 [ext_resource type="AudioStream" uid="uid://dbtt3lbwigj8w" path="res://sounds/servo2.wav" id="9_dw7xg"]
+[ext_resource type="SpriteFrames" uid="uid://dy7qd8te0uncc" path="res://sprites/antenna_frames.tres" id="10_ant"]
 
 [sub_resource type="PhysicsMaterial" id="1"]
 friction = 3.5
@@ -46,6 +47,12 @@ texture = ExtResource("3_jbh7c")
 
 [node name="Node2D" type="Node2D" parent="RigidBody2D"]
 
+[node name="Antenna" type="AnimatedSprite2D" parent="RigidBody2D/Node2D"]
+position = Vector2(-12, -35)
+scale = Vector2(1.6, 1.6)
+sprite_frames = ExtResource("10_ant")
+animation = &"idle"
+
 [node name="Body" type="Sprite2D" parent="RigidBody2D/Node2D"]
 position = Vector2(0.99999994, -7.9999995)
 scale = Vector2(1.6, 1.6)
@@ -73,12 +80,14 @@ sprite_frames = ExtResource("5")
 animation = &"move"
 
 [node name="GroundCastFront" type="RayCast2D" parent="RigidBody2D"]
-position = Vector2(22, -6)
-target_position = Vector2(0, 36)
+position = Vector2(21, -2)
+target_position = Vector2(0, 44)
+collision_mask = 1
 
 [node name="GroundCastRear" type="RayCast2D" parent="RigidBody2D"]
-position = Vector2(-22, -6)
-target_position = Vector2(0, 36)
+position = Vector2(-30, -2)
+target_position = Vector2(0, 44)
+collision_mask = 1
 
 [node name="JumpPlayer" type="AudioStreamPlayer2D" parent="RigidBody2D"]
 stream = ExtResource("2")
