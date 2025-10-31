@@ -7,13 +7,13 @@
 [node name="Explosion" type="Node2D"]
 z_index = 5
 script = ExtResource("1")
-sprite_path = NodePath("Sprite")
-sfx_path = NodePath("SFX")
+sprite_path = NodePath("ExplosionSprite")
+sfx_path = NodePath("ExplosionSFX")
 
-[node name="Sprite" type="Sprite2D" parent="."]
+[node name="ExplosionSprite" type="Sprite2D" parent="."]
 texture = ExtResource("2")
 hframes = 26
 
-[node name="SFX" type="AudioStreamPlayer2D" parent="."]
+[node name="ExplosionSFX" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3")
 bus = &"SFX"
