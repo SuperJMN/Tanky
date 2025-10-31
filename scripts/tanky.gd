@@ -46,12 +46,14 @@ const GROUNDED_ASCENT_MAX := -30.0        # Consider grounded only if not moving
 @onready var shoot_timer: Timer = $ShootTimer
 @onready var head_rig: Node2D = $RigidBody2D/Node2D
 @onready var antenna: AnimatedSprite2D = $RigidBody2D/Node2D/Antenna
+@onready var eye: AnimatedSprite2D = $RigidBody2D/Node2D/Eye
 
 var _facing := 1
 var _accel_time := 0.0
 var _last_move_dir := 0.0
 var _head_bob_t := 0.0
 var _head_rig_base_y := 0.0
+var _blink_rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	sprite.play("idle")
@@ -65,6 +67,13 @@ func _ready() -> void:
 	chassis.angular_damp = 4.0
 	front_wheel.angular_damp = 2.4
 	rear_wheel.angular_damp = 2.4
+	
+	# Initialize eye/blink behavior
+	_blink_rng.randomize()
+	if eye:
+		eye.stop()
+		eye.frame = 0
+		_start_blink_loop()
 
 func _physics_process(delta: float) -> void:
 	var move := Input.get_axis("move_left", "move_right")
@@ -201,3 +210,22 @@ func _update_facing() -> void:
 			ant_anim = "fall"
 		if antenna.animation != ant_anim:
 			antenna.play(ant_anim)
+
+# --- Eye blink ---
+func _start_blink_loop() -> void:
+	while true:
+		var wait := _blink_rng.randf_range(2.0, 6.0)
+		await get_tree().create_timer(wait).timeout
+		await _blink_once()
+		if _blink_rng.randf() < 0.15:
+			await get_tree().create_timer(0.18).timeout
+			await _blink_once()
+
+func _blink_once() -> void:
+	if not eye:
+		return
+	# Manually step frames: open -> half -> closed -> half -> open
+	eye.stop()
+	for f in [0, 1, 2, 1, 0]:
+		eye.frame = f
+		await get_tree().create_timer(_blink_rng.randf_range(0.03, 0.07)).timeout

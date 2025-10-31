@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dwxypa12ogkws"]
+[gd_scene load_steps=19 format=3 uid="uid://dwxypa12ogkws"]
 
 [ext_resource type="Script" uid="uid://bnbl65m2at2j5" path="res://scripts/tanky.gd" id="1"]
 [ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://sounds/jump.wav" id="2"]
@@ -8,13 +8,42 @@
 [ext_resource type="Texture2D" uid="uid://bb1eeae2rfx4y" path="res://sprites/Head.png" id="3_wl5jv"]
 [ext_resource type="Texture2D" uid="uid://cmqd6kpvcrl24" path="res://sprites/rect.png" id="4"]
 [ext_resource type="SpriteFrames" uid="uid://dp3qhyfsuuvuq" path="res://sprites/tanky_frames.tres" id="5"]
-[ext_resource type="Texture2D" uid="uid://dsqss6xaaign3" path="res://sprites/TankyEye.png" id="6_mftdd"]
+[ext_resource type="Texture2D" uid="uid://b7bieaplo22jj" path="res://sprites/TankyEyeAnim.png" id="6_pjshc"]
 [ext_resource type="AudioStream" uid="uid://dbtt3lbwigj8w" path="res://sounds/servo2.wav" id="9_dw7xg"]
 [ext_resource type="SpriteFrames" uid="uid://dy7qd8te0uncc" path="res://sprites/antenna_frames.tres" id="10_ant"]
 
 [sub_resource type="PhysicsMaterial" id="1"]
 friction = 3.5
 rough = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dwn4l"]
+atlas = ExtResource("6_pjshc")
+region = Rect2(0, 0, 7, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_klnjy"]
+atlas = ExtResource("6_pjshc")
+region = Rect2(7, 0, 7, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u3824"]
+atlas = ExtResource("6_pjshc")
+region = Rect2(14, 0, 7, 12)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fsvaa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dwn4l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_klnjy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u3824")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="RectangleShape2D" id="2"]
 size = Vector2(52, 18)
@@ -63,11 +92,12 @@ position = Vector2(0, -25)
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_wl5jv")
 
-[node name="Eye" type="Sprite2D" parent="RigidBody2D/Node2D"]
+[node name="Eye" type="AnimatedSprite2D" parent="RigidBody2D/Node2D"]
 z_index = 2
 position = Vector2(6, -27)
 scale = Vector2(1.6, 1.6)
-texture = ExtResource("6_mftdd")
+sprite_frames = SubResource("SpriteFrames_fsvaa")
+frame_progress = 0.5939115
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
 position = Vector2(0, -7)
