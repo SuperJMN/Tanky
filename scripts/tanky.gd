@@ -8,13 +8,19 @@ const MAX_SPEED := 250.0  # 5 body-lengths/sec
 const ACCEL_TIME := 1.5  # seconds to reach max speed
 const DRIVE_TORQUE := 50000.0
 const BRAKE_TORQUE := 10000.0
-const AIR_CONTROL := 0.55
+const AIR_CONTROL := 0.35
 const DRIVE_FORCE := 650.0
 const JUMP_HEIGHT := 150.0  # 1.5m in pixels
 const PROJECTILE_SCENE := preload("res://scenes/projectile.tscn")
 const PROJECTILE_SPEED := 700.0
 const SHOOT_ELEVATION_DEG := 30.0
 const PROJECTILE_INHERIT_VEL := 0.25
+
+# Air auto-balance controller (scaled by mass)
+const AIR_TILT_KP_PER_MASS := 800.0
+const AIR_TILT_KD_PER_MASS := 120.0
+const AIR_MAX_TORQUE_PER_MASS := 1500.0
+const ANGULAR_VEL_LIMIT := 7.0
 
 @onready var chassis: RigidBody2D = $Chassis
 @onready var front_wheel: RigidBody2D = $FrontWheel
@@ -36,6 +42,11 @@ func _ready() -> void:
 	_muzzle_offset = muzzle.position.x
 	sprite.play("idle")
 	camera.make_current()
+	
+	# Increase angular damping to reduce wobble
+	chassis.angular_damp = 4.0
+	front_wheel.angular_damp = 2.4
+	rear_wheel.angular_damp = 2.4
 
 func _physics_process(delta: float) -> void:
 	var move := Input.get_axis("move_left", "move_right")
@@ -44,6 +55,17 @@ func _physics_process(delta: float) -> void:
 	_update_acceleration(move, delta)
 	_apply_drive(move, grounded)
 	_apply_drag(move, grounded)
+	
+	# Air auto-balance: keep chassis near 0° while airborne
+	if not grounded:
+		var kp := AIR_TILT_KP_PER_MASS * chassis.mass
+		var kd := AIR_TILT_KD_PER_MASS * chassis.mass
+		var max_torque := AIR_MAX_TORQUE_PER_MASS * chassis.mass
+		var tilt := wrapf(chassis.rotation, -PI, PI) # target 0 rad
+		var torque := clampf(-kp * tilt - kd * chassis.angular_velocity, -max_torque, max_torque)
+		chassis.apply_torque(torque)
+		# Prevent extreme spins
+		chassis.angular_velocity = clampf(chassis.angular_velocity, -ANGULAR_VEL_LIMIT, ANGULAR_VEL_LIMIT)
 	
 	if Input.is_action_just_pressed("jump") and grounded:
 		var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity", 980.0)
