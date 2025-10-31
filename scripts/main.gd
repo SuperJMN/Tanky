@@ -33,11 +33,11 @@ func _spawn_palm_trees() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	
-	for i in range(20):
+	for i in range(60):
 		var sprite := Sprite2D.new()
 		sprite.texture = PALMTREE_TEXTURES[rng.randi_range(0, PALMTREE_TEXTURES.size() - 1)]
 		sprite.position = Vector2(
-			i * 150 + rng.randf_range(-50, 50),
+			i * 90 + rng.randf_range(-60, 60),
 			rng.randf_range(-250, -100)
 		)
 		sprite.scale = Vector2(rng.randf_range(0.8, 1.5), rng.randf_range(0.8, 1.5))

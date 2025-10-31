@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://d34wn350jojva"]
+[gd_scene load_steps=5 format=3 uid="uid://d34wn350jojva"]
 
 [ext_resource type="Texture2D" uid="uid://c807mdns7k7e4" path="res://sprites/background.jpg" id="1"]
 [ext_resource type="PackedScene" uid="uid://dwxypa12ogkws" path="res://scenes/tanky.tscn" id="2"]
@@ -28,11 +28,12 @@ stretch_mode = 6
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 layer = -1
+visible = false
 
 [node name="PalmTrees" type="ParallaxLayer" parent="ParallaxBackground"]
 position = Vector2(11, 599)
 motion_scale = Vector2(0.3, 1)
-motion_mirroring = Vector2(3000, 0)
+motion_mirroring = Vector2(4500, 0)
 
 [node name="PalmContainer" type="Node2D" parent="ParallaxBackground/PalmTrees"]
 
@@ -41,6 +42,14 @@ z_index = 1
 
 [node name="Terrain" parent="World" instance=ExtResource("6")]
 position = Vector2(146, 322)
+scale = Vector2(3, 3)
+
+[node name="Terrain2" parent="World" instance=ExtResource("6")]
+position = Vector2(4535, 366)
+scale = Vector2(3, 3)
+
+[node name="Terrain3" parent="World" instance=ExtResource("6")]
+position = Vector2(8906, 267)
 scale = Vector2(3, 3)
 
 [node name="Tanky" parent="World" instance=ExtResource("2")]
