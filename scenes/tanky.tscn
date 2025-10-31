@@ -51,14 +51,14 @@ scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_mjy1q")
 
 [node name="Head" type="Sprite2D" parent="RigidBody2D/Node2D"]
-position = Vector2(0, -24)
+position = Vector2(0, -25)
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_wl5jv")
 
 [node name="Eye" type="Sprite2D" parent="RigidBody2D/Node2D"]
 z_index = 2
 position = Vector2(6, -27)
-scale = Vector2(1.5, 1.5)
+scale = Vector2(1.6, 1.6)
 texture = ExtResource("6_mftdd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
@@ -81,12 +81,12 @@ target_position = Vector2(0, 36)
 
 [node name="JumpPlayer" type="AudioStreamPlayer2D" parent="RigidBody2D"]
 stream = ExtResource("2")
-volume_db = 10.0
+volume_db = 15.0
 bus = &"SFX"
 
 [node name="ShootPlayer" type="AudioStreamPlayer2D" parent="RigidBody2D"]
 stream = ExtResource("3")
-volume_db = 10.0
+volume_db = 15.0
 bus = &"SFX"
 
 [node name="FrontWheel" type="RigidBody2D" parent="."]

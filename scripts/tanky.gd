@@ -16,6 +16,7 @@ const PROJECTILE_SPEED := 700.0
 const PROJECTILE_INHERIT_VEL := 0.25
 const GUN_MIN_DEG := -60.0
 const GUN_MAX_DEG := 10.0
+const GUN_AIM_SPEED_DEG := 90.0
 
 # Head bobbing
 const HEAD_BOB_AMPLITUDE := 0.8
@@ -68,7 +69,7 @@ func _physics_process(delta: float) -> void:
 	_apply_drive(move, grounded)
 	_apply_drag(move, grounded)
 	_update_head_bob(grounded, delta)
-	_update_gun_aim()
+	_update_gun_aim(delta)
 	
 	# Air auto-balance: keep chassis near 0° while airborne
 	if not grounded:
@@ -137,11 +138,11 @@ func _update_head_bob(grounded: bool, delta: float) -> void:
 		# Smoothly return to base when not walking
 		head_rig.position.y = move_toward(head_rig.position.y, _head_rig_base_y, 20.0 * delta)
 
-func _update_gun_aim() -> void:
-	var mouse := get_global_mouse_position()
-	var world_angle := (mouse - gun.global_position).angle()
-	var local_angle := world_angle - chassis.global_rotation
-	gun.rotation = clampf(local_angle, deg_to_rad(GUN_MIN_DEG), deg_to_rad(GUN_MAX_DEG))
+func _update_gun_aim(delta: float) -> void:
+	var axis := Input.get_axis("aim_up", "aim_down")
+	if axis != 0.0:
+		var new_angle := gun.rotation + deg_to_rad(GUN_AIM_SPEED_DEG) * axis * delta
+		gun.rotation = clampf(new_angle, deg_to_rad(GUN_MIN_DEG), deg_to_rad(GUN_MAX_DEG))
 func _shoot() -> void:
 	var projectile := PROJECTILE_SCENE.instantiate()
 	projectile.global_position = muzzle.global_position
