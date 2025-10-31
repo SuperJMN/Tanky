@@ -203,6 +203,10 @@ softness = 0.1
 [node name="FollowCamera" type="Camera2D" parent="."]
 position = Vector2(0, -18)
 offset = Vector2(0, -200)
+limit_left = -200
+limit_right = 4200
+limit_top = -400
+limit_bottom = 900
 limit_smoothed = true
 
 [node name="ShootTimer" type="Timer" parent="."]
