@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dwxypa12ogkws"]
+[gd_scene load_steps=20 format=3 uid="uid://dwxypa12ogkws"]
 
 [ext_resource type="Script" uid="uid://bnbl65m2at2j5" path="res://scripts/tanky.gd" id="1"]
 [ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://sounds/jump.wav" id="2"]
@@ -8,23 +8,12 @@
 [ext_resource type="Texture2D" uid="uid://bb1eeae2rfx4y" path="res://sprites/Head.png" id="3_wl5jv"]
 [ext_resource type="Texture2D" uid="uid://cmqd6kpvcrl24" path="res://sprites/rect.png" id="4"]
 [ext_resource type="SpriteFrames" uid="uid://dp3qhyfsuuvuq" path="res://sprites/tanky_frames.tres" id="5"]
-[ext_resource type="Texture2D" uid="uid://dsqss6xaaign3" path="res://sprites/TankyEye.png" id="6_mftdd"]
+[ext_resource type="Texture2D" uid="uid://b7bieaplo22jj" path="res://sprites/TankyEyeAnim.png" id="6_pjshc"]
 [ext_resource type="AudioStream" uid="uid://dbtt3lbwigj8w" path="res://sounds/servo2.wav" id="9_dw7xg"]
 [ext_resource type="SpriteFrames" uid="uid://dy7qd8te0uncc" path="res://sprites/antenna_frames.tres" id="10_ant"]
-[ext_resource type="Texture2D" uid="uid://b7bieaplo22jj" path="res://sprites/TankyEyeAnim.png" id="6_pjshc"]
+
 [sub_resource type="PhysicsMaterial" id="4"]
 friction = 1.4
-
-[sub_resource type="CapsuleShape2D" id="5"]
-radius = 9.0
-height = 34.0
-
-[sub_resource type="PhysicsMaterial" id="1"]
-friction = 3.5
-rough = true
-
-[sub_resource type="CircleShape2D" id="3"]
-radius = 12.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dwn4l"]
 atlas = ExtResource("6_pjshc")
@@ -54,14 +43,26 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="CapsuleShape2D" id="5"]
+radius = 9.0
+height = 34.0
+
+[sub_resource type="PhysicsMaterial" id="1"]
+friction = 3.5
+rough = true
+
+[sub_resource type="CircleShape2D" id="3"]
+radius = 12.0
+
 [node name="Tanky" type="Node2D"]
 script = ExtResource("1")
 chassis_path = NodePath("RigidBody2D")
 front_wheel_path = NodePath("FrontWheel")
 rear_wheel_path = NodePath("RearWheel")
-sprite_path = NodePath("RigidBody2D/BodyAnim")
-gun_path = NodePath("RigidBody2D/Cannon")
-muzzle_path = NodePath("RigidBody2D/Cannon/Muzzle")
+sprite_path = NodePath("RigidBody2D/Tracks/BodyAnim")
+gun_path = NodePath("RigidBody2D/Body/Cannon")
+muzzle_path = NodePath("RigidBody2D/Body/Cannon/Muzzle")
 jump_player_path = NodePath("RigidBody2D/JumpPlayer")
 shoot_player_path = NodePath("RigidBody2D/ShootPlayer")
 cannon_move_player_path = NodePath("RigidBody2D/CannonMovePlayer")
@@ -69,9 +70,9 @@ ground_cast_front_path = NodePath("RigidBody2D/GroundCastFront")
 ground_cast_rear_path = NodePath("RigidBody2D/GroundCastRear")
 camera_path = NodePath("FollowCamera")
 shoot_timer_path = NodePath("ShootTimer")
-head_rig_path = NodePath("RigidBody2D/HeadRig")
-antenna_path = NodePath("RigidBody2D/HeadRig/Antenna")
-eye_path = NodePath("RigidBody2D/HeadRig/Eye")
+head_rig_path = NodePath("RigidBody2D/Body/HeadRig")
+antenna_path = NodePath("RigidBody2D/Body/HeadRig/Antenna")
+eye_path = NodePath("RigidBody2D/Body/HeadRig/Eye")
 
 [node name="RigidBody2D" type="RigidBody2D" parent="."]
 collision_layer = 2
@@ -82,46 +83,51 @@ center_of_mass = Vector2(0, 10)
 linear_damp = 0.1
 angular_damp = 3.0
 
-[node name="Cannon" type="Node2D" parent="RigidBody2D"]
+[node name="Body" type="Node2D" parent="RigidBody2D"]
+
+[node name="Cannon" type="Node2D" parent="RigidBody2D/Body"]
 position = Vector2(5, -22)
 
-[node name="Muzzle" type="Marker2D" parent="RigidBody2D/Cannon"]
+[node name="Muzzle" type="Marker2D" parent="RigidBody2D/Body/Cannon"]
 position = Vector2(24, -5)
 
-[node name="CannonSprite" type="Sprite2D" parent="RigidBody2D/Cannon"]
+[node name="CannonSprite" type="Sprite2D" parent="RigidBody2D/Body/Cannon"]
 position = Vector2(13, -1.0000005)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("3_jbh7c")
 
-[node name="HeadRig" type="Node2D" parent="RigidBody2D"]
+[node name="HeadRig" type="Node2D" parent="RigidBody2D/Body"]
 
-[node name="Antenna" type="AnimatedSprite2D" parent="RigidBody2D/HeadRig"]
+[node name="Antenna" type="AnimatedSprite2D" parent="RigidBody2D/Body/HeadRig"]
 position = Vector2(-12, -35)
 scale = Vector2(1.6, 1.6)
 sprite_frames = ExtResource("10_ant")
 animation = &"idle"
 
-[node name="Body" type="Sprite2D" parent="RigidBody2D/HeadRig"]
-position = Vector2(0.99999994, -7.9999995)
-scale = Vector2(1.6, 1.6)
-texture = ExtResource("3_mjy1q")
-
-[node name="Head" type="Sprite2D" parent="RigidBody2D/HeadRig"]
+[node name="Head" type="Sprite2D" parent="RigidBody2D/Body/HeadRig"]
 position = Vector2(0, -25)
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_wl5jv")
 
-[node name="Eye" type="AnimatedSprite2D" parent="RigidBody2D/HeadRig"]
+[node name="Eye" type="AnimatedSprite2D" parent="RigidBody2D/Body/HeadRig"]
 z_index = 2
 position = Vector2(6, -27)
 scale = Vector2(1.6, 1.6)
 sprite_frames = SubResource("SpriteFrames_fsvaa")
+
+[node name="Hull" type="Sprite2D" parent="RigidBody2D/Body"]
+position = Vector2(0.99999994, -7.9999995)
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("3_mjy1q")
+
 [node name="BodyCollision" type="CollisionShape2D" parent="RigidBody2D"]
 position = Vector2(0, -1)
 rotation = 1.5708
 shape = SubResource("5")
 
-[node name="BodyAnim" type="AnimatedSprite2D" parent="RigidBody2D"]
+[node name="Tracks" type="Node2D" parent="RigidBody2D"]
+
+[node name="BodyAnim" type="AnimatedSprite2D" parent="RigidBody2D/Tracks"]
 position = Vector2(0, -1.9073486e-06)
 scale = Vector2(1.6, 1.6)
 sprite_frames = ExtResource("5")
@@ -204,8 +210,8 @@ softness = 0.1
 position = Vector2(0, -18)
 offset = Vector2(0, -200)
 limit_left = -200
-limit_right = 4200
 limit_top = -400
+limit_right = 4200
 limit_bottom = 900
 limit_smoothed = true
 
