@@ -17,6 +17,8 @@ const PROJECTILE_INHERIT_VEL := 0.25
 const GUN_MIN_DEG := -60.0
 const GUN_MAX_DEG := 10.0
 const GUN_AIM_SPEED_DEG := 90.0
+const TRACKS_DROP_OFFSET := 5.0
+const TRACKS_RETURN_SPEED := 80.0
 
 # Head bobbing
 const HEAD_BOB_AMPLITUDE := 0.8
@@ -35,6 +37,7 @@ const GROUNDED_ASCENT_MAX := -30.0        # Consider grounded only if not moving
 @export_node_path("RigidBody2D") var chassis_path: NodePath
 @export_node_path("RigidBody2D") var front_wheel_path: NodePath
 @export_node_path("RigidBody2D") var rear_wheel_path: NodePath
+@export_node_path("Node2D") var tracks_path: NodePath
 @export_node_path("AnimatedSprite2D") var sprite_path: NodePath
 @export_node_path("Node2D") var gun_path: NodePath
 @export_node_path("Marker2D") var muzzle_path: NodePath
@@ -52,6 +55,7 @@ const GROUNDED_ASCENT_MAX := -30.0        # Consider grounded only if not moving
 @onready var chassis: RigidBody2D = get_node(chassis_path)
 @onready var front_wheel: RigidBody2D = get_node(front_wheel_path)
 @onready var rear_wheel: RigidBody2D = get_node(rear_wheel_path)
+@onready var tracks: Node2D = get_node(tracks_path)
 @onready var sprite: AnimatedSprite2D = get_node(sprite_path)
 @onready var gun: Node2D = get_node(gun_path)
 @onready var muzzle: Marker2D = get_node(muzzle_path)
@@ -73,6 +77,8 @@ var _last_move_dir := 0.0
 var _head_bob_t := 0.0
 var _head_rig_base_y := 0.0
 var _blink_rng := RandomNumberGenerator.new()
+var _tracks_base_y := 0.0
+var _tracks_offset := 0.0
 var _alive := true
 
 func _ready() -> void:
@@ -83,6 +89,8 @@ func _ready() -> void:
 	# Cache head rig base position
 	if head_rig:
 		_head_rig_base_y = head_rig.position.y
+	if tracks:
+		_tracks_base_y = tracks.position.y
 	
 	# Increase angular damping to reduce wobble
 	chassis.angular_damp = 4.0
@@ -126,11 +134,13 @@ func _physics_process(delta: float) -> void:
 		var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity", 980.0)
 		chassis.apply_central_impulse(Vector2.UP * chassis.mass * sqrt(2.0 * gravity * JUMP_HEIGHT))
 		jump_player.play()
+		_compress_tracks()
 	
 	if Input.is_action_pressed("shoot") and shoot_timer.is_stopped():
 		_shoot()
 	
 	_update_facing()
+	_update_tracks_suspension(grounded, delta)
 	camera.global_position = chassis.global_position
 
 
@@ -193,6 +203,19 @@ func _update_gun_aim(delta: float) -> void:
 		# Stop SFX when not aiming
 		if cannon_move_player.playing:
 			cannon_move_player.stop()
+
+func _compress_tracks() -> void:
+	if not tracks:
+		return
+	_tracks_offset = TRACKS_DROP_OFFSET
+	tracks.position.y = _tracks_base_y + _tracks_offset
+
+func _update_tracks_suspension(grounded: bool, delta: float) -> void:
+	if not tracks:
+		return
+	if grounded:
+		_tracks_offset = move_toward(_tracks_offset, 0.0, TRACKS_RETURN_SPEED * delta)
+	tracks.position.y = _tracks_base_y + _tracks_offset
 func _shoot() -> void:
 	var projectile := PROJECTILE_SCENE.instantiate()
 	projectile.global_position = muzzle.global_position

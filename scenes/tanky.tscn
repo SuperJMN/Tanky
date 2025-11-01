@@ -60,6 +60,7 @@ script = ExtResource("1")
 chassis_path = NodePath("RigidBody2D")
 front_wheel_path = NodePath("RigidBody2D/Tracks/FrontWheel")
 rear_wheel_path = NodePath("RigidBody2D/Tracks/RearWheel")
+tracks_path = NodePath("RigidBody2D/Tracks")
 sprite_path = NodePath("RigidBody2D/Tracks/BodyAnim")
 gun_path = NodePath("RigidBody2D/Body/Cannon")
 muzzle_path = NodePath("RigidBody2D/Body/Cannon/Muzzle")
@@ -97,6 +98,7 @@ scale = Vector2(1.4, 1.4)
 texture = ExtResource("3_jbh7c")
 
 [node name="HeadRig" type="Node2D" parent="RigidBody2D/Body"]
+z_index = 1
 
 [node name="Antenna" type="AnimatedSprite2D" parent="RigidBody2D/Body/HeadRig"]
 position = Vector2(-12, -35)
