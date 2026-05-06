@@ -27,6 +27,8 @@ func _on_hit(body: Node) -> void:
 	# Ignore one-way platforms when approaching from below (bullet going up)
 	if body is TileMapLayer and velocity.y < 0.0:
 		return
+	if body.has_method("hit_by_projectile"):
+		body.hit_by_projectile(self)
 	_spawn_explosion()
 	queue_free()
 
