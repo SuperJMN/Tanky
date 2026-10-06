@@ -3,8 +3,9 @@
 [ext_resource type="Script" uid="uid://bc1fn5a1euh8d" path="res://scripts/enemy_drone.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://cnjtotuil1fat" path="res://sprites/ship.png" id="2"]
 
-[sub_resource type="CircleShape2D" id="1"]
-radius = 22.022715
+[sub_resource type="CapsuleShape2D" id="1"]
+radius = 22.0
+height = 86.0
 
 [node name="EnemyDrone" type="Area2D"]
 z_index = 3
@@ -15,10 +16,10 @@ patrol_distance = 420.0
 patrol_speed = 120.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-10.000001, -0.99999905)
+scale = Vector2(0.2, 0.2)
 texture = ExtResource("2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(5, -1)
+rotation = 1.5707964
 shape = SubResource("1")
 debug_color = Color(0.72684366, 0.60207677, 0.8402531, 0.7294118)

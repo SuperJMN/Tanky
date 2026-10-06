@@ -19,6 +19,7 @@ var _hover_t := 0.0
 func _ready() -> void:
 	_start_position = global_position
 	add_to_group("enemies")
+	_face_direction()
 
 func _physics_process(delta: float) -> void:
 	_hover_t += delta * hover_frequency
@@ -32,10 +33,12 @@ func _physics_process(delta: float) -> void:
 		_direction *= -1.0
 		offset_x = clampf(offset_x, -patrol_distance, patrol_distance)
 		global_position.x = _start_position.x + offset_x
-		if sprite:
-			var scale := sprite.scale
-			scale.x = signf(_direction) * absf(scale.x)
-			sprite.scale = scale
+		_face_direction()
+
+# ship.png points left, so mirror the sprite while patrolling right.
+func _face_direction() -> void:
+	if sprite:
+		sprite.scale.x = -signf(_direction) * absf(sprite.scale.x)
 
 func hit_by_projectile(projectile: Projectile) -> void:
 	if hit_points <= 0:
