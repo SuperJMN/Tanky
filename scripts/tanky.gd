@@ -109,6 +109,13 @@ func _ready() -> void:
 		e.frame = 0
 		_start_blink_loop()
 
+# Clamp the follow camera to a level's world-space bounds. The top stays open for jumps.
+# Camera2D applies limits before its offset, so compensate for it.
+func set_camera_limits(bounds: Rect2) -> void:
+	camera.limit_left = floori(bounds.position.x - camera.offset.x)
+	camera.limit_right = ceili(bounds.end.x - camera.offset.x)
+	camera.limit_bottom = ceili(bounds.end.y - camera.offset.y)
+
 func _physics_process(delta: float) -> void:
 	var move := Input.get_axis("move_left", "move_right")
 	var grounded := _is_grounded()

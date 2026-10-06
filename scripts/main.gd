@@ -7,10 +7,17 @@ const PALMTREE_TEXTURES := [
 
 @export_node_path("Node2D") var palm_container_path: NodePath
 @export_node_path("AudioStreamPlayer") var music_path: NodePath
+@export_node_path("Node2D") var world_path: NodePath
+@export_node_path("Node2D") var tanky_path: NodePath
 @onready var palm_container: Node2D = get_node(palm_container_path)
 @onready var music: AudioStreamPlayer = get_node(music_path)
+@onready var world: Node2D = get_node(world_path)
+@onready var tanky: Tanky = get_node(tanky_path)
 
 func _ready() -> void:
+	var bounds := _level_bounds()
+	if bounds.has_area():
+		tanky.set_camera_limits(bounds)
 	if _is_headless():
 		if music:
 			music.stop()
@@ -19,6 +26,22 @@ func _ready() -> void:
 	music.stream = load("res://sounds/ladynavigation.mp3")
 	music.play()
 	_spawn_palm_trees()
+
+# World-space rectangle covered by every terrain layer in the level.
+func _level_bounds() -> Rect2:
+	var bounds := Rect2()
+	var has_bounds := false
+	for node in world.find_children("*", "TileMapLayer", true, false):
+		var layer := node as TileMapLayer
+		var used := layer.get_used_rect()
+		if layer.tile_set == null or not used.has_area():
+			continue
+		var tile_size := Vector2(layer.tile_set.tile_size)
+		var local := Rect2(Vector2(used.position) * tile_size, Vector2(used.size) * tile_size)
+		var layer_bounds := layer.global_transform * local
+		bounds = bounds.merge(layer_bounds) if has_bounds else layer_bounds
+		has_bounds = true
+	return bounds
 
 func _is_headless() -> bool:
 	return OS.has_feature("headless") or (Engine.has_singleton("DisplayServer") and DisplayServer.get_name() == "headless")

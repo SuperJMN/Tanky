@@ -10,6 +10,8 @@
 script = ExtResource("4")
 palm_container_path = NodePath("ParallaxBackground/PalmTrees/PalmContainer")
 music_path = NodePath("Music")
+world_path = NodePath("World")
+tanky_path = NodePath("World/Tanky")
 
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1
