@@ -15,11 +15,13 @@ Guidance for agents and contributors working on Tanky Reloaded.
     world (propeller drones, clockwork mice, spring hoppers, cork guns): funny, but a real threat.
   - Tanky takes 4 hits (shown as battery cells). Losing them all, or falling off the level,
     restarts the level from the beginning.
+  - Reaching the checkered flag at the end clears the stage: fanfare, confetti, a
+    "STAGE CLEAR!" banner and a victory dance. Jump then plays the level again.
   - Single jump, no double jump.
   - Tanky is a heavy remote-control tank with a life of its own. He should feel weighty and
     jump lower than Mario or Sonic.
-- Status: a playable prototype: one stage with ramps, four kinds of enemies, damage and level
-  restart. It does not yet have a level goal.
+- Status: a playable prototype: one complete stage with ramps, four kinds of enemies, damage,
+  level restart and a goal.
 - Backlog: GitHub issues, ordered in the roadmap issue
   [#29](https://github.com/SuperJMN/Tanky/issues/29). Work through them one at a time and
   reference the issue in commits.
@@ -68,7 +70,8 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
 | `scenes/main.tscn` + `scripts/main.gd` | Playfield: sky, current stage, enemies, Tanky, music. |
 | `scenes/tanky.tscn` + `scripts/tanky.gd` | Player rig and controller. |
 | `scenes/projectile.tscn` + `scripts/projectile.gd` | Bullet (`Area2D`, own gravity). |
-| `scenes/hud.tscn` + `scripts/hud.gd` | On-screen health battery. |
+| `scenes/hud.tscn` + `scripts/hud.gd` | On-screen health battery and stage-clear banner. |
+| `scenes/goal.tscn` + `scripts/goal.gd` | End-of-level flag; emits `reached` and bursts into confetti. |
 | `scenes/enemy_drone.tscn` + `scripts/enemy_drone.gd` | Propeller drone: patrols while hovering; with `bomb_cooldown` it drops bombs ahead of Tanky. |
 | `scenes/enemy_windup_mouse.tscn` + `scripts/enemy_windup_mouse.gd` | Clockwork mouse: walks, turns at walls and ledges, winds up and dashes at Tanky. |
 | `scenes/enemy_spring_hopper.tscn` + `scripts/enemy_spring_hopper.gd` | Spring hopper: squashes, then hops to land on Tanky. |
@@ -81,7 +84,7 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
 | `scenes/stages/` | Stages: a `Node2D` with `TileMapLayer`s (16 px tiles at scale 3, so 15 rows fill the 720 px screen). `Terrain` holds the ground; `Overlay` draws in front of it. |
 | `scenes/stages/tilesets/` | Shared `TileSet`s. `smb2_overworld` includes slope tiles (45° and 27°, row 3 of its atlas) generated from its grass and dirt. |
 | `sprites/tilesets/` | Tileset atlases. |
-| `sprites/enemies/` | Enemy pixel art, drawn for this project. Frames are laid out horizontally (`hframes`); sprites use scale 2. |
+| `sprites/enemies/`, `sprites/goal/`, `sprites/hud/` | Pixel art drawn for this project. Frames are laid out horizontally (`hframes`); world sprites use scale 2. |
 | `tools/tmx_to_godot.gd` | Tiled map importer (see Commands). |
 | `sprites/`, `sounds/` | Imported art and audio, with their `.import` files. |
 | `audio/default_bus_layout.tres` | Audio buses. |
@@ -159,6 +162,9 @@ Tanky (Node2D, tanky.gd)
   `Tanky.take_hit(source)` ignores hits while he blinks.
 - `Tanky.kill(explode)` ends a life and emits `died`; `main.gd` then restarts the level by
   reloading the scene. `main.gd` also kills Tanky when he falls below the level bounds.
+- When the `Goal` emits `reached`, `main.gd` stops the music, plays the fanfare, calls
+  `Tanky.celebrate()` (no control, no damage, victory hops), freezes `World/Enemies` and shows
+  the banner. After the fanfare, jump reloads the level.
 
 ### Collision layers
 
@@ -191,8 +197,8 @@ keys.
 
 ### Audio
 
-- Buses: `Master`, `Music` (background track `sounds/ladynavigation.mp3`), `SFX`
-  (all effects).
+- Buses: `Master`, `Music` (background track `sounds/ladynavigation.mp3` and the stage-clear
+  fanfare `sounds/stage_clear.wav`, an original chiptune), `SFX` (all effects).
 - Every new player must go to `Music` or `SFX`. If a new bus is needed, add it to
   `audio/default_bus_layout.tres` and document it here.
 - Enemies play their sounds through `EnemyKit.play_sound`, which stays silent off screen.

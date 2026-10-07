@@ -12,13 +12,20 @@ const RESTART_DELAY := 2.0  # s between losing a life and restarting the level
 @export_node_path("Node2D") var world_path: NodePath
 @export_node_path("Node2D") var tanky_path: NodePath
 @export_node_path("CanvasLayer") var hud_path: NodePath
+@export_node_path("Area2D") var goal_path: NodePath
+@export_node_path("Node2D") var enemies_path: NodePath
+@export_node_path("AudioStreamPlayer") var fanfare_path: NodePath
 @onready var palm_container: Node2D = get_node(palm_container_path)
 @onready var music: AudioStreamPlayer = get_node(music_path)
 @onready var world: Node2D = get_node(world_path)
 @onready var tanky: Tanky = get_node(tanky_path)
 @onready var hud: Hud = get_node(hud_path)
+@onready var goal: Goal = get_node(goal_path)
+@onready var enemies: Node2D = get_node(enemies_path)
+@onready var fanfare: AudioStreamPlayer = get_node(fanfare_path)
 
 var _fall_limit := INF
+var _waiting_restart := false
 
 func _ready() -> void:
 	var bounds := _level_bounds()
@@ -28,6 +35,7 @@ func _ready() -> void:
 	hud.show_health(tanky.health, Tanky.MAX_HEALTH)
 	tanky.health_changed.connect(hud.show_health)
 	tanky.died.connect(_on_tanky_died)
+	goal.reached.connect(_on_goal_reached)
 	if _is_headless():
 		if music:
 			music.stop()
@@ -57,6 +65,24 @@ func _physics_process(_delta: float) -> void:
 	if tanky.is_alive() and tanky.chassis.global_position.y > _fall_limit:
 		tanky.kill(false)
 
+func _process(_delta: float) -> void:
+	if _waiting_restart and Input.is_action_just_pressed("jump"):
+		get_tree().reload_current_scene()
+
+# Fanfare and celebration; once the fanfare ends, jump plays the level again.
+func _on_goal_reached() -> void:
+	if not tanky.is_alive():
+		return
+	music.stop()
+	fanfare.play()
+	tanky.celebrate()
+	# The enemies freeze in place while Tanky celebrates
+	enemies.process_mode = Node.PROCESS_MODE_DISABLED
+	hud.show_stage_clear()
+	await get_tree().create_timer(fanfare.stream.get_length()).timeout
+	hud.show_restart_hint()
+	_waiting_restart = true
+
 # Losing a life sends Tanky back to the start: the whole level, enemies included, restarts.
 func _on_tanky_died() -> void:
 	music.stop()
@@ -71,6 +97,9 @@ func _exit_tree() -> void:
 		music.stop()
 		# Liberar el recurso para evitar que quede "in use" al salir
 		music.stream = null
+	if fanfare:
+		fanfare.stop()
+		fanfare.stream = null
 
 func _spawn_palm_trees() -> void:
 	var rng := RandomNumberGenerator.new()

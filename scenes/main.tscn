@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://d34wn350jojva"]
+[gd_scene load_steps=11 format=3 uid="uid://d34wn350jojva"]
 
 [ext_resource type="PackedScene" uid="uid://dwxypa12ogkws" path="res://scenes/tanky.tscn" id="2"]
 [ext_resource type="Script" uid="uid://bhigjol5laa1k" path="res://scripts/main.gd" id="4"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" path="res://scenes/enemy_windup_mouse.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/enemy_spring_hopper.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/goal.tscn" id="12"]
+[ext_resource type="AudioStream" path="res://sounds/stage_clear.wav" id="13"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("4")
@@ -16,6 +18,9 @@ music_path = NodePath("Music")
 world_path = NodePath("World")
 tanky_path = NodePath("World/Tanky")
 hud_path = NodePath("Hud")
+goal_path = NodePath("World/Goal")
+enemies_path = NodePath("World/Enemies")
+fanfare_path = NodePath("Fanfare")
 
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1
@@ -82,15 +87,22 @@ hit_points = 2
 position = Vector2(6760, 624)
 
 [node name="SpringHopper3" parent="World/Enemies" instance=ExtResource("10")]
-position = Vector2(7250, 580)
+position = Vector2(7050, 580)
 
 [node name="Stage" parent="World" instance=ExtResource("6")]
+
+[node name="Goal" parent="World" instance=ExtResource("12")]
+position = Vector2(7300, 624)
 
 [node name="Tanky" parent="World" instance=ExtResource("2")]
 position = Vector2(216, 400)
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 volume_db = -6.0
+bus = &"Music"
+
+[node name="Fanfare" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("13")
 bus = &"Music"
 
 [node name="Hud" parent="." instance=ExtResource("11")]

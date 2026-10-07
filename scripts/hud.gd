@@ -1,7 +1,7 @@
 extends CanvasLayer
 class_name Hud
 
-## On-screen status: Tanky's health as the cells of a battery.
+## On-screen status: Tanky's health as the cells of a battery, and the stage-clear banner.
 
 const PIXEL := 4.0  # screen px per art pixel
 const CELL_SIZE := Vector2(4, 6)
@@ -17,13 +17,20 @@ const CHARGE_COLORS := [  # by remaining health: 1, 2, 3+
 const LOW_BLINK := 0.25  # s per blink of the last cell
 const SHAKE_TIME := 0.3
 const SHAKE_PX := 6.0
+const BANNER_POP_TIME := 0.5
+const HINT_BLINK := 0.45  # s per blink of the restart hint
 
 @export_node_path("Node2D") var battery_path: NodePath
+@export_node_path("Sprite2D") var stage_clear_path: NodePath
+@export_node_path("Sprite2D") var restart_hint_path: NodePath
 @onready var battery: Node2D = get_node(battery_path)
+@onready var stage_clear: Sprite2D = get_node(stage_clear_path)
+@onready var restart_hint: Sprite2D = get_node(restart_hint_path)
 
 var _health := 0
 var _max_health := 0
 var _blink_t := 0.0
+var _hint_t := 0.0
 var _battery_base := Vector2.ZERO
 
 func _ready() -> void:
@@ -38,10 +45,30 @@ func show_health(health: int, max_health: int) -> void:
 	if lost:
 		_shake()
 
+## Pop the "STAGE CLEAR!" banner in at the centre of the screen.
+func show_stage_clear() -> void:
+	var screen := get_viewport().get_visible_rect().size
+	stage_clear.position = screen * Vector2(0.5, 0.38)
+	restart_hint.position = screen * Vector2(0.5, 0.55)
+	var full_scale := stage_clear.scale
+	stage_clear.scale = Vector2.ZERO
+	stage_clear.visible = true
+	var tween := create_tween()
+	tween.tween_property(stage_clear, "scale", full_scale, BANNER_POP_TIME) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+## Blink the "PRESS JUMP" hint under the banner.
+func show_restart_hint() -> void:
+	_hint_t = 0.0
+	restart_hint.visible = true
+
 func _process(delta: float) -> void:
 	if _health == 1:
 		_blink_t += delta
 		battery.queue_redraw()
+	if restart_hint.visible:
+		_hint_t += delta
+		restart_hint.modulate.a = 1.0 if fmod(_hint_t, HINT_BLINK * 2.0) < HINT_BLINK else 0.0
 
 func _shake() -> void:
 	var tween := create_tween()

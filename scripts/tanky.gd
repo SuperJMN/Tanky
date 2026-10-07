@@ -36,6 +36,11 @@ const HIT_KNOCKBACK := Vector2(260.0, -300.0)  # velocity away from the hit, px/
 const BLINK_PERIOD := 0.08
 const DEATH_EXPLOSION_SCALE := 1.6
 
+# Victory dance at the goal
+const CELEBRATION_HOPS := 3
+const CELEBRATION_HOP_HEIGHT := 60.0  # px
+const CELEBRATION_HOP_PAUSE := 0.25  # s on the ground between hops
+
 # Head bobbing
 const HEAD_BOB_AMPLITUDE := 0.8
 const HEAD_BOB_FREQ := 3.0
@@ -104,6 +109,9 @@ var _in_tree := true
 var _dead := false
 var _invulnerable_left := 0.0
 var _stun_left := 0.0
+var _celebrating := false
+var _hops_left := 0
+var _hop_wait := 0.0
 
 func _ready() -> void:
 
@@ -145,7 +153,7 @@ func _physics_process(delta: float) -> void:
 	if _dead:
 		return
 	_update_damage(delta)
-	var has_control := _stun_left <= 0.0
+	var has_control := _stun_left <= 0.0 and not _celebrating
 	var move := Input.get_axis("move_left", "move_right") if has_control else 0.0
 	var grounded := _is_grounded()
 	
@@ -153,7 +161,8 @@ func _physics_process(delta: float) -> void:
 	_apply_drive(move, grounded)
 	_apply_drag(move, grounded)
 	_update_head_bob(grounded, delta)
-	_update_gun_aim(delta)
+	if not _celebrating:
+		_update_gun_aim(delta)
 	
 	# Air auto-balance: keep chassis near 0° while airborne
 	if not grounded:
@@ -167,19 +176,25 @@ func _physics_process(delta: float) -> void:
 		chassis.angular_velocity = clampf(chassis.angular_velocity, -ANGULAR_VEL_LIMIT, ANGULAR_VEL_LIMIT)
 	
 	if has_control and Input.is_action_just_pressed("jump") and grounded:
-		var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity", 980.0)
-		# Launch every body of the rig at the same speed so the joints do not stretch on take-off
-		var takeoff := Vector2.UP * sqrt(2.0 * gravity * JUMP_HEIGHT)
-		for body in _rig:
-			body.apply_central_impulse(takeoff * body.mass)
-		jump_player.play()
-		_compress_tracks()
+		_jump(JUMP_HEIGHT)
 	
-	if Input.is_action_pressed("shoot") and shoot_timer.is_stopped():
+	if has_control and Input.is_action_pressed("shoot") and shoot_timer.is_stopped():
 		_shoot()
 	
+	if _celebrating:
+		_update_celebration(grounded, delta)
+
 	_update_facing()
 	_update_tracks_suspension(grounded, delta)
+
+func _jump(height: float) -> void:
+	var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity", 980.0)
+	# Launch every body of the rig at the same speed so the joints do not stretch on take-off
+	var takeoff := Vector2.UP * sqrt(2.0 * gravity * height)
+	for body in _rig:
+		body.apply_central_impulse(takeoff * body.mass)
+	jump_player.play()
+	_compress_tracks()
 
 func _update_acceleration(move: float, delta: float) -> void:
 	if move != 0.0 and sign(move) == sign(_last_move_dir):
@@ -299,9 +314,27 @@ func is_alive() -> bool:
 func target_position() -> Vector2:
 	return chassis.global_position + Vector2(0.0, -10.0)
 
-## Lose one hit from a hazard at source, unless Tanky is still blinking from the last one.
+## Stop obeying the player and dance: raise the cannon and hop for joy. Nothing hurts him now.
+func celebrate() -> void:
+	_celebrating = true
+	_invulnerable_left = 0.0
+	_hops_left = CELEBRATION_HOPS
+	_hop_wait = CELEBRATION_HOP_PAUSE
+	cannon_move_player.stop()
+
+func _update_celebration(grounded: bool, delta: float) -> void:
+	gun.rotation = move_toward(gun.rotation, deg_to_rad(GUN_MIN_DEG), deg_to_rad(GUN_AIM_SPEED_DEG) * delta)
+	if _hops_left <= 0 or not grounded:
+		return
+	_hop_wait -= delta
+	if _hop_wait <= 0.0:
+		_jump(CELEBRATION_HOP_HEIGHT)
+		_hops_left -= 1
+		_hop_wait = CELEBRATION_HOP_PAUSE
+
+## Lose one hit from a hazard at source, unless Tanky is blinking or celebrating.
 func take_hit(source: Vector2) -> void:
-	if _dead or _invulnerable_left > 0.0:
+	if _dead or _celebrating or _invulnerable_left > 0.0:
 		return
 	health -= 1
 	health_changed.emit(health, MAX_HEALTH)
