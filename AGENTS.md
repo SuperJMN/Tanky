@@ -12,6 +12,8 @@ Guidance for agents and contributors working on Tanky Reloaded.
   - Levels evoke classic Mario/Sonic ramps, to show off traction.
   - Projectiles defeat on-screen enemies.
   - Single jump, no double jump.
+  - Tanky is a heavy remote-control tank with a life of its own. He should feel weighty and
+    jump lower than Mario or Sonic.
 - Status: a playable prototype (one test level, enemy drones). It does not yet have damage, lives,
   slopes or a level goal.
 - Backlog: GitHub issues, ordered in the roadmap issue
@@ -77,9 +79,9 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
     the real peak at ~135 px);
   - projectile speed 700 px/s; shot cooldown 0.35 s (`ShootTimer`);
   - cannon range −60° … 10°.
-- Open question (#25): the original spec asked for a top speed of 2 body lengths/s and a
-  1.5 m jump. The code is tuned faster, and some of its comments do not match the values
-  either. Do not silently "fix" either side; ask first.
+- None of these values is fixed by the design: the gameplay is still being explored. Tune
+  them freely towards the "heavy tank" feel, keep the code comments in sync with the values,
+  and write down the before/after numbers (see Validation).
 
 ### Tanky rig (`tanky.tscn`)
 

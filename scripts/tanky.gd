@@ -3,14 +3,14 @@ class_name Tanky
 
 const PIXELS_PER_METER := 100.0
 const BODY_LENGTH := 50.0  # 0.5m * 100px/m
-const MIN_SPEED := 150.0  # 3 body-lengths/sec
-const MAX_SPEED := 500.0  # 5 body-lengths/sec
+const MIN_SPEED := 150.0  # 3 body lengths/s
+const MAX_SPEED := 500.0  # 10 body lengths/s
 const ACCEL_TIME := 2  # seconds to reach max speed
 const DRIVE_TORQUE := 50000.0
 const BRAKE_TORQUE := 10000.0
 const AIR_CONTROL := 0.35
 const DRIVE_FORCE := 650.0
-const JUMP_HEIGHT := 150.0  # 1.5m in pixels
+const JUMP_HEIGHT := 150.0  # 1.5 m
 const PROJECTILE_SCENE := preload("res://scenes/projectile.tscn")
 const PROJECTILE_SPEED := 700.0
 const PROJECTILE_INHERIT_VEL := 0.25
