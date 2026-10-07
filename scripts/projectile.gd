@@ -30,9 +30,11 @@ func _on_hit(body: Node) -> void:
 	# Ignore one-way platforms when approaching from below (bullet going up)
 	if body is TileMapLayer and velocity.y < 0.0:
 		return
+	var impact_handled := false
 	if body.has_method("hit_by_projectile"):
-		body.hit_by_projectile(self)
-	_spawn_impact()
+		impact_handled = body.hit_by_projectile(self) == true
+	if not impact_handled:
+		_spawn_impact()
 	queue_free()
 
 func _spawn_impact() -> void:
