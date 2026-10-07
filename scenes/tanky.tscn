@@ -13,7 +13,7 @@
 [ext_resource type="SpriteFrames" uid="uid://dy7qd8te0uncc" path="res://sprites/antenna_frames.tres" id="10_ant"]
 
 [sub_resource type="PhysicsMaterial" id="4"]
-friction = 1.4
+friction = 0.2
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dwn4l"]
 atlas = ExtResource("6_pjshc")

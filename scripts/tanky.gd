@@ -8,8 +8,10 @@ const MAX_SPEED := 500.0  # 10 body lengths/s
 const ACCEL_TIME := 2  # seconds to reach max speed
 const DRIVE_TORQUE := 50000.0
 const BRAKE_TORQUE := 10000.0
-const AIR_CONTROL := 0.35
 const DRIVE_FORCE := 650.0
+const AIR_ACCEL := 450.0  # px/s² of horizontal steering while airborne
+const WHEEL_RADIUS := 8.4  # wheel collision radius (12 px circle scaled by 0.7)
+const AIR_WHEEL_SYNC := 6000.0  # torque per rad/s that keeps the wheels rolling in the air
 const JUMP_HEIGHT := 150.0  # 1.5 m
 const PROJECTILE_SCENE := preload("res://scenes/projectile.tscn")
 const PROJECTILE_SPEED := 700.0
@@ -155,32 +157,61 @@ func _update_acceleration(move: float, delta: float) -> void:
 	if move != 0.0 and sign(move) == sign(_last_move_dir):
 		_accel_time = min(_accel_time + delta, ACCEL_TIME)
 	else:
-		_accel_time = 0.0
+		# Resume the speed ramp from the current speed, so pressing again never slows Tanky down
+		var speed := chassis.linear_velocity.x * signf(move)
+		_accel_time = clampf(inverse_lerp(MIN_SPEED, MAX_SPEED, speed), 0.0, 1.0) * ACCEL_TIME
 	_last_move_dir = move
-	
-	var current_max: float = lerp(MIN_SPEED, MAX_SPEED, _accel_time / ACCEL_TIME)
+
+func _current_max_speed() -> float:
+	return lerpf(MIN_SPEED, MAX_SPEED, _accel_time / ACCEL_TIME)
 
 func _apply_drive(move: float, grounded: bool) -> void:
-	if move == 0.0:
+	if move == 0.0 or not grounded:
 		return
 	
-	var current_max: float = lerp(MIN_SPEED, MAX_SPEED, _accel_time / ACCEL_TIME)
+	var current_max := _current_max_speed()
 	var velocity := chassis.linear_velocity.x
 	if abs(velocity) > current_max and sign(velocity) == sign(move):
 		return
 	
-	var torque := DRIVE_TORQUE * move * (AIR_CONTROL if not grounded else 1.0)
+	var torque := DRIVE_TORQUE * move
 	front_wheel.apply_torque(torque)
 	rear_wheel.apply_torque(torque)
 
 func _apply_drag(move: float, grounded: bool) -> void:
-	var current_max: float = lerp(MIN_SPEED, MAX_SPEED, _accel_time / ACCEL_TIME)
-	var drag: float = (move * current_max - chassis.linear_velocity.x) * DRIVE_FORCE * (1.0 if grounded else AIR_CONTROL)
+	if not grounded:
+		_apply_air_steering(move)
+		_sync_wheels_to_chassis()
+		return
+	
+	var drag := (move * _current_max_speed() - chassis.linear_velocity.x) * DRIVE_FORCE
 	chassis.apply_central_force(Vector2(drag, 0.0))
 	
 	if move == 0.0:
 		for wheel in [front_wheel, rear_wheel]:
 			wheel.apply_torque(-wheel.angular_velocity * BRAKE_TORQUE)
+
+# In the air the motors keep the wheels rolling at the chassis speed, so Tanky lands
+# without the tracks grabbing the ground and killing his momentum.
+func _sync_wheels_to_chassis() -> void:
+	var target_spin := chassis.linear_velocity.x / WHEEL_RADIUS
+	for wheel: RigidBody2D in [front_wheel, rear_wheel]:
+		wheel.apply_torque((target_spin - wheel.angular_velocity) * AIR_WHEEL_SYNC)
+
+# Airborne momentum is kept (Super Mario Bros. 3 style): with no input Tanky keeps his speed,
+# and input only nudges it at AIR_ACCEL, never beyond the current run speed.
+func _apply_air_steering(move: float) -> void:
+	if move == 0.0:
+		return
+	var velocity := chassis.linear_velocity.x
+	var target := move * _current_max_speed()
+	if signf(velocity) == signf(move) and absf(velocity) >= absf(target):
+		return
+	# Push every body of the rig by its own mass: a force on the chassis alone would drag the
+	# wheels through the joints, above its center of mass, and tilt it backwards.
+	var accel := Vector2(signf(target - velocity) * AIR_ACCEL, 0.0)
+	for body: RigidBody2D in [chassis, front_wheel, rear_wheel]:
+		body.apply_central_force(accel * body.mass)
 
 func _update_head_bob(grounded: bool, delta: float) -> void:
 	if not head_rig or not chassis:

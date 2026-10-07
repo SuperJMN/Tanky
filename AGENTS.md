@@ -102,6 +102,9 @@ Tanky (Node2D, tanky.gd)
 - Movement is force-based: torque on both wheels, plus a horizontal force on the chassis
   towards the target speed. Velocities are never set directly. In the air, a PD controller
   keeps the chassis level.
+- In the air Tanky keeps his momentum (Super Mario Bros. 3 style): with no input only the
+  bodies' linear damping slows him down, and input only steers at `AIR_ACCEL`, up to the current run speed. The
+  motors keep the wheels rolling at the chassis speed, so landing does not brake him.
 - Ground contact comes from the two raycasts (`_is_grounded()`): the surface normal must be
   close to "up" and Tanky must not be rising fast.
 - The wheels are separate rigid bodies held by joints, siblings of the chassis. Never nest a
