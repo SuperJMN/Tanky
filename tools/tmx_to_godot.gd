@@ -8,7 +8,9 @@ extends SceneTree
 #       <map.tmx> <stage_name> [<tileset_name>]
 #
 # Output:
-#   res://scenes/stages/<stage_name>.tscn             Node2D with one TileMapLayer per tile layer
+#   res://scenes/stages/<stage_name>.tscn             Stage (stage.gd) with one TileMapLayer per
+#                                                     tile layer; the map's background colour
+#                                                     becomes its sky_color
 #   res://scenes/stages/tilesets/<tileset_name>.tres  TileSet, reused when it already exists
 #   res://sprites/tilesets/<tileset_name>.png         atlas; animations whose frames are not
 #                                                     consecutive get repacked into new rows
@@ -20,6 +22,7 @@ const STAGE_DIR := "res://scenes/stages"
 const TILESET_DIR := "res://scenes/stages/tilesets"
 const ATLAS_DIR := "res://sprites/tilesets"
 const STAGE_SCALE := 3.0
+const STAGE_SCRIPT := preload("res://scripts/stage.gd")
 const TERRAIN_COLLISION_LAYER := 1
 const SOURCE_ID := 0
 const TILE_COORDS_META := &"tiled_tile_coords"
@@ -82,7 +85,10 @@ func _convert(map_path: String, stage_name: String, tileset_name: String) -> Str
 
 	var coords: Dictionary = tile_set.get_meta(TILE_COORDS_META)
 	var root := Node2D.new()
+	root.set_script(STAGE_SCRIPT)
 	root.name = stage_name.to_pascal_case()
+	if map["backgroundcolor"] != "":
+		root.sky_color = Color(map["backgroundcolor"])
 	var layers: Array = map["layers"]
 	for layer: Dictionary in layers:
 		var tile_layer := TileMapLayer.new()

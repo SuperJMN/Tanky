@@ -1,7 +1,8 @@
 extends CanvasLayer
 class_name Hud
 
-## On-screen status: Tanky's health as the cells of a battery, and the stage-clear banner.
+## On-screen status: Tanky's health as the cells of a battery, the stage-clear banner and the
+## fade to black between areas.
 
 const PIXEL := 4.0  # screen px per art pixel
 const CELL_SIZE := Vector2(4, 6)
@@ -19,13 +20,16 @@ const SHAKE_TIME := 0.3
 const SHAKE_PX := 6.0
 const BANNER_POP_TIME := 0.5
 const HINT_BLINK := 0.45  # s per blink of the restart hint
+const FADE_TIME := 0.3  # s to fade the screen to black or back
 
 @export_node_path("Node2D") var battery_path: NodePath
 @export_node_path("Sprite2D") var stage_clear_path: NodePath
 @export_node_path("Sprite2D") var restart_hint_path: NodePath
+@export_node_path("ColorRect") var fade_path: NodePath
 @onready var battery: Node2D = get_node(battery_path)
 @onready var stage_clear: Sprite2D = get_node(stage_clear_path)
 @onready var restart_hint: Sprite2D = get_node(restart_hint_path)
+@onready var fade: ColorRect = get_node(fade_path)
 
 var _health := 0
 var _max_health := 0
@@ -61,6 +65,12 @@ func show_stage_clear() -> void:
 func show_restart_hint() -> void:
 	_hint_t = 0.0
 	restart_hint.visible = true
+
+## Fade the screen to black, or back to the game. The battery stays on top.
+func fade_screen(to_black: bool) -> void:
+	var tween := create_tween()
+	tween.tween_property(fade, "color:a", 1.0 if to_black else 0.0, FADE_TIME)
+	await tween.finished
 
 func _process(delta: float) -> void:
 	if _health == 1:

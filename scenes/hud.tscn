@@ -10,6 +10,16 @@ script = ExtResource("1")
 battery_path = NodePath("Battery")
 stage_clear_path = NodePath("StageClear")
 restart_hint_path = NodePath("RestartHint")
+fade_path = NodePath("Fade")
+
+[node name="Fade" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
 
 [node name="Battery" type="Node2D" parent="."]
 position = Vector2(16, 16)

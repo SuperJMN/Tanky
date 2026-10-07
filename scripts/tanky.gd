@@ -27,6 +27,7 @@ const GUN_AIM_SPEED_DEG := 90.0
 const TRACKS_DROP_OFFSET := 5.0
 const TRACKS_RETURN_SPEED := 80.0
 const EXPLOSION_SCENE := preload("res://scenes/explosion.tscn")
+const NO_CAMERA_LIMIT := -10000000  # Camera2D's default limit_top
 
 # Damage
 const MAX_HEALTH := 4  # hits Tanky can take; the last one destroys him
@@ -112,6 +113,7 @@ var _stun_left := 0.0
 var _celebrating := false
 var _hops_left := 0
 var _hop_wait := 0.0
+var _traveling := false
 
 func _ready() -> void:
 
@@ -141,19 +143,21 @@ func _ready() -> void:
 		e.frame = 0
 		_start_blink_loop()
 
-# Clamp the follow camera to a level's world-space bounds. The top stays open for jumps.
-# Camera2D applies limits before its offset, so compensate for it.
-func set_camera_limits(bounds: Rect2) -> void:
+# Clamp the follow camera to an area's world-space bounds. Outdoors the top stays open for
+# jumps; a cave also stops it at the ceiling. Camera2D applies limits before its offset, so
+# compensate for it.
+func set_camera_limits(bounds: Rect2, has_ceiling := false) -> void:
 	camera.limit_left = floori(bounds.position.x - camera.offset.x)
 	camera.limit_right = ceili(bounds.end.x - camera.offset.x)
 	camera.limit_bottom = ceili(bounds.end.y - camera.offset.y)
+	camera.limit_top = floori(bounds.position.y - camera.offset.y) if has_ceiling else NO_CAMERA_LIMIT
 
 func _physics_process(delta: float) -> void:
 	camera.global_position = chassis.global_position
 	if _dead:
 		return
 	_update_damage(delta)
-	var has_control := _stun_left <= 0.0 and not _celebrating
+	var has_control := _stun_left <= 0.0 and not _celebrating and not _traveling
 	var move := Input.get_axis("move_left", "move_right") if has_control else 0.0
 	var grounded := _is_grounded()
 	
@@ -161,7 +165,7 @@ func _physics_process(delta: float) -> void:
 	_apply_drive(move, grounded)
 	_apply_drag(move, grounded)
 	_update_head_bob(grounded, delta)
-	if not _celebrating:
+	if not _celebrating and not _traveling:
 		_update_gun_aim(delta)
 	
 	# Air auto-balance: keep chassis near 0° while airborne
@@ -332,9 +336,25 @@ func _update_celebration(grounded: bool, delta: float) -> void:
 		_hops_left -= 1
 		_hop_wait = CELEBRATION_HOP_PAUSE
 
-## Lose one hit from a hazard at source, unless Tanky is blinking or celebrating.
+## Hold Tanky still and out of harm's way while a door takes him to another area.
+func set_traveling(traveling: bool) -> void:
+	_traveling = traveling
+	cannon_move_player.stop()
+
+## Move the whole rig, at rest, so the chassis ends up at target. The wheels keep their place
+## around the chassis, so the joints are not stretched.
+func teleport(target: Vector2) -> void:
+	var shift := target - chassis.global_position
+	for body in _rig:
+		body.global_position += shift
+		body.linear_velocity = Vector2.ZERO
+		body.angular_velocity = 0.0
+	camera.global_position = chassis.global_position
+	camera.reset_smoothing()
+
+## Lose one hit from a hazard at source, unless Tanky is blinking, celebrating or traveling.
 func take_hit(source: Vector2) -> void:
-	if _dead or _celebrating or _invulnerable_left > 0.0:
+	if _dead or _celebrating or _traveling or _invulnerable_left > 0.0:
 		return
 	health -= 1
 	health_changed.emit(health, MAX_HEALTH)

@@ -15,13 +15,17 @@ Guidance for agents and contributors working on Tanky Reloaded.
     world (propeller drones, clockwork mice, spring hoppers, cork guns): funny, but a real threat.
   - Tanky takes 4 hits (shown as battery cells). Losing them all, or falling off the level,
     restarts the level from the beginning.
+  - Dark openings in the hills are doors, as in Super Mario Bros. 2: driving into one fades
+    to another area. In stage 1 the low opening leads into a brick cave. Tanky cannot climb,
+    so rubble platforms take him up to a door that comes out on the hilltops.
   - Reaching the checkered flag at the end clears the stage: fanfare, confetti, a
-    "STAGE CLEAR!" banner and a victory dance. Jump then plays the level again.
+    "STAGE CLEAR!" banner and a victory dance. Jump then plays the level again. In stage 1 the
+    flag stands on the hilltops, so the cave is the way there.
   - Single jump, no double jump.
   - Tanky is a heavy remote-control tank with a life of its own. He should feel weighty and
     jump lower than Mario or Sonic.
-- Status: a playable prototype: one complete stage with ramps, four kinds of enemies, damage,
-  level restart and a goal.
+- Status: a playable prototype: one complete stage with ramps, a cave, four kinds of enemies,
+  damage, level restart and a goal.
 - Backlog: GitHub issues, ordered in the roadmap issue
   [#29](https://github.com/SuperJMN/Tanky/issues/29). Work through them one at a time and
   reference the issue in commits.
@@ -56,7 +60,17 @@ godot --headless --path . --script res://tools/tmx_to_godot.gd -- <map.tmx> <sta
 ```
 
 It writes `scenes/stages/<stage_name>.tscn`, and the tileset plus its atlas if they do not
-exist yet. It never overwrites a stage: after the import, stages are edited in Godot.
+exist yet. It never overwrites a stage: after the import, stages are edited in Godot. Tiles
+with a collision object become solid, and tiles whose `retrosharpCollision` property is
+`Platform` become one-way platforms. The map's `backgroundcolor` becomes the stage's sky.
+
+To start from a picture instead (a mock-up, or a ripped map as with the cave), first turn it
+into a Tiled map with [ImageToTiled](https://github.com/SuperJMN/ImageToTiled), then mark the
+collisions in the `.tsx` and import it as above:
+
+```bash
+ImageToTiled.Cli <stage.png> -o <dir> -n <tileset_name> --empty-mode gid0 --no-retrosharp
+```
 
 The exit code of the headless commands is not reliable. Read their output and treat any line
 with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `main.gd` and
@@ -67,10 +81,11 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
 | Path | Contents |
 |---|---|
 | `project.godot` | Project settings, input map, main scene. Single source of truth for configuration. |
-| `scenes/main.tscn` + `scripts/main.gd` | Playfield: sky, current stage, enemies, Tanky, music. |
+| `scenes/main.tscn` + `scripts/main.gd` | Playfield: sky, stage areas, doors, enemies, Tanky, music. |
 | `scenes/tanky.tscn` + `scripts/tanky.gd` | Player rig and controller. |
 | `scenes/projectile.tscn` + `scripts/projectile.gd` | Bullet (`Area2D`, own gravity). |
-| `scenes/hud.tscn` + `scripts/hud.gd` | On-screen health battery and stage-clear banner. |
+| `scenes/hud.tscn` + `scripts/hud.gd` | On-screen health battery, stage-clear banner and fade to black. |
+| `scenes/door.tscn` + `scripts/door.gd` | Doorway trigger; its `exit` marker says where Tanky comes out. |
 | `scenes/goal.tscn` + `scripts/goal.gd` | End-of-level flag; emits `reached` and bursts into confetti. |
 | `scenes/enemy_drone.tscn` + `scripts/enemy_drone.gd` | Propeller drone: patrols while hovering; with `bomb_cooldown` it drops bombs ahead of Tanky. |
 | `scenes/enemy_windup_mouse.tscn` + `scripts/enemy_windup_mouse.gd` | Clockwork mouse: walks, turns at walls and ledges, winds up and dashes at Tanky. |
@@ -81,8 +96,8 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
 | `scripts/enemy_kit.gd` | Helpers shared by enemies: find Tanky, hit flash, death explosion, on-screen sounds. |
 | `scripts/hurtbox.gd` | Tanky's damage sensor. |
 | `scenes/explosion.tscn` + `scripts/explosion.gd` | One-shot explosion effect with SFX. |
-| `scenes/stages/` | Stages: a `Node2D` with `TileMapLayer`s (16 px tiles at scale 3, so 15 rows fill the 720 px screen). `Terrain` holds the ground; `Overlay` draws in front of it. |
-| `scenes/stages/tilesets/` | Shared `TileSet`s. `smb2_overworld` includes slope tiles (45° and 27°, row 3 of its atlas) generated from its grass and dirt. |
+| `scenes/stages/` + `scripts/stage.gd` | Stage areas: a `Stage` (`stage.gd`: sky colour, ceiling, bounds) with `TileMapLayer`s (16 px tiles at scale 3, so 15 rows fill the 720 px screen). `Terrain` holds the ground; `Overlay` draws in front of it. `stage_1_cave` is stage 1's cave. |
+| `scenes/stages/tilesets/` | Shared `TileSet`s. `smb2_overworld` includes slope tiles (45° and 27°, row 3 of its atlas) generated from its grass and dirt; `smb2_underground` holds the cave's bricks, waterfall, rubble and doors. |
 | `sprites/tilesets/` | Tileset atlases. |
 | `sprites/enemies/`, `sprites/goal/`, `sprites/hud/` | Pixel art drawn for this project. Frames are laid out horizontally (`hframes`); world sprites use scale 2. |
 | `tools/tmx_to_godot.gd` | Tiled map importer (see Commands). |
@@ -140,8 +155,8 @@ Tanky (Node2D, tanky.gd)
   close to "up" and Tanky must not be rising fast.
 - The wheels are separate rigid bodies held by joints, siblings of the chassis. Never nest a
   physics body inside another one: the child gets teleported through the scene tree. Anything
-  that teleports Tanky (for example a respawn) must move the chassis and both wheels, and
-  reset their velocities.
+  that teleports Tanky must move the chassis and both wheels, and reset their velocities:
+  use `Tanky.teleport(target)`, as doors do.
 - Visual effects such as the track compression on jump move sprites only, never the bodies.
 - `tanky.gd` gets its children through `@export_node_path` properties set in the scene.
   Keep that pattern in that script. Other scripts may use `$Child`; follow whatever the file
@@ -159,12 +174,27 @@ Tanky (Node2D, tanky.gd)
   (`EnemyKit.player`), and aim at `Tanky.target_position()`.
 - Tanky gets hurt in two ways, both through his `Hurtbox`: enemy projectiles hit it (it has
   `hit_by_projectile`), and any `enemies` body or area overlapping it hurts on contact.
-  `Tanky.take_hit(source)` ignores hits while he blinks.
+  `Tanky.take_hit(source)` ignores hits while he blinks, celebrates or goes through a door.
 - `Tanky.kill(explode)` ends a life and emits `died`; `main.gd` then restarts the level by
-  reloading the scene. `main.gd` also kills Tanky when he falls below the level bounds.
+  reloading the scene. `main.gd` also kills Tanky when he falls below the bounds of the area
+  he is in.
 - When the `Goal` emits `reached`, `main.gd` stops the music, plays the fanfare, calls
   `Tanky.celebrate()` (no control, no damage, victory hops), freezes `World/Enemies` and shows
   the banner. After the fanfare, jump reloads the level.
+
+### Areas and doors
+
+- A level can have several areas, each one a `Stage` under `World` (stage 1: `Stage` outdoors
+  and `Cave`, placed to the right of the outdoor bounds so neither shows in the other's
+  camera). `main.gd` frames the camera to the current area's bounds (also at the top when
+  `has_ceiling`), paints the sky with its `sky_color` and sets the fall limit below it.
+- A `Door` is a trigger, usually over a doorway drawn in the tiles. When Tanky touches it,
+  `main.gd` plays the door sound, holds Tanky (`Tanky.set_traveling`: no control, no damage),
+  fades to black, switches to the area that contains the door's `exit` marker, teleports Tanky
+  there and fades back in.
+- Place each `exit` marker on the floor, about 24 px up and clear of every door (a door whose
+  trigger overlaps the exit sends Tanky straight back). In stage 1 the doors and their exits
+  live in `World/Doors`, in pairs, so every doorway works both ways.
 
 ### Collision layers
 
@@ -198,7 +228,8 @@ keys.
 ### Audio
 
 - Buses: `Master`, `Music` (background track `sounds/ladynavigation.mp3` and the stage-clear
-  fanfare `sounds/stage_clear.wav`, an original chiptune), `SFX` (all effects).
+  fanfare `sounds/stage_clear.wav`, an original chiptune), `SFX` (all effects, including the
+  original door swoop `sounds/door.wav`).
 - Every new player must go to `Music` or `SFX`. If a new bus is needed, add it to
   `audio/default_bus_layout.tres` and document it here.
 - Enemies play their sounds through `EnemyKit.play_sound`, which stays silent off screen.
@@ -252,8 +283,8 @@ out frozen.
 - Art goes in `sprites/` and audio in `sounds/`. Commit them with their `.import` files.
 - Note the source and license of every third-party asset in its commit message.
 - Some current assets are placeholders taken from Nintendo games: the Super Mario Bros. 2
-  tileset and the SMW/NSMB sound effects (the hurt sound is SMW's pipe). They cannot ship in a
-  public release (#26).
+  tilesets (overworld and underground) and the SMW/NSMB sound effects (the hurt sound is SMW's
+  pipe). They cannot ship in a public release (#26).
 
 ## Local-only tooling
 

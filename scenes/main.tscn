@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://d34wn350jojva"]
+[gd_scene load_steps=14 format=3 uid="uid://d34wn350jojva"]
 
 [ext_resource type="PackedScene" uid="uid://dwxypa12ogkws" path="res://scenes/tanky.tscn" id="2"]
 [ext_resource type="Script" uid="uid://bhigjol5laa1k" path="res://scripts/main.gd" id="4"]
@@ -10,17 +10,22 @@
 [ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/goal.tscn" id="12"]
 [ext_resource type="AudioStream" path="res://sounds/stage_clear.wav" id="13"]
+[ext_resource type="PackedScene" path="res://scenes/stages/stage_1_cave.tscn" id="14"]
+[ext_resource type="PackedScene" path="res://scenes/door.tscn" id="15"]
+[ext_resource type="AudioStream" path="res://sounds/door.wav" id="16"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("4")
 palm_container_path = NodePath("ParallaxBackground/PalmTrees/PalmContainer")
 music_path = NodePath("Music")
-world_path = NodePath("World")
 tanky_path = NodePath("World/Tanky")
 hud_path = NodePath("Hud")
 goal_path = NodePath("World/Goal")
 enemies_path = NodePath("World/Enemies")
 fanfare_path = NodePath("Fanfare")
+start_stage_path = NodePath("World/Stage")
+sky_path = NodePath("BackgroundLayer/Sky")
+door_sound_path = NodePath("DoorSound")
 
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1
@@ -84,15 +89,55 @@ bomb_cooldown = 1.6
 hit_points = 2
 
 [node name="Popgun2" parent="World/Enemies" instance=ExtResource("8")]
-position = Vector2(6760, 624)
+position = Vector2(6960, 288)
 
 [node name="SpringHopper3" parent="World/Enemies" instance=ExtResource("10")]
-position = Vector2(7050, 580)
+position = Vector2(7150, 244)
+
+[node name="CaveMouse" parent="World/Enemies" instance=ExtResource("9")]
+position = Vector2(9750, 878)
+
+[node name="CaveDrone" parent="World/Enemies" instance=ExtResource("7")]
+position = Vector2(10032, 600)
+patrol_distance = 160.0
 
 [node name="Stage" parent="World" instance=ExtResource("6")]
 
+[node name="Cave" parent="World" instance=ExtResource("14")]
+position = Vector2(8640, 0)
+
+[node name="Doors" type="Node2D" parent="World"]
+
+[node name="HillOpening" parent="World/Doors" instance=ExtResource("15")]
+position = Vector2(6072, 624)
+exit_path = NodePath("../CaveDoorDownExit")
+
+[node name="HillOpeningExit" type="Marker2D" parent="World/Doors"]
+position = Vector2(6168, 600)
+
+[node name="HillTopHole" parent="World/Doors" instance=ExtResource("15")]
+position = Vector2(6504, 288)
+exit_path = NodePath("../CaveDoorUpExit")
+
+[node name="HillTopHoleExit" type="Marker2D" parent="World/Doors"]
+position = Vector2(6600, 264)
+
+[node name="CaveDoorDown" parent="World/Doors" instance=ExtResource("15")]
+position = Vector2(8808, 912)
+exit_path = NodePath("../HillOpeningExit")
+
+[node name="CaveDoorDownExit" type="Marker2D" parent="World/Doors"]
+position = Vector2(8904, 888)
+
+[node name="CaveDoorUp" parent="World/Doors" instance=ExtResource("15")]
+position = Vector2(10440, 336)
+exit_path = NodePath("../HillTopHoleExit")
+
+[node name="CaveDoorUpExit" type="Marker2D" parent="World/Doors"]
+position = Vector2(10320, 312)
+
 [node name="Goal" parent="World" instance=ExtResource("12")]
-position = Vector2(7300, 624)
+position = Vector2(7400, 288)
 
 [node name="Tanky" parent="World" instance=ExtResource("2")]
 position = Vector2(216, 400)
@@ -104,5 +149,9 @@ bus = &"Music"
 [node name="Fanfare" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("13")
 bus = &"Music"
+
+[node name="DoorSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("16")
+bus = &"SFX"
 
 [node name="Hud" parent="." instance=ExtResource("11")]
