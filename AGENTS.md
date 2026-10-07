@@ -8,14 +8,15 @@ Guidance for agents and contributors working on Tanky Reloaded.
   tracked, physics-based propulsion.
 - Design intent:
   - The scene opens with Tanky falling onto the terrain, and the camera follows him.
-  - The background is locked to `sprites/background.jpg`.
+  - The background is a plain sky colour for now; a parallax background in the style of
+    Super Mario All-Stars' SMB2 is planned (#17).
   - Levels evoke classic Mario/Sonic ramps, to show off traction.
   - Projectiles defeat on-screen enemies.
   - Single jump, no double jump.
   - Tanky is a heavy remote-control tank with a life of its own. He should feel weighty and
     jump lower than Mario or Sonic.
-- Status: a playable prototype (one test level, enemy drones). It does not yet have damage, lives,
-  slopes or a level goal.
+- Status: a playable prototype (one stage with ramps, enemy drones). It does not yet have
+  damage, lives, respawn or a level goal.
 - Backlog: GitHub issues, ordered in the roadmap issue
   [#29](https://github.com/SuperJMN/Tanky/issues/29). Work through them one at a time and
   reference the issue in commits.
@@ -43,6 +44,15 @@ godot --headless --path . --import       # import assets and parse every script
 godot --headless --path . --quit-after 300   # run the main scene for 300 frames, no window
 ```
 
+To bootstrap a stage from an existing Tiled map (one-off; Tiled is not our level editor):
+
+```bash
+godot --headless --path . --script res://tools/tmx_to_godot.gd -- <map.tmx> <stage_name> [<tileset_name>]
+```
+
+It writes `scenes/stages/<stage_name>.tscn`, and the tileset plus its atlas if they do not
+exist yet. It never overwrites a stage: after the import, stages are edited in Godot.
+
 The exit code of the headless commands is not reliable. Read their output and treat any line
 with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `main.gd` and
 `tanky.gd` skip music and cosmetic timers on purpose.
@@ -52,17 +62,20 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
 | Path | Contents |
 |---|---|
 | `project.godot` | Project settings, input map, main scene. Single source of truth for configuration. |
-| `scenes/main.tscn` + `scripts/main.gd` | Playfield: background, terrain, enemies, Tanky, music. |
+| `scenes/main.tscn` + `scripts/main.gd` | Playfield: sky, current stage, enemies, Tanky, music. |
 | `scenes/tanky.tscn` + `scripts/tanky.gd` | Player rig and controller. |
 | `scenes/projectile.tscn` + `scripts/projectile.gd` | Bullet (`Area2D`, own gravity). |
 | `scenes/enemy_drone.tscn` + `scripts/enemy_drone.gd` | Patrolling, hovering drone. |
 | `scenes/explosion.tscn` + `scripts/explosion.gd` | One-shot explosion effect with SFX. |
-| `scenes/terrain/tile_map_layer.tscn` | Terrain chunk (`TileMapLayer`, 16 px tiles, instanced at scale 3). |
+| `scenes/stages/` | Stages: a `Node2D` with `TileMapLayer`s (16 px tiles at scale 3, so 15 rows fill the 720 px screen). `Terrain` holds the ground; `Overlay` draws in front of it. |
+| `scenes/stages/tilesets/` | Shared `TileSet`s. `smb2_overworld` includes slope tiles (45° and 27°, row 3 of its atlas) generated from its grass and dirt. |
+| `sprites/tilesets/` | Tileset atlases. |
+| `tools/tmx_to_godot.gd` | Tiled map importer (see Commands). |
 | `sprites/`, `sounds/` | Imported art and audio, with their `.import` files. |
 | `audio/default_bus_layout.tres` | Audio buses. |
 
-- Every scene has its script under `scripts/`, with the same name in `lower_snake_case`.
-  New levels go under `scenes/`.
+- Scenes with a script keep it under `scripts/`, with the same name in `lower_snake_case`.
+  New stages go under `scenes/stages/`.
 - Commit the `.import` and `.uid` files together with their assets and scripts. Never edit
   them by hand.
 - `.godot/` is editor cache and is not committed.

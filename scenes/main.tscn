@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://d34wn350jojva"]
+[gd_scene load_steps=5 format=3 uid="uid://d34wn350jojva"]
 
-[ext_resource type="Texture2D" uid="uid://c807mdns7k7e4" path="res://sprites/background.jpg" id="1"]
 [ext_resource type="PackedScene" uid="uid://dwxypa12ogkws" path="res://scenes/tanky.tscn" id="2"]
 [ext_resource type="Script" uid="uid://bhigjol5laa1k" path="res://scripts/main.gd" id="4"]
-[ext_resource type="PackedScene" uid="uid://cxdfdegthod1v" path="res://scenes/terrain/tile_map_layer.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/stages/stage_1.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://bfo8sh1fpsln7" path="res://scenes/enemy_drone.tscn" id="7"]
 
 [node name="Main" type="Node2D"]
@@ -16,18 +15,14 @@ tanky_path = NodePath("World/Tanky")
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="BackgroundImage" type="TextureRect" parent="BackgroundLayer"]
+[node name="Sky" type="ColorRect" parent="BackgroundLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 4.0
-offset_right = 4.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("1")
-expand_mode = 1
-stretch_mode = 6
+color = Color(0.27450982, 0.7372549, 0.9882353, 1)
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 layer = -1
@@ -58,20 +53,10 @@ position = Vector2(1046, 421)
 [node name="EnemyDrone4" parent="World/Enemies" instance=ExtResource("7")]
 position = Vector2(1576, 287)
 
-[node name="Terrain" parent="World" instance=ExtResource("6")]
-position = Vector2(146, 322)
-scale = Vector2(3, 3)
-
-[node name="Terrain2" parent="World" instance=ExtResource("6")]
-position = Vector2(4637, 190)
-scale = Vector2(3, 3)
-
-[node name="Terrain3" parent="World" instance=ExtResource("6")]
-position = Vector2(8906, 267)
-scale = Vector2(3, 3)
+[node name="Stage" parent="World" instance=ExtResource("6")]
 
 [node name="Tanky" parent="World" instance=ExtResource("2")]
-position = Vector2(205, 590)
+position = Vector2(216, 400)
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 volume_db = -6.0

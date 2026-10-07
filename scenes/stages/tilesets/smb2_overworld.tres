@@ -1,0 +1,149 @@
+[gd_resource type="TileSet" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://sprites/tilesets/smb2_overworld.png" id="1_em7rv"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m88km"]
+texture = ExtResource("1_em7rv")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+4:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+4:0/0/physics_layer_0/polygon_0/one_way = true
+5:0/0 = 0
+5:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+5:0/0/physics_layer_0/polygon_0/one_way = true
+6:0/0 = 0
+7:0/0 = 0
+7:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+7:0/0/physics_layer_0/polygon_0/one_way = true
+8:0/0 = 0
+8:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+8:0/0/physics_layer_0/polygon_0/one_way = true
+0:3/animation_frame_0/duration = 0.5
+0:3/animation_frame_1/duration = 0.2
+0:3/animation_frame_2/duration = 0.2
+0:3/animation_frame_3/duration = 0.2
+0:3/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+12:0/0 = 0
+13:0/0 = 0
+14:0/0 = 0
+15:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+2:1/0 = 0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+3:1/0 = 0
+3:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+4:1/0 = 0
+5:1/0 = 0
+5:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+5:1/0/physics_layer_0/polygon_0/one_way = true
+6:1/0 = 0
+6:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+6:1/0/physics_layer_0/polygon_0/one_way = true
+7:1/0 = 0
+7:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+7:1/0/physics_layer_0/polygon_0/one_way = true
+8:1/0 = 0
+8:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+9:1/0 = 0
+10:1/0 = 0
+10:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+11:1/0 = 0
+12:1/0 = 0
+12:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+13:1/0 = 0
+13:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+14:1/0 = 0
+15:1/0 = 0
+0:2/animation_frame_0/duration = 0.2
+0:2/animation_frame_1/duration = 0.2
+0:2/animation_frame_2/duration = 0.2
+0:2/animation_frame_3/duration = 0.2
+0:2/animation_frame_4/duration = 0.2
+0:2/animation_frame_5/duration = 0.2
+0:2/animation_frame_6/duration = 0.2
+0:2/animation_frame_7/duration = 0.2
+0:2/0 = 0
+8:2/animation_frame_0/duration = 0.2
+8:2/animation_frame_1/duration = 0.2
+8:2/animation_frame_2/duration = 0.2
+8:2/animation_frame_3/duration = 0.2
+8:2/0 = 0
+12:2/0 = 0
+13:2/0 = 0
+14:2/0 = 0
+15:2/0 = 0
+4:3/0 = 0
+4:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, 8, -8, 8, 8)
+5:3/0 = 0
+5:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+6:3/0 = 0
+6:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, 8, -8, 8)
+7:3/0 = 0
+7:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+8:3/0 = 0
+8:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, 8, 0, 8, 8)
+9:3/0 = 0
+9:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+10:3/0 = 0
+10:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 0, 8, -8, 8, 8, -8, 8)
+11:3/0 = 0
+11:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+12:3/0 = 0
+12:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, 0, 8, 8, -8, 8)
+13:3/0 = 0
+13:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+14:3/0 = 0
+14:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 0, 8, 8, -8, 8)
+15:3/0 = 0
+15:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[resource]
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_m88km")
+metadata/tiled_tile_coords = {
+0: Vector2i(0, 0),
+1: Vector2i(1, 0),
+2: Vector2i(2, 0),
+3: Vector2i(3, 0),
+4: Vector2i(4, 0),
+5: Vector2i(5, 0),
+6: Vector2i(6, 0),
+7: Vector2i(7, 0),
+8: Vector2i(8, 0),
+9: Vector2i(0, 3),
+10: Vector2i(10, 0),
+11: Vector2i(11, 0),
+12: Vector2i(12, 0),
+13: Vector2i(13, 0),
+14: Vector2i(14, 0),
+15: Vector2i(15, 0),
+16: Vector2i(0, 1),
+17: Vector2i(1, 1),
+18: Vector2i(2, 1),
+19: Vector2i(3, 1),
+20: Vector2i(4, 1),
+21: Vector2i(5, 1),
+22: Vector2i(6, 1),
+23: Vector2i(7, 1),
+24: Vector2i(8, 1),
+25: Vector2i(9, 1),
+26: Vector2i(10, 1),
+27: Vector2i(11, 1),
+28: Vector2i(12, 1),
+29: Vector2i(13, 1),
+30: Vector2i(14, 1),
+31: Vector2i(15, 1),
+32: Vector2i(0, 2),
+40: Vector2i(8, 2),
+44: Vector2i(12, 2),
+45: Vector2i(13, 2),
+46: Vector2i(14, 2),
+47: Vector2i(15, 2)
+}

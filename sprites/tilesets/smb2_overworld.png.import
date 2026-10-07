@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvd3nbagkjgsy"
-path="res://.godot/imported/SNES - Super Mario All-Stars_ Super Mario Bros. 2 - Miscellaneous - Tileset.png-d335f902a9590c2644b8b8c59f7ea4a4.ctex"
+uid="uid://b7o4a6kllt7d0"
+path="res://.godot/imported/smb2_overworld.png-145e133d095f689500874a349833cb4c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/SNES - Super Mario All-Stars_ Super Mario Bros. 2 - Miscellaneous - Tileset.png"
-dest_files=["res://.godot/imported/SNES - Super Mario All-Stars_ Super Mario Bros. 2 - Miscellaneous - Tileset.png-d335f902a9590c2644b8b8c59f7ea4a4.ctex"]
+source_file="res://sprites/tilesets/smb2_overworld.png"
+dest_files=["res://.godot/imported/smb2_overworld.png-145e133d095f689500874a349833cb4c.ctex"]
 
 [params]
 
