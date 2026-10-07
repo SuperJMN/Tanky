@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy_spring_hopper.gd" id="1"]
+[ext_resource type="Texture2D" path="res://sprites/enemies/spring_hopper.png" id="2"]
+[ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://sounds/jump.wav" id="3"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(30, 44)
+
+[node name="EnemySpringHopper" type="CharacterBody2D"]
+z_index = 3
+collision_layer = 8
+floor_snap_length = 6.0
+script = ExtResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -32)
+scale = Vector2(2, 2)
+texture = ExtResource("2")
+hframes = 3
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -22)
+shape = SubResource("1")
+
+[node name="BoingPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3")
+bus = &"SFX"

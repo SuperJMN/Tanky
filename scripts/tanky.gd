@@ -1,6 +1,11 @@
 extends Node2D
 class_name Tanky
 
+## Emitted whenever Tanky loses health.
+signal health_changed(health: int, max_health: int)
+## Emitted once when Tanky is destroyed or falls off the level.
+signal died
+
 const PIXELS_PER_METER := 100.0
 const BODY_LENGTH := 50.0  # 0.5m * 100px/m
 const MIN_SPEED := 150.0  # 3 body lengths/s
@@ -21,6 +26,15 @@ const GUN_MAX_DEG := 10.0
 const GUN_AIM_SPEED_DEG := 90.0
 const TRACKS_DROP_OFFSET := 5.0
 const TRACKS_RETURN_SPEED := 80.0
+const EXPLOSION_SCENE := preload("res://scenes/explosion.tscn")
+
+# Damage
+const MAX_HEALTH := 4  # hits Tanky can take; the last one destroys him
+const INVULNERABLE_TIME := 1.5  # s of blinking after a hit, while nothing can hurt him
+const HIT_STUN_TIME := 0.35  # s without control after a hit, so the knockback reads
+const HIT_KNOCKBACK := Vector2(260.0, -300.0)  # velocity away from the hit, px/s
+const BLINK_PERIOD := 0.08
+const DEATH_EXPLOSION_SCALE := 1.6
 
 # Head bobbing
 const HEAD_BOB_AMPLITUDE := 0.8
@@ -52,6 +66,8 @@ const GROUNDED_ASCENT_MAX := -30.0        # Consider grounded only if not moving
 @export_node_path("Node2D") var head_rig_path: NodePath
 @export_node_path("Node") var antenna_path: NodePath
 @export_node_path("Node") var eye_path: NodePath
+@export_node_path("Area2D") var hurtbox_path: NodePath
+@export_node_path("AudioStreamPlayer2D") var hurt_player_path: NodePath
 
 @onready var chassis: RigidBody2D = get_node(chassis_path)
 @onready var front_wheel: RigidBody2D = get_node(front_wheel_path)
@@ -70,6 +86,11 @@ const GROUNDED_ASCENT_MAX := -30.0        # Consider grounded only if not moving
 @onready var head_rig: Node2D = get_node(head_rig_path)
 @onready var antenna: Node = get_node(antenna_path)
 @onready var eye: Node = get_node(eye_path)
+@onready var hurtbox: Hurtbox = get_node(hurtbox_path)
+@onready var hurt_player: AudioStreamPlayer2D = get_node(hurt_player_path)
+@onready var _rig: Array[RigidBody2D] = [chassis, front_wheel, rear_wheel]
+
+var health := MAX_HEALTH
 
 var _facing := 1
 var _accel_time := 0.0
@@ -79,12 +100,16 @@ var _head_rig_base_y := 0.0
 var _blink_rng := RandomNumberGenerator.new()
 var _sprite_base_y := 0.0
 var _tracks_offset := 0.0
-var _alive := true
+var _in_tree := true
+var _dead := false
+var _invulnerable_left := 0.0
+var _stun_left := 0.0
 
 func _ready() -> void:
 
 	sprite.play("idle")
 	camera.make_current()
+	hurtbox.hurt.connect(take_hit)
 	
 	# Cache head rig base position
 	if head_rig:
@@ -116,7 +141,12 @@ func set_camera_limits(bounds: Rect2) -> void:
 	camera.limit_bottom = ceili(bounds.end.y - camera.offset.y)
 
 func _physics_process(delta: float) -> void:
-	var move := Input.get_axis("move_left", "move_right")
+	camera.global_position = chassis.global_position
+	if _dead:
+		return
+	_update_damage(delta)
+	var has_control := _stun_left <= 0.0
+	var move := Input.get_axis("move_left", "move_right") if has_control else 0.0
 	var grounded := _is_grounded()
 	
 	_update_acceleration(move, delta)
@@ -136,11 +166,11 @@ func _physics_process(delta: float) -> void:
 		# Prevent extreme spins
 		chassis.angular_velocity = clampf(chassis.angular_velocity, -ANGULAR_VEL_LIMIT, ANGULAR_VEL_LIMIT)
 	
-	if Input.is_action_just_pressed("jump") and grounded:
+	if has_control and Input.is_action_just_pressed("jump") and grounded:
 		var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity", 980.0)
 		# Launch every body of the rig at the same speed so the joints do not stretch on take-off
 		var takeoff := Vector2.UP * sqrt(2.0 * gravity * JUMP_HEIGHT)
-		for body: RigidBody2D in [chassis, front_wheel, rear_wheel]:
+		for body in _rig:
 			body.apply_central_impulse(takeoff * body.mass)
 		jump_player.play()
 		_compress_tracks()
@@ -150,8 +180,6 @@ func _physics_process(delta: float) -> void:
 	
 	_update_facing()
 	_update_tracks_suspension(grounded, delta)
-	camera.global_position = chassis.global_position
-
 
 func _update_acceleration(move: float, delta: float) -> void:
 	if move != 0.0 and sign(move) == sign(_last_move_dir):
@@ -210,7 +238,7 @@ func _apply_air_steering(move: float) -> void:
 	# Push every body of the rig by its own mass: a force on the chassis alone would drag the
 	# wheels through the joints, above its center of mass, and tilt it backwards.
 	var accel := Vector2(signf(target - velocity) * AIR_ACCEL, 0.0)
-	for body: RigidBody2D in [chassis, front_wheel, rear_wheel]:
+	for body in _rig:
 		body.apply_central_force(accel * body.mass)
 
 func _update_head_bob(grounded: bool, delta: float) -> void:
@@ -264,6 +292,59 @@ func _shoot() -> void:
 	shoot_timer.start()
 
 
+func is_alive() -> bool:
+	return not _dead
+
+## Point enemies aim at: the middle of the hull.
+func target_position() -> Vector2:
+	return chassis.global_position + Vector2(0.0, -10.0)
+
+## Lose one hit from a hazard at source, unless Tanky is still blinking from the last one.
+func take_hit(source: Vector2) -> void:
+	if _dead or _invulnerable_left > 0.0:
+		return
+	health -= 1
+	health_changed.emit(health, MAX_HEALTH)
+	if health <= 0:
+		kill(true)
+		return
+	_invulnerable_left = INVULNERABLE_TIME
+	_stun_left = HIT_STUN_TIME
+	hurt_player.play()
+	var away := signf(chassis.global_position.x - source.x)
+	if away == 0.0:
+		away = -1.0
+	# Give every body of the rig the same velocity, so the joints do not twist
+	var kick := Vector2(away * HIT_KNOCKBACK.x, HIT_KNOCKBACK.y)
+	for body in _rig:
+		body.apply_central_impulse((kick - body.linear_velocity) * body.mass)
+
+## End this life, blown up or lost off the level. The level restarts from died.
+func kill(explode: bool) -> void:
+	if _dead:
+		return
+	_dead = true
+	modulate.a = 1.0
+	cannon_move_player.stop()
+	if explode:
+		var fx: Node2D = EXPLOSION_SCENE.instantiate()
+		fx.global_position = chassis.global_position
+		fx.scale = Vector2.ONE * DEATH_EXPLOSION_SCALE
+		get_tree().current_scene.add_child(fx)
+		visible = false
+		for body in _rig:
+			body.set_deferred("freeze", true)
+	died.emit()
+
+func _update_damage(delta: float) -> void:
+	_stun_left = maxf(_stun_left - delta, 0.0)
+	_invulnerable_left = maxf(_invulnerable_left - delta, 0.0)
+	var blink_off := fmod(_invulnerable_left, BLINK_PERIOD * 2.0) > BLINK_PERIOD
+	modulate.a = 0.25 if _invulnerable_left > 0.0 and blink_off else 1.0
+	var enemy := hurtbox.touching_enemy()
+	if enemy:
+		take_hit(enemy.global_position)
+
 func _is_grounded() -> bool:
 	# Consider grounded only on near-upward normals and while not ascending fast
 	for c in ground_casts:
@@ -299,34 +380,36 @@ func _update_facing() -> void:
 			ant.play(ant_anim)
 
 func _exit_tree() -> void:
-	_alive = false
+	_in_tree = false
 	if cannon_move_player:
 		cannon_move_player.stop()
 	if jump_player:
 		jump_player.stop()
 	if shoot_player:
 		shoot_player.stop()
+	if hurt_player:
+		hurt_player.stop()
 	if shoot_timer:
 		shoot_timer.stop()
 
 # --- Eye blink ---
 func _start_blink_loop() -> void:
-	while _alive and eye and eye is AnimatedSprite2D:
+	while _in_tree and eye and eye is AnimatedSprite2D:
 		var wait := _blink_rng.randf_range(2.0, 6.0)
 		await get_tree().create_timer(wait).timeout
-		if not _alive:
+		if not _in_tree:
 			break
 		await _blink_once()
-		if not _alive:
+		if not _in_tree:
 			break
 		if _blink_rng.randf() < 0.15:
 			await get_tree().create_timer(0.18).timeout
-			if not _alive:
+			if not _in_tree:
 				break
 			await _blink_once()
 
 func _blink_once() -> void:
-	if not _alive:
+	if not _in_tree:
 		return
 	if not eye or not (eye is AnimatedSprite2D):
 		return
@@ -334,7 +417,7 @@ func _blink_once() -> void:
 	var e := eye as AnimatedSprite2D
 	e.stop()
 	for f in [0, 1, 2, 1, 0]:
-		if not _alive:
+		if not _in_tree:
 			return
 		e.frame = f
 		await get_tree().create_timer(_blink_rng.randf_range(0.03, 0.07)).timeout

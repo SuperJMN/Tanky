@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dwxypa12ogkws"]
+[gd_scene load_steps=24 format=3 uid="uid://dwxypa12ogkws"]
 
 [ext_resource type="Script" uid="uid://bnbl65m2at2j5" path="res://scripts/tanky.gd" id="1"]
 [ext_resource type="AudioStream" uid="uid://bckdyy2wkaahx" path="res://sounds/jump.wav" id="2"]
@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://b7bieaplo22jj" path="res://sprites/TankyEyeAnim.png" id="6_pjshc"]
 [ext_resource type="AudioStream" uid="uid://dbtt3lbwigj8w" path="res://sounds/servo2.wav" id="9_dw7xg"]
 [ext_resource type="SpriteFrames" uid="uid://dy7qd8te0uncc" path="res://sprites/antenna_frames.tres" id="10_ant"]
+[ext_resource type="Script" path="res://scripts/hurtbox.gd" id="11_hurt"]
+[ext_resource type="AudioStream" path="res://sounds/smw_pipe.wav" id="12_pipe"]
 
 [sub_resource type="PhysicsMaterial" id="4"]
 friction = 0.2
@@ -55,7 +57,10 @@ rough = true
 [sub_resource type="CircleShape2D" id="3"]
 radius = 12.0
 
-[node name="Tanky" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(40, 32)
+
+[node name="Tanky" type="Node2D" groups=["player"]]
 script = ExtResource("1")
 chassis_path = NodePath("RigidBody2D")
 front_wheel_path = NodePath("FrontWheel")
@@ -73,6 +78,8 @@ shoot_timer_path = NodePath("ShootTimer")
 head_rig_path = NodePath("RigidBody2D/Body/HeadRig")
 antenna_path = NodePath("RigidBody2D/Body/HeadRig/Antenna")
 eye_path = NodePath("RigidBody2D/Body/HeadRig/Eye")
+hurtbox_path = NodePath("RigidBody2D/Hurtbox")
+hurt_player_path = NodePath("RigidBody2D/HurtPlayer")
 
 [node name="RigidBody2D" type="RigidBody2D" parent="."]
 collision_layer = 2
@@ -154,6 +161,20 @@ bus = &"SFX"
 stream = ExtResource("9_dw7xg")
 volume_db = 6.0
 bus = &"SFX"
+
+[node name="HurtPlayer" type="AudioStreamPlayer2D" parent="RigidBody2D"]
+stream = ExtResource("12_pipe")
+volume_db = 6.0
+bus = &"SFX"
+
+[node name="Hurtbox" type="Area2D" parent="RigidBody2D"]
+collision_layer = 16
+collision_mask = 8
+script = ExtResource("11_hurt")
+
+[node name="Shape" type="CollisionShape2D" parent="RigidBody2D/Hurtbox"]
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_hurt")
 
 [node name="RearWheel" type="RigidBody2D" parent="."]
 position = Vector2(-17, 0)

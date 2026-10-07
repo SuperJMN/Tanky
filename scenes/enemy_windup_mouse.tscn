@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy_windup_mouse.gd" id="1"]
+[ext_resource type="Texture2D" path="res://sprites/enemies/windup_mouse.png" id="2"]
+[ext_resource type="Texture2D" path="res://sprites/enemies/windup_key.png" id="3"]
+[ext_resource type="AudioStream" path="res://sounds/servo.wav" id="4"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(40, 26)
+
+[node name="EnemyWindupMouse" type="CharacterBody2D"]
+z_index = 3
+collision_layer = 8
+floor_max_angle = 0.87266463
+floor_snap_length = 12.0
+script = ExtResource("1")
+
+[node name="Key" type="Sprite2D" parent="."]
+position = Vector2(25, -31)
+scale = Vector2(2, 2)
+texture = ExtResource("3")
+hframes = 4
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -20)
+scale = Vector2(2, 2)
+texture = ExtResource("2")
+hframes = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -13)
+shape = SubResource("1")
+
+[node name="LedgeCast" type="RayCast2D" parent="."]
+position = Vector2(22, -4)
+target_position = Vector2(0, 24)
+
+[node name="WindPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4")
+pitch_scale = 1.6
+bus = &"SFX"

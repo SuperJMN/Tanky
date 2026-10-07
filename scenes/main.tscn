@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://d34wn350jojva"]
+[gd_scene load_steps=9 format=3 uid="uid://d34wn350jojva"]
 
 [ext_resource type="PackedScene" uid="uid://dwxypa12ogkws" path="res://scenes/tanky.tscn" id="2"]
 [ext_resource type="Script" uid="uid://bhigjol5laa1k" path="res://scripts/main.gd" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/stages/stage_1.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://bfo8sh1fpsln7" path="res://scenes/enemy_drone.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/enemy_popgun.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/enemy_windup_mouse.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/enemy_spring_hopper.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="11"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("4")
@@ -11,6 +15,7 @@ palm_container_path = NodePath("ParallaxBackground/PalmTrees/PalmContainer")
 music_path = NodePath("Music")
 world_path = NodePath("World")
 tanky_path = NodePath("World/Tanky")
+hud_path = NodePath("Hud")
 
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1
@@ -41,17 +46,43 @@ z_index = 1
 [node name="Enemies" type="Node2D" parent="World"]
 z_index = 3
 
-[node name="EnemyDrone" parent="World/Enemies" instance=ExtResource("7")]
-position = Vector2(558, 328)
+[node name="WindupMouse" parent="World/Enemies" instance=ExtResource("9")]
+position = Vector2(1150, 590)
 
-[node name="EnemyDrone2" parent="World/Enemies" instance=ExtResource("7")]
-position = Vector2(877, 188)
+[node name="Drone" parent="World/Enemies" instance=ExtResource("7")]
+position = Vector2(1500, 430)
+patrol_distance = 300.0
 
-[node name="EnemyDrone3" parent="World/Enemies" instance=ExtResource("7")]
-position = Vector2(1046, 421)
+[node name="SpringHopper" parent="World/Enemies" instance=ExtResource("10")]
+position = Vector2(2420, 580)
 
-[node name="EnemyDrone4" parent="World/Enemies" instance=ExtResource("7")]
-position = Vector2(1576, 287)
+[node name="BomberDrone" parent="World/Enemies" instance=ExtResource("7")]
+position = Vector2(3150, 360)
+bomb_cooldown = 1.8
+hit_points = 2
+
+[node name="WindupMouse2" parent="World/Enemies" instance=ExtResource("9")]
+position = Vector2(3500, 590)
+
+[node name="Popgun" parent="World/Enemies" instance=ExtResource("8")]
+position = Vector2(4560, 624)
+
+[node name="WindupMouse3" parent="World/Enemies" instance=ExtResource("9")]
+position = Vector2(5000, 590)
+
+[node name="SpringHopper2" parent="World/Enemies" instance=ExtResource("10")]
+position = Vector2(5350, 580)
+
+[node name="BomberDrone2" parent="World/Enemies" instance=ExtResource("7")]
+position = Vector2(6250, 360)
+bomb_cooldown = 1.6
+hit_points = 2
+
+[node name="Popgun2" parent="World/Enemies" instance=ExtResource("8")]
+position = Vector2(6760, 624)
+
+[node name="SpringHopper3" parent="World/Enemies" instance=ExtResource("10")]
+position = Vector2(7250, 580)
 
 [node name="Stage" parent="World" instance=ExtResource("6")]
 
@@ -61,3 +92,5 @@ position = Vector2(216, 400)
 [node name="Music" type="AudioStreamPlayer" parent="."]
 volume_db = -6.0
 bus = &"Music"
+
+[node name="Hud" parent="." instance=ExtResource("11")]

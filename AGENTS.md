@@ -11,12 +11,15 @@ Guidance for agents and contributors working on Tanky Reloaded.
   - The background is a plain sky colour for now; a parallax background in the style of
     Super Mario All-Stars' SMB2 is planned (#17).
   - Levels evoke classic Mario/Sonic ramps, to show off traction.
-  - Projectiles defeat on-screen enemies.
+  - Projectiles defeat on-screen enemies. The enemies are invented wind-up toys from Tanky's
+    world (propeller drones, clockwork mice, spring hoppers, cork guns): funny, but a real threat.
+  - Tanky takes 4 hits (shown as battery cells). Losing them all, or falling off the level,
+    restarts the level from the beginning.
   - Single jump, no double jump.
   - Tanky is a heavy remote-control tank with a life of its own. He should feel weighty and
     jump lower than Mario or Sonic.
-- Status: a playable prototype (one stage with ramps, enemy drones). It does not yet have
-  damage, lives, respawn or a level goal.
+- Status: a playable prototype: one stage with ramps, four kinds of enemies, damage and level
+  restart. It does not yet have a level goal.
 - Backlog: GitHub issues, ordered in the roadmap issue
   [#29](https://github.com/SuperJMN/Tanky/issues/29). Work through them one at a time and
   reference the issue in commits.
@@ -65,11 +68,20 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
 | `scenes/main.tscn` + `scripts/main.gd` | Playfield: sky, current stage, enemies, Tanky, music. |
 | `scenes/tanky.tscn` + `scripts/tanky.gd` | Player rig and controller. |
 | `scenes/projectile.tscn` + `scripts/projectile.gd` | Bullet (`Area2D`, own gravity). |
-| `scenes/enemy_drone.tscn` + `scripts/enemy_drone.gd` | Patrolling, hovering drone. |
+| `scenes/hud.tscn` + `scripts/hud.gd` | On-screen health battery. |
+| `scenes/enemy_drone.tscn` + `scripts/enemy_drone.gd` | Propeller drone: patrols while hovering; with `bomb_cooldown` it drops bombs ahead of Tanky. |
+| `scenes/enemy_windup_mouse.tscn` + `scripts/enemy_windup_mouse.gd` | Clockwork mouse: walks, turns at walls and ledges, winds up and dashes at Tanky. |
+| `scenes/enemy_spring_hopper.tscn` + `scripts/enemy_spring_hopper.gd` | Spring hopper: squashes, then hops to land on Tanky. |
+| `scenes/enemy_popgun.tscn` + `scripts/enemy_popgun.gd` | Cork gun: aims and lobs corks at Tanky when he is in range. |
+| `scenes/bomb.tscn`, `scenes/cork.tscn` | Enemy projectiles (`projectile.gd`). |
+| `scenes/puff.tscn` + `scripts/puff.gd` | Small dust puff for harmless impacts. |
+| `scripts/enemy_kit.gd` | Helpers shared by enemies: find Tanky, hit flash, death explosion, on-screen sounds. |
+| `scripts/hurtbox.gd` | Tanky's damage sensor. |
 | `scenes/explosion.tscn` + `scripts/explosion.gd` | One-shot explosion effect with SFX. |
 | `scenes/stages/` | Stages: a `Node2D` with `TileMapLayer`s (16 px tiles at scale 3, so 15 rows fill the 720 px screen). `Terrain` holds the ground; `Overlay` draws in front of it. |
 | `scenes/stages/tilesets/` | Shared `TileSet`s. `smb2_overworld` includes slope tiles (45° and 27°, row 3 of its atlas) generated from its grass and dirt. |
 | `sprites/tilesets/` | Tileset atlases. |
+| `sprites/enemies/` | Enemy pixel art, drawn for this project. Frames are laid out horizontally (`hframes`); sprites use scale 2. |
 | `tools/tmx_to_godot.gd` | Tiled map importer (see Commands). |
 | `sprites/`, `sounds/` | Imported art and audio, with their `.import` files. |
 | `audio/default_bus_layout.tres` | Audio buses. |
@@ -91,6 +103,8 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
   - `JUMP_HEIGHT` 150 px; every body of the rig takes off at `sqrt(2·g·h)` (damping leaves
     the real peak at ~135 px);
   - projectile speed 700 px/s; shot cooldown 0.35 s (`ShootTimer`);
+  - `MAX_HEALTH` 4 hits; after a hit, `INVULNERABLE_TIME` 1.5 s of blinking and
+    `HIT_STUN_TIME` 0.35 s without control while `HIT_KNOCKBACK` pushes him away;
   - cannon range −60° … 10°.
 - None of these values is fixed by the design: the gameplay is still being explored. Tune
   them freely towards the "heavy tank" feel, keep the code comments in sync with the values,
@@ -105,7 +119,8 @@ Tanky (Node2D, tanky.gd)
 │  ├─ BodyCollision       capsule raised so only the wheels touch the ground
 │  ├─ BodyAnim            track sprite (visual only)
 │  ├─ GroundCastFront / GroundCastRear (RayCast2D)
-│  └─ JumpPlayer / ShootPlayer / CannonMovePlayer
+│  ├─ Hurtbox             Area2D (hurtbox.gd), layer 5, detects enemies
+│  └─ JumpPlayer / ShootPlayer / CannonMovePlayer / HurtPlayer
 ├─ RearWheel / FrontWheel (RigidBody2D, mass 8)
 ├─ FrontJoint / RearJoint (PinJoint2D chassis ↔ wheels)
 ├─ FollowCamera (Camera2D, moved to the chassis every physics frame)
@@ -132,11 +147,18 @@ Tanky (Node2D, tanky.gd)
 
 ### Combat contract
 
-- A projectile hits whatever it overlaps (terrain or enemies). If the target has a
-  `hit_by_projectile(projectile)` method, it calls it, then spawns an `Explosion` and frees
+- A projectile (`projectile.gd`) hits whatever its mask overlaps. If the target has a
+  `hit_by_projectile(projectile)` method, it calls it, then spawns its `impact_scene` and frees
   itself. It has two exceptions: it ignores its `shooter`, and it ignores terrain while
-  moving upward (#14).
-- Enemies implement `hit_by_projectile`, join the `enemies` group and manage their own death.
+  moving upward (#14). Tanky's shots, bombs and corks all use it.
+- Enemies implement `hit_by_projectile`, join the `enemies` group and manage their own death
+  (`EnemyKit.flash` / `EnemyKit.explode`). They find Tanky through the `player` group
+  (`EnemyKit.player`), and aim at `Tanky.target_position()`.
+- Tanky gets hurt in two ways, both through his `Hurtbox`: enemy projectiles hit it (it has
+  `hit_by_projectile`), and any `enemies` body or area overlapping it hurts on contact.
+  `Tanky.take_hit(source)` ignores hits while he blinks.
+- `Tanky.kill(explode)` ends a life and emits `died`; `main.gd` then restarts the level by
+  reloading the scene. `main.gd` also kills Tanky when he falls below the level bounds.
 
 ### Collision layers
 
@@ -148,9 +170,12 @@ The layers have no names in `project.godot`. These are their meanings:
 | 2 (2) | Tanky chassis and wheels |
 | 3 (4) | Projectiles |
 | 4 (8) | Enemies |
+| 5 (16) | Tanky's hurtbox |
+| 6 (32) | Enemy projectiles (bombs, corks) |
 
-Projectiles and drones use mask 9 (terrain + enemies). Keep the table up to date when adding
-layers, or give the layers names in `project.godot`.
+Tanky's projectiles use mask 9 (terrain + enemies); enemy projectiles use mask 17 (terrain +
+Tanky's hurtbox); the hurtbox uses mask 8 (enemies); walking enemies use mask 1. Keep the table
+up to date when adding layers, or give the layers names in `project.godot`.
 
 ### Input map (`project.godot`)
 
@@ -170,6 +195,10 @@ keys.
   (all effects).
 - Every new player must go to `Music` or `SFX`. If a new bus is needed, add it to
   `audio/default_bus_layout.tres` and document it here.
+- Enemies play their sounds through `EnemyKit.play_sound`, which stays silent off screen.
+- Quitting while any sound plays makes Godot report "resources still in use at exit". That is
+  an engine shutdown race, not a leak in the game: when it shows up in a headless check, see
+  whether a sound was playing at the last frame.
 
 ## Coding style
 
@@ -217,7 +246,8 @@ out frozen.
 - Art goes in `sprites/` and audio in `sounds/`. Commit them with their `.import` files.
 - Note the source and license of every third-party asset in its commit message.
 - Some current assets are placeholders taken from Nintendo games: the Super Mario Bros. 2
-  tileset and the SMW/NSMB sound effects. They cannot ship in a public release (#26).
+  tileset and the SMW/NSMB sound effects (the hurt sound is SMW's pipe). They cannot ship in a
+  public release (#26).
 
 ## Local-only tooling
 
