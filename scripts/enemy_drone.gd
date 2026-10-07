@@ -78,9 +78,11 @@ func _update_bombing(delta: float, velocity_x: float) -> void:
 	get_tree().current_scene.add_child(bomb)
 	_bomb_wait = bomb_cooldown
 
-func hit_by_projectile(_projectile: Projectile) -> void:
+func hit_by_projectile(_projectile: Projectile) -> bool:
 	hit_points -= 1
 	if hit_points <= 0:
 		EnemyKit.explode(self)
+		return true
 	else:
 		EnemyKit.flash(sprite)
+	return false
