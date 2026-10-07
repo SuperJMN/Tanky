@@ -73,12 +73,13 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
 - Tanky's body is 0.5 m (50 px) long. The constants at the top of `scripts/tanky.gd` are the
   source of truth for tuning:
   - speed from `MIN_SPEED` 150 px/s up to `MAX_SPEED` 500 px/s, reached over `ACCEL_TIME`;
-  - `JUMP_HEIGHT` 200 px; the jump impulse is computed as `sqrt(2·g·h)`;
+  - `JUMP_HEIGHT` 150 px; every body of the rig takes off at `sqrt(2·g·h)` (damping leaves
+    the real peak at ~135 px);
   - projectile speed 700 px/s; shot cooldown 0.35 s (`ShootTimer`);
   - cannon range −60° … 10°.
 - Open question (#25): the original spec asked for a top speed of 2 body lengths/s and a
-  1.5 m jump. The code is tuned faster and higher, and some of its comments do not match the
-  values either. Do not silently "fix" either side; ask first.
+  1.5 m jump. The code is tuned faster, and some of its comments do not match the values
+  either. Do not silently "fix" either side; ask first.
 
 ### Tanky rig (`tanky.tscn`)
 
@@ -86,10 +87,11 @@ with `SCRIPT ERROR`, `ERROR:` or `Parse Error` as a failure. In headless mode, `
 Tanky (Node2D, tanky.gd)
 ├─ RigidBody2D            chassis, mass 50, collision layer 2
 │  ├─ Body                Hull, HeadRig (Head, Eye, Antenna), Cannon (CannonSprite, Muzzle)
-│  ├─ BodyCollision
-│  ├─ Tracks              BodyAnim + RearWheel / FrontWheel (RigidBody2D, mass 8)
+│  ├─ BodyCollision       capsule raised so only the wheels touch the ground
+│  ├─ BodyAnim            track sprite (visual only)
 │  ├─ GroundCastFront / GroundCastRear (RayCast2D)
 │  └─ JumpPlayer / ShootPlayer / CannonMovePlayer
+├─ RearWheel / FrontWheel (RigidBody2D, mass 8)
 ├─ FrontJoint / RearJoint (PinJoint2D chassis ↔ wheels)
 ├─ FollowCamera (Camera2D, moved to the chassis every physics frame)
 └─ ShootTimer
@@ -100,8 +102,11 @@ Tanky (Node2D, tanky.gd)
   keeps the chassis level.
 - Ground contact comes from the two raycasts (`_is_grounded()`): the surface normal must be
   close to "up" and Tanky must not be rising fast.
-- The wheels are separate rigid bodies held by joints. Anything that teleports Tanky
-  (for example a respawn) must move the chassis and both wheels, and reset their velocities.
+- The wheels are separate rigid bodies held by joints, siblings of the chassis. Never nest a
+  physics body inside another one: the child gets teleported through the scene tree. Anything
+  that teleports Tanky (for example a respawn) must move the chassis and both wheels, and
+  reset their velocities.
+- Visual effects such as the track compression on jump move sprites only, never the bodies.
 - `tanky.gd` gets its children through `@export_node_path` properties set in the scene.
   Keep that pattern in that script. Other scripts may use `$Child`; follow whatever the file
   you are editing already does.
