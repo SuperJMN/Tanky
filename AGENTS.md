@@ -15,8 +15,8 @@ Guidance for agents and contributors working on Tanky Reloaded.
     world (propeller drones, clockwork mice, spring hoppers, cork guns): funny, but a real threat.
   - Tanky takes 4 hits (shown as battery cells). Losing them all, or falling off the level,
     restarts the level from the beginning.
-  - Dark openings in the hills are doors, as in Super Mario Bros. 2: driving into one fades
-    to another area. In stage 1 the low opening leads into a brick cave. Tanky cannot climb,
+  - Dark openings in the hills are doors, as in Super Mario Bros. 2: standing in one and
+    pressing up fades to another area. In stage 1 the low opening leads into a brick cave. Tanky cannot climb,
     so rubble platforms take him up to a door that comes out on the hilltops.
   - Reaching the checkered flag at the end clears the stage: fanfare, confetti, a
     "STAGE CLEAR!" banner and a victory dance. Jump then plays the level again. In stage 1 the
@@ -188,10 +188,10 @@ Tanky (Node2D, tanky.gd)
   and `Cave`, placed to the right of the outdoor bounds so neither shows in the other's
   camera). `main.gd` frames the camera to the current area's bounds (also at the top when
   `has_ceiling`), paints the sky with its `sky_color` and sets the fall limit below it.
-- A `Door` is a trigger, usually over a doorway drawn in the tiles. When Tanky touches it,
-  `main.gd` plays the door sound, holds Tanky (`Tanky.set_traveling`: no control, no damage),
-  fades to black, switches to the area that contains the door's `exit` marker, teleports Tanky
-  there and fades back in.
+- A `Door` is a trigger, usually over a doorway drawn in the tiles. When Tanky overlaps it
+  while `enter_door` (up) is held, the door emits `entered` and `main.gd` plays the door
+  sound, holds Tanky (`Tanky.set_traveling`: no control, no damage), fades to black, switches
+  to the area that contains the door's `exit` marker, teleports Tanky there and fades back in.
 - Place each `exit` marker on the floor, about 24 px up and clear of every door (a door whose
   trigger overlaps the exit sends Tanky straight back). In stage 1 the doors and their exits
   live in `World/Doors`, in pairs, so every doorway works both ways.
@@ -221,6 +221,7 @@ up to date when adding layers, or give the layers names in `project.godot`.
 | `jump` | W, Space | Button 0 (A / Cross) |
 | `shoot` | Z, X, Enter | Button 2 (X / Square) |
 | `aim_up` / `aim_down` | ↑ / ↓ | none yet (#15) |
+| `enter_door` | ↑ | D-pad ↑, left stick up |
 
 Always read input through actions (`Input.get_axis`, `Input.is_action_*`), never through raw
 keys.
